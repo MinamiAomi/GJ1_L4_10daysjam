@@ -12,7 +12,7 @@
 void Player::Initialize() {
 	size_ = { 30.0f, 60.0f };
 	velocity_ = Vector2::zero;
-	// コンボ
+	// コンボ/
 	comboTextureHandle_.at(0) = TOMATOsEngine::LoadTexture("Resources/x1.png");
 	comboTextureHandle_.at(1) = TOMATOsEngine::LoadTexture("Resources/x2.png");
 	comboTextureHandle_.at(2) = TOMATOsEngine::LoadTexture("Resources/x3.png");
