@@ -146,8 +146,7 @@ void BackGround::SquareUpdate() {
 			float t = std::clamp(float(square->death_Count_) / float(square->death_Time_),0.0f,1.0f);
 			// 回転
 			square->angle_ += square->angle_Original_;
-			// 色
-			SetColorH(square_ColorH_, square_ColorS_, square_ColorV_);
+		
 			// サイズ
 			float size = 0.0f;
 			if (t <= 0.5f) {
@@ -182,47 +181,3 @@ void BackGround::VerticalLineUpdate() {
 }
 
 void BackGround::VerticalLineDraw() {}
-
-void BackGround::SetColorH(float& h, float& s, float& v) {
-	// 地面だったら白
-	if (player_->GetStepCount() == -1 || player_->GetSameHeightCount() == -1) {
-		s = 0.0f;
-		v = 0.5f;
-	} else if (player_->GetStepCount() > player_->GetSameHeightCount()) {
-		if (player_->GetStepCount() == 0) {
-			s = kCombo1S_;
-			v = kCombo1V_;
-			h = player_->GetStepColorH();
-		}
-		else if (player_->GetStepCount() == 1) {
-			s = kCombo2S_;
-			v = kCombo2V_;
-			h = player_->GetStepColorH();
-		}
-		else {
-			s = kCombo3S_;
-			v = kCombo3V_;
-			h = player_->GetRainbowColorH();
-		}
-	}
-	else  {
-		if (player_->GetSameHeightCount() == 0) {
-			s = kCombo1S_;
-			v = kCombo1V_;
-			h = player_->GetSameHeightColorH();
-		}
-		else if (player_->GetSameHeightCount() == 1) {
-			s = kCombo2S_;
-			v = kCombo2V_;
-			h = player_->GetSameHeightColorH();
-		}
-		else {
-			s = kCombo3S_;
-			v = kCombo3V_;
-			h = player_->GetRainbowColorH();
-		}
-		
-	}
-	
-}
-

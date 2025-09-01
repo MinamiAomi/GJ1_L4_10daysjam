@@ -64,8 +64,6 @@ private:
 	void VerticalLineInitialize();
 	void VerticalLineUpdate();
 	void VerticalLineDraw();
-
-	void SetColorH(float& h, float& s, float& v);
 private:
 	// コンボ1
 	const float kCombo1S_ = 1.0f;

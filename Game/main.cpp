@@ -3,8 +3,6 @@
 #include "Engine/TOMATOsEngine.h"
 
 #include "BackGround.h"
-#include "Field.h"
-#include "FeverManager.h"
 #include "Particle/ParticleManager.h"
 #include "Player.h"
 
@@ -14,7 +12,6 @@
 
 #include "Math/Color.h"
 #include "Math/Animation.h"
-#include "LevelManager.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
 
@@ -65,27 +62,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	ParticleManager particleManager;
 	particleManager.Initialize();
 
-	Field field;
-	field.Initialize();
-	field.SetParticleManager(&particleManager);
-
 	Player player;
 	player.Initialize();
-	player.SetField(&field);
-	player.SetParticleManager(&particleManager);
-	player.SetPosition({ field.GetSize().x * 0.5f, field.GetSize().y - 100.0f });
-
-	field.SetPlayer(&player);
 
 	BackGround backGround;
 	backGround.Initialize();
 	backGround.SetPlayer(&player);
-
-	LevelManager levelManager;
-	levelManager.GetFild(&field);
-	levelManager.Initialize();
-
-	FeverManager* feverManager = FeverManager::GetInstance();
 
 	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
 	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
@@ -198,10 +180,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							gameScene = inGame;
 							backGround.Initialize();
 							particleManager.Initialize();
-							field.Initialize();
 							player.Initialize();
-							player.SetPosition({ field.GetSize().x * 0.5f, field.GetSize().y - 100.0f });
-							feverManager->Initialize();
+							player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
 							// 音
 							// タイトルBGM停止
 							TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -270,53 +250,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				TOMATOsEngine::RequestQuit();
 			}
 			// 音
-			if (field.GetIsVanish() == true) {
+			if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE)) {
 				gameScene = gameClear;
+				TOMATOsEngine::StopAudio(ingamePlayHandle);
+				ingamePlayHandle = INVALID_PLAY_HANDLE;
 			}
-			field.Update();
 			backGround.Update();
 			player.Update();
 
-			// BGMが流れていたらピッチを上げる
-			if (ingamePlayHandle != INVALID_PLAY_HANDLE) {
-				static float pitch = 1.0f;
-				if (field.IsDangerousHeight()) {
-					pitch = Math::Lerp(0.1f, pitch, 1.2f);
-				}
-				else {
-					pitch = Math::Lerp(0.1f, pitch, 1.0f);
-				}
-				TOMATOsEngine::SetPitch(ingamePlayHandle, pitch);
-			}
-
 			particleManager.Update();
-			levelManager.Update();
-			feverManager->Update();
-
-			if (!field.GetIsInGameOver()) {
-				TOMATOsEngine::DrawSpriteRectCenter({ TOMATOsEngine::kMonitorWidth * 0.5f , TOMATOsEngine::kMonitorHeight * 0.5f - 10.0f }, { TOMATOsEngine::kMonitorWidth * 1.0f , TOMATOsEngine::kMonitorHeight * 1.0f }, { 0.0f,0.0f }, { TOMATOsEngine::kMonitorWidth * 1.0f , TOMATOsEngine::kMonitorHeight * 1.0f }, floorHandle, 0xFFFFFFFF);
-				feverManager->Draw();
-				backGround.Draw();
-				particleManager.Draw();
-				player.ComboDraw();
-				levelManager.Draw();
-			}
-			else {
-				backGround.FrameDraw();
-				// 音
-				if (!ingameToClear) {
-					// インゲームBGM停止
-					TOMATOsEngine::StopAudio(ingamePlayHandle);
-					ingamePlayHandle = INVALID_PLAY_HANDLE;
-					ingameToClear = true;
-				}
-			}
-			field.Draw();
+			backGround.FrameDraw();
+			backGround.Draw();
 			player.Draw();
-
-#ifdef _DEBUG
-			field.Edit();
-#endif // _DEBUG
 			break;
 		}
 		case gameClear:
@@ -324,15 +269,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			player.Update();
 			backGround.FrameDraw();
 			player.Draw();
-			if (player.GetIsEndGameClearEasing()) {
-				field.DrawScore();
-				if (!clearToTitle) {
-					// ゲームクリアBGM
-					clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
-					TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
-					clearToTitle = true;
-				}
+			if (!clearToTitle) {
+				// ゲームクリアBGM
+				clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
+				TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
+				clearToTitle = true;
 			}
+			
 			if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
 				((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
 					!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
@@ -344,10 +287,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				gameScene = title;
 				backGround.Initialize();
 				particleManager.Initialize();
-				field.Initialize();
 				player.Initialize();
-				player.SetPosition({ field.GetSize().x * 0.5f, field.GetSize().y - 100.0f });
-				levelManager.Initialize();
 				// 音
 				// クリアBGM停止
 				TOMATOsEngine::StopAudio(clearPlayHandle);
