@@ -14,26 +14,27 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
-	const auto& xInputState = TOMATOsEngine::GetGamePadState();
+	const auto& pad = TOMATOsEngine::GetGamePadState();
+	const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
 	Vector2 move = Vector2::zero;
 
 	if (TOMATOsEngine::IsKeyPressed(DIK_D) ||
 		TOMATOsEngine::IsKeyPressed(DIK_RIGHT) ||
-		xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT ||
-		xInputState.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+		pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT ||
+		pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = 1.0f;
 
 	} else if (TOMATOsEngine::IsKeyPressed(DIK_A) ||
 		TOMATOsEngine::IsKeyPressed(DIK_LEFT) ||
-		xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT ||
-		-xInputState.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
+		pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT ||
+		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
 	  }
 
-	bool isJumpPressed = TOMATOsEngine::IsKeyPressed(DIK_SPACE) || xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_A;
+	bool isJumpPressed = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
 
 	float acceleration = isOnGround_ ? moveAcceleration_ : airAcceleration_;
 	if (move.x != 0.0f) {
@@ -48,19 +49,19 @@ void Player::Update() {
 	if (isJumpPressed) {
 		if (isOnGround_) {
 			//地上ジャンプ
-			velocity_.y = -jumpPower_;
+			velocity_.y = jumpPower_;
 			isOnGround_ = false;
 		}
 		else if (isWallSliding_) {
 			//壁キック
-			velocity_.y = -wallJumpPower_.y;
+			velocity_.y = wallJumpPower_.y;
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
 		}
 	}
 
 	velocity_.y += gravity_;
 
-	if (isWallSliding_ && velocity_.y > wallSlideSpeed_) {
+	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
 	}
 
@@ -80,9 +81,9 @@ void Player::CheckCollisions()
 	wallDirection_ = 0;
 
 	//地面
-	if (position_.y >= TOMATOsEngine::kMonitorHeight - size_.y / 2.0f) {
-		position_.y = TOMATOsEngine::kMonitorHeight - size_.y / 2.0f;
-		if (velocity_.y > 0.0f) {
+	if (position_.y <= size_.y / 2.0f) {
+		position_.y = size_.y / 2.0f;
+		if (velocity_.y < 0.0f) {
 			velocity_.y = 0;
 		}
 		isOnGround_ = true;
