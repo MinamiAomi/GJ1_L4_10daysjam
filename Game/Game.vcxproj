@@ -96,6 +96,7 @@
     <ClInclude Include="Particle\VerticalLine.h" />
     <ClInclude Include="Particle\YenLetter.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="Score.h" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="Particle\VerticalLine.cpp" />
     <ClCompile Include="Particle\YenLetter.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerModel.cpp" />
     <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>

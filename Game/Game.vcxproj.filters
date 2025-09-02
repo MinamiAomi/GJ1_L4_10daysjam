@@ -233,6 +233,10 @@
     <ClInclude Include="HexagonSevenSegmentDisplay.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\LineRenderer.h" />
+    <ClInclude Include="PlayerModel.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -404,6 +408,9 @@
     </ClCompile>
     <ClCompile Include="Engine\LineRenderer.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerModel.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
