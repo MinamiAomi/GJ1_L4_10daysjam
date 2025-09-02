@@ -2,16 +2,18 @@
 
 #include "Engine/TOMATOsEngine.h"
 
-#include "BackGround.h"
-#include "Particle/ParticleManager.h"
-#include "Player.h"
-
 #include "RenderManager.h"
 
 #include "Audio/Audio.h"
 
 #include "Math/Color.h"
 #include "Math/Animation.h"
+
+//ゲームオブジェクトinclude
+#include "BackGround.h"
+#include "Particle/ParticleManager.h"
+#include "Player.h"
+#include "Border.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
 
@@ -121,14 +123,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region クラス宣言/初期化関連
 	ParticleManager particleManager;
+	Player player;
 	particleManager.Initialize();
 
-	Player player;
 	player.Initialize();
 
 	BackGround backGround;
 	backGround.Initialize();
 	backGround.SetPlayer(&player);
+
+	Border border;
+	border.Initialize();
+
+
 #pragma endregion
 
 	while (TOMATOsEngine::BeginFrame()) {
@@ -225,7 +232,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 						TOMATOsEngine::PlayAudio(pickHandle);
 
-						//矢印のPositionを指定
+
 						switch (titleSceneState)
 						{
 						case TitleSceneState::start:
@@ -234,6 +241,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							particleManager.Initialize();
 							player.Initialize();
 							player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
+
+
+							border.Initialize();
 							// 音
 							// タイトルBGM停止
 							TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -303,6 +313,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			backGround.Update();
 			player.Update();
 
+			border.Update();
+
 			particleManager.Update();
 
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
@@ -342,7 +354,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				backGround.Initialize();
 				particleManager.Initialize();
 				player.Initialize();
-				
+				border.Initialize();
+
+
 				// 音
 				// クリアBGM停止
 				TOMATOsEngine::StopAudio(clearPlayHandle);
@@ -393,7 +407,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			backGround.FrameDraw();
 			backGround.Draw();
+			border.Draw();
 			player.Draw();
+			TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
 			break;
 		}
 		case gameClear:

@@ -20,6 +20,7 @@ public:
 	void PushBack(float add);
 private:
 	Vector2 position;
+	Vector2 size;
 	//borderが迫る速度
 	float velocity;
 	//押し戻しのポジション
@@ -28,4 +29,5 @@ private:
 	float easingSpeed;
 	//押し戻し係数
 	float pushBackCoefficient;
+
 };
