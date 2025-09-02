@@ -86,6 +86,7 @@
     <ClInclude Include="Engine\RenderManager.h" />
     <ClInclude Include="Engine\TriangleRenderer.h" />
     <ClInclude Include="Engine\Utility.h" />
+    <ClInclude Include="HexagonSevenSegmentDisplay.h" />
     <ClInclude Include="Particle\Circle.h" />
     <ClInclude Include="Particle\Follow.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="Particle\VerticalLine.h" />
     <ClInclude Include="Particle\YenLetter.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Score.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -173,6 +175,7 @@
     <ClCompile Include="Particle\VerticalLine.cpp" />
     <ClCompile Include="Particle\YenLetter.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">

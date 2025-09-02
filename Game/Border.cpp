@@ -4,19 +4,20 @@
 
 #include "Easing.h"
 
+//収束値
 static const float SNAP_THRESHOLD = 0.01f;
 
 void Border::Initialize()
 {
-	position =
+	position_ =
 	{ static_cast<float>(TOMATOsEngine::kMonitorWidth),
 		static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
-	size= { 2.0f, static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
+	size_ = { 2.0f, static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
 
-	velocity = 0.1f;
-	easingSpeed = 0.08f;
-	pushBackPosition = 0.0f;
-	pushBackCoefficient = 20.0f;
+	velocity_ = 0.1f;
+	easingSpeed_ = 0.08f;
+	pushBackPosition_ = 0.0f;
+	pushBackCoefficient_ = 20.0f;
 }
 
 void Border::Update()
@@ -25,9 +26,9 @@ void Border::Update()
 	static float addPushBackCount = 0.5f;
 	ImGui::Begin("InGame");
 	if (ImGui::BeginMenu("Border")) {
-		ImGui::DragFloat("velocity", &velocity, 0.01f);
-		ImGui::DragFloat("easingSpeed", &easingSpeed, 0.01f);
-		ImGui::DragFloat("pushBackCoefficient", &pushBackCoefficient, 1.0f);
+		ImGui::DragFloat("velocity", &velocity_, 0.01f);
+		ImGui::DragFloat("easingSpeed", &easingSpeed_, 0.01f);
+		ImGui::DragFloat("pushBackCoefficient", &pushBackCoefficient_, 1.0f);
 
 		ImGui::DragFloat("AddPushBackCount", &addPushBackCount, 1.0f, 0.5f, 5.0f);
 		if (ImGui::Button("AddPushBack")) {
@@ -39,25 +40,25 @@ void Border::Update()
 #endif // _DEBUG
 
 	//押し戻しがなければ
-	if (pushBackPosition == 0.0f) {
-		position.x -= velocity;
+	if (pushBackPosition_ == 0.0f) {
+		position_.x -= velocity_;
 	}
 	else {
-		position.x = Easing::easing(easingSpeed, position.x, pushBackPosition);
+		position_.x = Easing::easing(easingSpeed_, position_.x, pushBackPosition_);
 		//近くなったら
-		if (std::abs(position.x - pushBackPosition) < SNAP_THRESHOLD) {
-			position.x = pushBackPosition;
-			pushBackPosition = 0.0f;
+		if (std::abs(position_.x - pushBackPosition_) < SNAP_THRESHOLD) {
+			position_.x = pushBackPosition_;
+			pushBackPosition_ = 0.0f;
 		}
-		else if (position.x >= static_cast<float>(TOMATOsEngine::kMonitorWidth)) {
-			position.x = static_cast<float>(TOMATOsEngine::kMonitorWidth);
-			pushBackPosition = 0.0f;
+		else if (position_.x >= static_cast<float>(TOMATOsEngine::kMonitorWidth)) {
+			position_.x = static_cast<float>(TOMATOsEngine::kMonitorWidth);
+			pushBackPosition_ = 0.0f;
 		}
 	}
 
-	position.x = std::clamp(position.x, 0.0f, static_cast<float>(TOMATOsEngine::kMonitorWidth));
+	position_.x = std::clamp(position_.x, 0.0f, static_cast<float>(TOMATOsEngine::kMonitorWidth));
 	//ゲームオーバー
-	if (position.x <= 0) {
+	if (position_.x <= 0) {
 
 	}
 }
@@ -65,13 +66,13 @@ void Border::Update()
 void Border::Draw()
 {
 	TOMATOsEngine::DrawRect(
-		{ position.x - size.x, position.y - size.y },
-		{ position.x + size.x, position.y + size.y },
+		{ position_.x - size_.x, position_.y - size_.y },
+		{ position_.x + size_.x, position_.y + size_.y },
 		0xFFFFFFFF
 	);
 }
 
 void Border::PushBack(float add)
 {
-	pushBackPosition = position.x + (add * pushBackCoefficient);
+	pushBackPosition_ = position_.x + (add * pushBackCoefficient_);
 }
