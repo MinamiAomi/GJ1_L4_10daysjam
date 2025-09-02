@@ -7,6 +7,12 @@
 //収束値
 static const float SNAP_THRESHOLD = 0.01f;
 
+Border* Border::GetInstance()
+{
+	static Border instance;
+	return &instance;
+}
+
 void Border::Initialize()
 {
 	position_ =

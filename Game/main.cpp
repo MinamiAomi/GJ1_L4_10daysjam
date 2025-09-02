@@ -134,8 +134,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	backGround.Initialize();
 	backGround.SetPlayer(&player);
 
-	Border border;
-	border.Initialize();
+	Border* border = Border::GetInstance();
+	border->Initialize();
 
 	//Test
 	HexagonSevenSegmentDisplay hexagonSevenSegmentDisplay;
@@ -153,8 +153,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         ImGui::Text("FullScreen : TAB\n");
         ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
         ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
-        ImGui::DragFloat3("caemraPosition", &cameraPos.x, 0.1f);
-        ImGui::DragFloat3("rotatePosition", &cameraRot.x, 1.0f);
         ImGui::End();
 #endif // _DEBUG
 
@@ -249,7 +247,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
 
 
-							border.Initialize();
+							border->Initialize();
 							// 音
 							// タイトルBGM停止
 							TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -325,7 +323,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			backGround.Update();
 			player.Update();
 
-			border.Update();
+			border->Update();
 
 			particleManager.Update();
 
@@ -366,7 +364,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				backGround.Initialize();
 				particleManager.Initialize();
 				player.Initialize();
-				border.Initialize();
+				border->Initialize();
 
 
 				// 音
@@ -419,7 +417,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			backGround.FrameDraw();
 			backGround.Draw();
-			border.Draw();
+			border->Draw();
 			player.Draw();
 			TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
 			break;

@@ -5,6 +5,9 @@
 
 class Border {
 public:
+
+	static Border* GetInstance();
+
 	void Initialize();
 
 	void Update();
