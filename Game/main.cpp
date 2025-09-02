@@ -15,6 +15,8 @@
 #include "Player.h"
 #include "Border.h"
 
+#include "HexagonSevenSegmentDisplay.h"
+
 #define INVALID_PLAY_HANDLE (size_t(-1))
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -135,7 +137,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Border border;
 	border.Initialize();
 
-
+	//Test
+	HexagonSevenSegmentDisplay hexagonSevenSegmentDisplay;
+	int hexagonSevenSegmentDisplayNumber = 0;
 #pragma endregion
 
 	while (TOMATOsEngine::BeginFrame()) {
@@ -310,6 +314,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
+
+			auto pos = hexagonSevenSegmentDisplay.GetNumberVertex(hexagonSevenSegmentDisplayNumber);
+
+			for (int i = 0; i < pos.size() - 2; i += 2) {
+
+			}
 			backGround.Update();
 			player.Update();
 
