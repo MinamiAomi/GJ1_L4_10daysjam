@@ -4,6 +4,8 @@
 
 #include "RenderManager.h"
 
+#include "Math/Camera.h"
+
 #include "Audio/Audio.h"
 
 #include "Math/Color.h"
@@ -22,18 +24,26 @@
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
-    TOMATOsEngine::Initialize();
+	TOMATOsEngine::Initialize();
 #ifdef _DEBUG
-    TOMATOsEngine::SetFullScreen(false);
+	TOMATOsEngine::SetFullScreen(false);
 #endif // _DEBUG
 
-    enum GameScene {
-        title,
-        inGame,
-        gameClear,
-    };
+	enum GameScene {
+		title,
+		inGame,
+		gameClear,
+	};
 
 	GameScene gameScene = title;
+
+	Vector3 cameraPosition = { 0.0f, 3.0f, -50.0f };
+	Vector3 cameraRotate = {};
+	Camera camera;
+	camera.SetPosition({ 0.0f, 3.0f, -10.0f });
+
+
+
 #pragma region テクスチャハンドル
 	//タイトル
 	TextureHandle titleHandle = TOMATOsEngine::LoadTexture("Resources/BBtitle.png");
@@ -138,7 +148,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	border->Initialize();
 
 	//Test
-	HexagonSevenSegmentDisplay hexagonSevenSegmentDisplay;
+	HexagonSevenSegmentDisplay* hexagonSevenSegmentDisplay = HexagonSevenSegmentDisplay::GetInstance();
 	int hexagonSevenSegmentDisplayNumber = 0;
 #pragma endregion
 
@@ -146,15 +156,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		auto pad = TOMATOsEngine::GetGamePadState();
 		auto prepad = TOMATOsEngine::GetGamePadPreState();
 #ifdef _DEBUG
-        auto& io = ImGui::GetIO();
-        ImGui::Begin("Menu");
-        ImGui::Text("FPS : %f\n", io.Framerate);
-        ImGui::Text("Quit : ESCAPE\n");
-        ImGui::Text("FullScreen : TAB\n");
-        ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
-        ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
-        ImGui::End();
+		auto& io = ImGui::GetIO();
+		ImGui::Begin("Menu");
+		ImGui::Text("FPS : %f\n", io.Framerate);
+		ImGui::Text("Quit : ESCAPE\n");
+		ImGui::Text("FullScreen : TAB\n");
+		ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
+		ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
+		ImGui::DragInt("number", &hexagonSevenSegmentDisplayNumber,1,0,9);
+		ImGui::DragFloat3("cameraPos", &cameraPosition.x, 1.0f);  
+		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 1.0f);
+		ImGui::End();
 #endif // _DEBUG
+
+		camera.SetPosition(cameraPosition);
+		camera.SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
+		camera.UpdateMatrices();
+		TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
 
 		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
 		switch (gameScene) {
@@ -309,17 +327,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				}
 			}
 
-            break;
-        }
+			break;
+		}
 
 		case inGame:
 		{
 
-			auto pos = hexagonSevenSegmentDisplay.GetNumberVertex(hexagonSevenSegmentDisplayNumber);
 
-			for (int i = 0; i < pos.size() - 2; i += 2) {
-
-			}
 			backGround.Update();
 			player.Update();
 
@@ -415,6 +429,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
+			auto pos = hexagonSevenSegmentDisplay->GetNumberVertex(hexagonSevenSegmentDisplayNumber);
+
+			// 1つの六角形は6つの頂点で構成されている
+			const int verticesPerHexagon = 6;
+
+			// 6頂点ごと（＝六角形ごと）にループを回す
+			for (size_t i = 0; i < pos.size(); i += verticesPerHexagon) {
+				// i が現在の六角形の頂点リストの開始インデックスとなる
+
+				// 6本の辺を直接描画
+				TOMATOsEngine::DrawLine3D(pos.at(i + 0), pos.at(i + 1), 0x00FF00FF); // v0 -> v1
+				TOMATOsEngine::DrawLine3D(pos.at(i + 1), pos.at(i + 2), 0x00FF00FF); // v1 -> v2
+				TOMATOsEngine::DrawLine3D(pos.at(i + 2), pos.at(i + 3), 0x00FF00FF); // v2 -> v3
+				TOMATOsEngine::DrawLine3D(pos.at(i + 3), pos.at(i + 4), 0x00FF00FF); // v3 -> v4
+				TOMATOsEngine::DrawLine3D(pos.at(i + 4), pos.at(i + 5), 0x00FF00FF); // v4 -> v5
+				TOMATOsEngine::DrawLine3D(pos.at(i + 5), pos.at(i + 0), 0x00FF00FF); // v5 -> v0 (閉じる)
+			}
 			backGround.FrameDraw();
 			backGround.Draw();
 			border->Draw();
@@ -435,7 +466,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 	}
 
-    TOMATOsEngine::Shutdown();
+	TOMATOsEngine::Shutdown();
 
-    return 0;
+	return 0;
 }

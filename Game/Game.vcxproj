@@ -169,6 +169,7 @@
     <ClCompile Include="Engine\TriangleRenderer.cpp" />
     <ClCompile Include="Engine\Utility.cpp" />
     <ClCompile Include="Follow.cpp" />
+    <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\Circle.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
