@@ -77,7 +77,6 @@ void Player::Update() {
 }
 
 void Player::Draw() {
-	TOMATOsEngine::DrawRectAngle(position_, size_, Vector2{ 0.5f,0.5f }, 0.0f, 0xFFFFFFFF);
 	playerModel_.Draw();
 }
 
