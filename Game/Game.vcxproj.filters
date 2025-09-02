@@ -224,6 +224,9 @@
     <ClInclude Include="BackGround.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\LineRenderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -387,6 +390,9 @@
     <ClCompile Include="BackGround.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\LineRenderer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
@@ -437,6 +443,12 @@
       <Filter>Engine\Shader</Filter>
     </None>
     <None Include="Engine\Shader\ModelPS.hlsl">
+      <Filter>Engine\Shader</Filter>
+    </None>
+    <None Include="Engine\Shader\LinePS.hlsl">
+      <Filter>Engine\Shader</Filter>
+    </None>
+    <None Include="Engine\Shader\LineVS.hlsl">
       <Filter>Engine\Shader</Filter>
     </None>
   </ItemGroup>
