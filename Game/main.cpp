@@ -22,7 +22,6 @@
 #include "HexagonSevenSegmentDisplay.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
