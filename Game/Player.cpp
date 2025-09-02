@@ -4,13 +4,15 @@
 #include "Math/Color.h"
 #include "Particle/ParticleManager.h"
 #include "Math/Random.h"
+#include "Border.h"
 
 #include "Easing.h"
 
 void Player::Initialize() {
 	position_ = Vector2::zero;
 	velocity_ = Vector2::zero;
-	size_ = { 30.0f, 30.0f };
+	size_ = { 10.0f, 10.0f };
+	playerModel_.Initialize(this);
 }
 
 void Player::Update() {
@@ -25,6 +27,7 @@ void Player::Update() {
 		pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = 1.0f;
+		isFacing = true;
 
 	} else if (TOMATOsEngine::IsKeyPressed(DIK_A) ||
 		TOMATOsEngine::IsKeyPressed(DIK_LEFT) ||
@@ -32,6 +35,7 @@ void Player::Update() {
 		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
+		isFacing = false;
 	  }
 
 	bool isJumpPressed = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
@@ -68,10 +72,12 @@ void Player::Update() {
 	position_ += velocity_;
 
 	CheckCollisions();
+
+	playerModel_.Update();
 }
 
 void Player::Draw() {
-	TOMATOsEngine::DrawRectAngle(position_, size_, Vector2{0.5f,0.5f}, 0.0f,0xFFFFFFFF);
+	playerModel_.Draw();
 }
 
 void Player::CheckCollisions()
@@ -88,22 +94,30 @@ void Player::CheckCollisions()
 		}
 		isOnGround_ = true;
 	}
-
-
+	
 	//壁
 	if (position_.x <= size_.x / 2.0f) {
 		position_.x = size_.x / 2.0f;
 		velocity_.x = 0;
 		wallDirection_ = -1;
+		isFacing = true;
+	}
+	else if (position_.x >= Border::GetInstance()->GetBorderLineSidePos() - size_.x / 2.0f) {
+		position_.x = Border::GetInstance()->GetBorderLineSidePos() - size_.x / 2.0f;
+		velocity_.x = 0;
+		wallDirection_ = 1;
+		isFacing = false;
 	}
 	else if (position_.x >= TOMATOsEngine::kMonitorWidth - size_.x / 2.0f) {
 		position_.x = TOMATOsEngine::kMonitorWidth - size_.x / 2.0f;
 		velocity_.x = 0;
 		wallDirection_ = 1;
+		isFacing = false;
 	}
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
+		
 	}
 
 }

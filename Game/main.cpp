@@ -434,7 +434,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
-			backGround.FrameDraw();
 			backGround.Draw();
 			border->Draw();
 			score.Draw();
@@ -444,7 +443,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 		case gameClear:
 		{
-			backGround.FrameDraw();
+			backGround.Draw();
 			player.Draw();
 			break;
 		}

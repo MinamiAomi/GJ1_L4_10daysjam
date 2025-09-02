@@ -8,8 +8,8 @@ void Score::Initialize()
 {
 	score_ = 0.0f;
 	position_ = { -15.0f,10.0f };
-	spacing_ = 9;
-	scale_ = 1.0f;
+	spacing_ = 4.0f;
+	scale_ = 0.4f;
 }
 
 void Score::Update()

@@ -58,7 +58,7 @@ void Border::Update()
 		}
 	}
 
-	position_.x = std::clamp(position_.x, 0.0f, static_cast<float>(TOMATOsEngine::kMonitorWidth));
+	position_.x = std::clamp(position_.x, 0.0f, static_cast<float>(TOMATOsEngine::kMonitorWidth));    
 	//ゲームオーバー
 	if (position_.x <= 0) {
 
@@ -67,11 +67,15 @@ void Border::Update()
 
 void Border::Draw()
 {
-	TOMATOsEngine::DrawRect(
-		{ position_.x - size_.x, position_.y - size_.y },
-		{ position_.x + size_.x, position_.y + size_.y },
-		0xFFFFFFFF
-	);
+	float l = position_.x - size_.x;
+	float r = position_.x + size_.x;
+	float t = position_.y + size_.y;
+	float b = position_.y - size_.y;
+	int color = 0xFFFFFFFF;
+	TOMATOsEngine::DrawLine3D({ l,b },{ l,t },color);
+	TOMATOsEngine::DrawLine3D({ l,b },{ r,b },color);
+	TOMATOsEngine::DrawLine3D({ r,t },{ l,t },color);
+	TOMATOsEngine::DrawLine3D({ r,t },{ r,b },color);
 }
 
 void Border::PushBack(float add)
