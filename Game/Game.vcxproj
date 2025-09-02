@@ -41,6 +41,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="BackGround.h" />
+    <ClInclude Include="Border.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Engine\ArcadeMachine.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Engine\RenderManager.h" />
     <ClInclude Include="Engine\TriangleRenderer.h" />
     <ClInclude Include="Engine\Utility.h" />
+    <ClInclude Include="HexagonSevenSegmentDisplay.h" />
     <ClInclude Include="Particle\Circle.h" />
     <ClInclude Include="Particle\Follow.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
@@ -94,6 +96,7 @@
     <ClInclude Include="Particle\VerticalLine.h" />
     <ClInclude Include="Particle\YenLetter.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Score.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -125,6 +128,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="Border.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Engine\ArcadeMachine.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
@@ -173,6 +177,7 @@
     <ClCompile Include="Particle\VerticalLine.cpp" />
     <ClCompile Include="Particle\YenLetter.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
