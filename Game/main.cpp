@@ -446,7 +446,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				TOMATOsEngine::DrawLine3D(pos.at(i + 4), pos.at(i + 5), 0x00FF00FF); // v4 -> v5
 				TOMATOsEngine::DrawLine3D(pos.at(i + 5), pos.at(i + 0), 0x00FF00FF); // v5 -> v0 (閉じる)
 			}
-			backGround.FrameDraw();
 			backGround.Draw();
 			border->Draw();
 			player.Draw();
@@ -455,7 +454,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 		case gameClear:
 		{
-			backGround.FrameDraw();
+			backGround.Draw();
 			player.Draw();
 			break;
 		}
