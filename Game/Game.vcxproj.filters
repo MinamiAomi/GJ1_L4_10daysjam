@@ -237,6 +237,7 @@
     <ClInclude Include="PlayerModel.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\LineRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -412,6 +413,7 @@
     <ClCompile Include="PlayerModel.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
