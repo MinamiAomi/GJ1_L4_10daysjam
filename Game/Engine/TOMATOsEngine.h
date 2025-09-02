@@ -6,6 +6,7 @@
 #include "Externals/ImGui/imgui.h"
 
 #include "Math/MathUtils.h"
+#include "Math/Camera.h"
 
 #include "TextureHandle.h"
 #include "Input.h"
@@ -21,8 +22,8 @@ namespace TOMATOsEngine {
 
     static uint32_t kWindowWidth = 1280;
     static uint32_t kWindowHeight = 720;
-    static uint32_t kMonitorWidth = 640;
-    static uint32_t kMonitorHeight = 480;
+    static uint32_t kMonitorWidth = 100;
+    static uint32_t kMonitorHeight = 75;
 
     void Initialize();
     void Shutdown();
@@ -42,6 +43,10 @@ namespace TOMATOsEngine {
     void DrawSpriteQuad(const Vector2& lt, const Vector2& rt, const Vector2& lb, const Vector2& rb, const Vector2& texBase, const Vector2& texSize, TextureHandle texHandle, uint32_t color);
     void DrawFrame(const Vector2& pos, const Vector2& size, const Vector2& anchorPoint, float angle, const Vector2& texBase, const Vector2& texSize, TextureHandle texHandle, uint32_t color);
     void SetBlendMode(BlendMode blendMode);
+
+    void SetCameraMatrix(const Matrix4x4& matrix);
+    void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color);
+    void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color);
 
     bool IsKeyPressed(unsigned char keycode);
     bool IsKeyTrigger(unsigned char keycode);

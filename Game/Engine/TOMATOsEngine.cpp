@@ -9,6 +9,7 @@
 #include "RenderManager.h"
 #include "TriangleRenderer.h"
 #include "SpriteRenderer.h"
+#include "LineRenderer.h"
 #include "TextureManager.h"
 #include "Model.h"
 #include "RealWorld.h"
@@ -25,12 +26,14 @@ namespace {
     RenderManager* renderManager = nullptr;
     TriangleRenderer* triangleRenderer = nullptr;
     SpriteRenderer* spriteRenderer = nullptr;
+    LineRenderer* lineRenderer = nullptr;
     TextureManager* textureManager = nullptr;
     Input* input = nullptr;
     Audio* audio = nullptr;
 
     Matrix4x4 screenMatrix;
     Matrix4x4 frameMatrix;
+    Matrix4x4 cameraMatrix;
 
     Monitor* monitor = nullptr;
     std::unique_ptr<RealWorld> realWorld;
@@ -84,6 +87,9 @@ namespace TOMATOsEngine {
         spriteRenderer = SpriteRenderer::GetInstance();
         spriteRenderer->Initialize(monitor->GetColorBuffer().GetFormat());
 
+        lineRenderer = LineRenderer::GetInstance();
+        lineRenderer->Initialize(monitor->GetColorBuffer().GetFormat());
+
         textureManager = TextureManager::GetInstance();
 
         audio = Audio::GetInstance();
@@ -91,12 +97,12 @@ namespace TOMATOsEngine {
 
         gameWindow->SetFullScreen(true);
 
-        frameMatrix = Matrix4x4::MakeTranslation({ 0.0f, 40.0f, 0.0f });
+        frameMatrix = Matrix4x4::MakeTranslation({ 0.0f, 0.0f, 0.0f });
         frameMatrix *= Matrix4x4::MakeOrthographicProjection(float(kMonitorWidth), float(kMonitorHeight), 0.0f, 1.0f);
-        frameMatrix *= Matrix4x4::MakeScaling({ 1.0f, 1.0f,1.0f });
+        frameMatrix *= Matrix4x4::MakeScaling({ 1.0f, 01.0f, 1.0f });
         frameMatrix *= Matrix4x4::MakeTranslation({ -1.0f, -1.0f, 0.0f });
 
-        screenMatrix = frameMatrix * Matrix4x4::MakeScaling({ 0.93f, 0.91f, 0.0f });
+        screenMatrix = frameMatrix * Matrix4x4::MakeScaling({ 0.9999f, 0.9999f, 0.0f });
 
         renderManager->Reset();
 
@@ -115,6 +121,8 @@ namespace TOMATOsEngine {
     }
 
     bool BeginFrame() {
+        lineRenderer->DrawCall(renderManager->GetCommandContext(), cameraMatrix);
+
         realWorld->Update();
 
         renderManager->BeginRender();
@@ -191,6 +199,15 @@ namespace TOMATOsEngine {
         }
 
     }
+
+    void SetCameraMatrix(const Matrix4x4& matrix) {
+        cameraMatrix = matrix;
+    }
+
+    void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color) {
+        DrawLine3D({ start.x, start.y, 0.0f }, { end.x, end.y, 0.0f }, color);
+    }
+
 
     void DrawTriangle(const Vector2& pos0, const Vector2& pos1, const Vector2& pos2, uint32_t color) {
         color = RGBAtoABGR(color);
@@ -468,6 +485,15 @@ namespace TOMATOsEngine {
             { {tmp[3], 0.0f}, color, {ur, ub} },
         };
         spriteRenderer->Draw(renderManager->GetCommandContext(), vertices, 2, texture.GetSRV());
+    }
+
+    void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color) {
+        color = RGBAtoABGR(color);
+
+        lineRenderer->Draw(
+            start,
+            end,
+            color);
     }
 
     bool IsKeyPressed(unsigned char keycode) {

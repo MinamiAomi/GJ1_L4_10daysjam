@@ -20,16 +20,16 @@
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
-	TOMATOsEngine::Initialize();
+    TOMATOsEngine::Initialize();
 #ifdef _DEBUG
-	TOMATOsEngine::SetFullScreen(false);
+    TOMATOsEngine::SetFullScreen(false);
 #endif // _DEBUG
 
-	enum GameScene {
-		title,
-		inGame,
-		gameClear,
-	};
+    enum GameScene {
+        title,
+        inGame,
+        gameClear,
+    };
 
 	GameScene gameScene = title;
 #pragma region テクスチャハンドル
@@ -142,14 +142,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		auto pad = TOMATOsEngine::GetGamePadState();
 		auto prepad = TOMATOsEngine::GetGamePadPreState();
 #ifdef _DEBUG
-		auto& io = ImGui::GetIO();
-		ImGui::Begin("Menu");
-		ImGui::Text("FPS : %f\n", io.Framerate);
-		ImGui::Text("Quit : ESCAPE\n");
-		ImGui::Text("FullScreen : TAB\n");
-		ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
-		ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
-		ImGui::End();
+        auto& io = ImGui::GetIO();
+        ImGui::Begin("Menu");
+        ImGui::Text("FPS : %f\n", io.Framerate);
+        ImGui::Text("Quit : ESCAPE\n");
+        ImGui::Text("FullScreen : TAB\n");
+        ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
+        ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
+        ImGui::DragFloat3("caemraPosition", &cameraPos.x, 0.1f);
+        ImGui::DragFloat3("rotatePosition", &cameraRot.x, 1.0f);
+        ImGui::End();
 #endif // _DEBUG
 
 		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
@@ -305,8 +307,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				}
 			}
 
-			break;
-		}
+            break;
+        }
 
 		case inGame:
 		{
@@ -425,7 +427,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 	}
 
-	TOMATOsEngine::Shutdown();
+    TOMATOsEngine::Shutdown();
 
-	return 0;
+    return 0;
 }
