@@ -31,6 +31,7 @@ void Camera::UpdateMatrices() {
         }
 
         viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+        inverseViewProjectionMatrix_ = viewProjectionMatrix_.Inverse();
     }
 }
 
