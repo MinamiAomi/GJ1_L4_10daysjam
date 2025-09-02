@@ -243,6 +243,10 @@
     <ClInclude Include="Ground.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerModel.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LineRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -415,7 +419,7 @@
     <ClCompile Include="Engine\LineRenderer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Wall.cpp">
+    <ClCompile Include="PlayerModel.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />

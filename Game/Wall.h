@@ -9,7 +9,7 @@ class Wall {
 public:
     const float kWallWidth = 2.0f;
     const float kWallHeight = 30.0f;
-    const float kCameraOffsetZ = -42.0f;
+    const float kCameraOffsetZ = -44.0f;
     const float kCameraRotateY = 33.0f;
 
     static Wall* GetInstance();

@@ -5,6 +5,7 @@
 
 #include "Math/MathUtils.h"
 #include "TextureHandle.h"
+#include "PlayerModel.h"
 
 class Field;
 class ParticleManager;
@@ -16,11 +17,15 @@ public:
 	void Update();
 	void Draw();
 
-	void SetPosition(const Vector2& position) { position_ = position; }
-	
+	void SetPosition (const Vector2& position) { position_ = position; }
+	bool GetFacing () const { return isFacing; }
+	Vector2 GetSize ()const { return size_; }
+	Vector2 GetPosition()const { return position_; }
 private:
 
 	void CheckCollisions();
+
+	PlayerModel playerModel_;
 	
 	Vector2 position_;
 	Vector2 velocity_;
@@ -28,14 +33,15 @@ private:
 
 	bool isOnGround_ = false;
 	bool isWallSliding_ = false;
+	bool isFacing = true; // 向いている方向(false 左,true 右 )
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
 
-	const float gravity_ = -0.25f;
-	const float moveAcceleration_ = 0.4f;
-	const float airAcceleration_ = 0.2f;
-	const float maxMoveSpeed_ = 4.5f;
+	const float gravity_ = -0.05f;
+	const float moveAcceleration_ = 0.08f;
+	const float airAcceleration_ = 0.04f;
+	const float maxMoveSpeed_ = 0.9f;
 	const float friction_ = 0.9f;
-	const float jumpPower_ = 8.5f;
-	const float wallSlideSpeed_ = -1.5f;
-	const Vector2 wallJumpPower_ = { 6.0f,6.5f };
+	const float jumpPower_ = 1.7f;
+	const float wallSlideSpeed_ = -0.3f;
+	const Vector2 wallJumpPower_ = { 1.2f,1.3f };
 };
