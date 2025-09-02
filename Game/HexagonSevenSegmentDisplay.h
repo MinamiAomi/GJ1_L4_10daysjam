@@ -8,6 +8,8 @@
 
 class HexagonSevenSegmentDisplay {
 public:
+    static HexagonSevenSegmentDisplay* GetInstance();
+
     HexagonSevenSegmentDisplay() {
         // 各数字がどのセグメントを使用するかを定義
         number_map_ = {
@@ -24,22 +26,8 @@ public:
         };
     }
 
-    std::vector<Vector2> GetNumberVertex(int num) {
-        if (number_map_.find(num) == number_map_.end()) {
-            throw std::out_of_range("Input number must be between 0 and 9.");
-        }
-
-        std::vector<Vector2> all_vertices;
-        const auto& required_segments = number_map_.at(num);
-
-        for (char segment_id : required_segments) {
-            auto segment_vertices = generate_segment_vertices(segment_id);
-            // 取得した頂点を全体のリストに追加
-            all_vertices.insert(all_vertices.end(), segment_vertices.begin(), segment_vertices.end());
-        }
-
-        return all_vertices;
-    }
+    //数字の頂点を取得
+    std::vector<Vector2> GetNumberVertex(int num);
 private:
     // 六角形の基準となる頂点
     const std::vector<Vector2> base_hexagon_vertices_ = {
@@ -63,29 +51,6 @@ private:
     // 数字と使用セグメントのマッピング
     std::map<int, std::vector<char>> number_map_;
 
-    /**
-     * @brief 指定されたセグメントIDの六角形の頂点リストを生成します。
-     * @param id セグメントID ('a'から'g')。
-     * @return 計算後の頂点リスト。
-     */
-    std::vector<Vector2> generate_segment_vertices(char id) {
-        std::vector<Vector2> transformed_vertices;
-        const Vector2& center = segment_centers_.at(id);
-
-        for (const auto& base_vertex : base_hexagon_vertices_) {
-            Vector2 transformed_vertex = base_vertex;
-
-            // b, c, e, f セグメントは90度回転させる
-            if (id == 'b' || id == 'c' || id == 'e' || id == 'f') {
-                // 90度回転の公式: x' = -y, y' = x
-                double new_x = -base_vertex.y;
-                double new_y = base_vertex.x;
-                transformed_vertex = { new_x, new_y };
-            }
-
-            // セグメントの中心座標へ平行移動
-            transformed_vertices.push_back(transformed_vertex + center);
-        }
-        return transformed_vertices;
-    }
+    // 指定されたセグメントIDの六角形の頂点リストを生成
+    std::vector<Vector2> GenerateSegmentVertices(char id);
 };

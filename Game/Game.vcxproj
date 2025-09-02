@@ -87,6 +87,7 @@
     <ClInclude Include="Engine\RenderManager.h" />
     <ClInclude Include="Engine\TriangleRenderer.h" />
     <ClInclude Include="Engine\Utility.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="HexagonSevenSegmentDisplay.h" />
     <ClInclude Include="Particle\Circle.h" />
     <ClInclude Include="Particle\Follow.h" />
@@ -170,6 +171,8 @@
     <ClCompile Include="Engine\TriangleRenderer.cpp" />
     <ClCompile Include="Engine\Utility.cpp" />
     <ClCompile Include="Follow.cpp" />
+    <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\Circle.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
