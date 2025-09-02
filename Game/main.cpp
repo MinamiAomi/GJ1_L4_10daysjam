@@ -15,13 +15,14 @@
 #include "BackGround.h"
 #include "Particle/ParticleManager.h"
 #include "Player.h"
+#include "Ground.h"
 #include "Border.h"
 #include "Score.h"
+#include "Wall.h"
 
 #include "HexagonSevenSegmentDisplay.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
@@ -145,8 +146,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	backGround.Initialize();
 	backGround.SetPlayer(&player);
 
+	Ground* ground = Ground::GetInstance();
+
 	Border* border = Border::GetInstance();
 	border->Initialize();
+
+	Wall* wall = Wall::GetInstance();
+	wall->Initialize(camera);
 
 	Score score;
 	score.Initialize();
@@ -269,6 +275,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							border->Initialize();
 							score.Initialize();
 
+							border->Initialize();
+							wall->Initialize(camera);
+
 							// 音
 							// タイトルBGM停止
 							TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -341,6 +350,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			player.Update();
 
 			border->Update();
+			wall->Update();
 
 			score.Update();
 
@@ -435,6 +445,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case inGame:
 		{
 			backGround.Draw();
+			ground->Draw();
+			wall->Draw();
 			border->Draw();
 			score.Draw();
 			player.Draw();

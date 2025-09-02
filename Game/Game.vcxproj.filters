@@ -233,7 +233,16 @@
     <ClInclude Include="HexagonSevenSegmentDisplay.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\LineRenderer.h" />
+    <ClInclude Include="Engine\LineRenderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="PlayerModel.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -414,6 +423,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
+    <ClCompile Include="Ground.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">

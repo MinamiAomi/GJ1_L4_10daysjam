@@ -87,6 +87,7 @@
     <ClInclude Include="Engine\RenderManager.h" />
     <ClInclude Include="Engine\TriangleRenderer.h" />
     <ClInclude Include="Engine\Utility.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="HexagonSevenSegmentDisplay.h" />
     <ClInclude Include="Particle\Circle.h" />
     <ClInclude Include="Particle\Follow.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -170,6 +172,7 @@
     <ClCompile Include="Engine\TriangleRenderer.cpp" />
     <ClCompile Include="Engine\Utility.cpp" />
     <ClCompile Include="Follow.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\Circle.cpp" />
@@ -181,6 +184,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerModel.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
