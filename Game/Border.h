@@ -18,16 +18,21 @@ public:
 	/// </summary>
 	/// <param name="add"></param>
 	void PushBack(float add);
+
+	//現在のBorderLinePos
+	float BorderLinePos() {
+		return position_.x - size_.x;
+	}
 private:
-	Vector2 position;
-	Vector2 size;
+	Vector2 position_;
+	Vector2 size_;
 	//borderが迫る速度
-	float velocity;
+	float velocity_;
 	//押し戻しのポジション
-	float pushBackPosition;
+	float pushBackPosition_;
 	//イージングの速度
-	float easingSpeed;
+	float easingSpeed_;
 	//押し戻し係数
-	float pushBackCoefficient;
+	float pushBackCoefficient_;
 
 };
