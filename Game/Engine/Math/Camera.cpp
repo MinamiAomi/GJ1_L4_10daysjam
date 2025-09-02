@@ -1,5 +1,11 @@
 #include "Camera.h"
 
+Camera* Camera::GetInstance()
+{
+    static Camera instance;
+    return &instance;
+}
+
 Camera::Camera(ProjectionType projectionType) {
     projectionType_ = projectionType;
     position_ = { 0.0f,1.0f, -6.0f };

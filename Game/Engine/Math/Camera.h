@@ -4,6 +4,8 @@
 
 class Camera {
 public:
+    static Camera* GetInstance();
+
     enum ProjectionType {
         Perspective,
         Orthographic

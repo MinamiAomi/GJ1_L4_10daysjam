@@ -20,7 +20,7 @@ void Border::Initialize()
 		static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
 	size_ = { 2.0f, static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
 
-	velocity_ = 0.1f;
+
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 20.0f;
@@ -32,7 +32,6 @@ void Border::Update()
 	static float addPushBackCount = 0.5f;
 	ImGui::Begin("InGame");
 	if (ImGui::BeginMenu("Border")) {
-		ImGui::DragFloat("velocity", &velocity_, 0.01f);
 		ImGui::DragFloat("easingSpeed", &easingSpeed_, 0.01f);
 		ImGui::DragFloat("pushBackCoefficient", &pushBackCoefficient_, 1.0f);
 
@@ -46,10 +45,7 @@ void Border::Update()
 #endif // _DEBUG
 
 	//押し戻しがなければ
-	if (pushBackPosition_ == 0.0f) {
-		position_.x -= velocity_;
-	}
-	else {
+	if (pushBackPosition_ != 0.0f) {
 		position_.x = Easing::easing(easingSpeed_, position_.x, pushBackPosition_);
 		//近くなったら
 		if (std::abs(position_.x - pushBackPosition_) < SNAP_THRESHOLD) {
