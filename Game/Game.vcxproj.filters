@@ -224,6 +224,9 @@
     <ClInclude Include="BackGround.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Border.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -385,6 +388,9 @@
       <Filter>Engine\Math</Filter>
     </ClCompile>
     <ClCompile Include="BackGround.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Border.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>

@@ -41,6 +41,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="BackGround.h" />
+    <ClInclude Include="Border.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Engine\ArcadeMachine.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
@@ -124,6 +125,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="Border.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Engine\ArcadeMachine.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
