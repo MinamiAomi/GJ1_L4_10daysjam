@@ -9,6 +9,8 @@
 
 class ParticleManager {
 public:
+	static ParticleManager* GetInstance();
+
 	void Initialize();
 	void Update();
 	void Draw();

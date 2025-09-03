@@ -9,10 +9,10 @@
 void Score::Initialize()
 {
 	score_ = 0.0f;
-	position_ = { 70.0f,40.0f };
+	position_ = { 20.0f,20.0f };
 	spacing_ = 4.5f;
 	scale_ = 0.3f;
-	color_ = 0xFFFFFFFF;
+	color_ = 0x050505FF;
 }
 
 void Score::Update()
@@ -52,9 +52,10 @@ void Score::Draw() {
 
 void Score::UpdateDrawVertex()
 {
+	float score = score_ - Border::GetInstance()->GetBorderFirstPos();
 	// スコアを "0000.00" 形式に
 	char buffer[10];
-	snprintf(buffer, sizeof(buffer), "%07.2f", score_);
+	snprintf(buffer, sizeof(buffer), "%07.2f", score);
 	std::string scoreStr(buffer);
 
 	if (scoreStr.length() == 0) {
@@ -82,7 +83,7 @@ void Score::UpdateDrawVertex()
 
 			Vector2 dpPosition = currentCharacterPosition;
 			// Y軸オフセット
-			dpPosition.y -= 6.0f;
+			dpPosition.y -= 1.5f;
 
 			// スケールと移動を行う
 			for (const auto& v : baseDecimalVertices) {

@@ -18,7 +18,7 @@ Border* Border::GetInstance()
 void Border::Initialize()
 {
 	position_ = { Wall::GetInstance()->GetPosition() + TOMATOsEngine::kMonitorWidth };
-
+	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 20.0f;
@@ -59,16 +59,20 @@ void Border::Draw()
 {
 	const auto& wall = Wall::GetInstance();
 
-	float t = wall->kWallHeight;
-	float b = 0.0f;
-	float r = position_ + kWallWidth;
-	float l = position_;
-	TOMATOsEngine::DrawLine3D({ l, b }, { l, t }, color_);
-	TOMATOsEngine::DrawLine3D({ l, b }, { r, b }, color_);
+	float top = wall->kWallHeight;
+	float bottom = 0.0f;
+	float right = position_ + kWallWidth;
+	float left = position_;
 
-	TOMATOsEngine::DrawLine3D({ r,  t }, { l ,t}, color_);
-	TOMATOsEngine::DrawLine3D({ r,  t }, { l, b}, color_);
+	Vector2 bottomLeft = { left, bottom };
+	Vector2 topLeft = { left, top };
+	Vector2 bottomRight = { right, bottom };
+	Vector2 topRight = { right, top };
 
+	TOMATOsEngine::DrawLine3D(bottomLeft, topLeft, color_);
+	TOMATOsEngine::DrawLine3D(topLeft, topRight, color_);
+	TOMATOsEngine::DrawLine3D(topRight, bottomRight, color_); 
+	TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, color_); 
 }
 
 void Border::PushBack(float add)
@@ -84,4 +88,9 @@ float Border::GetBorderSidePos()
 float Border::GetBorderCenterPos()
 {
 	return position_ + (kWallWidth * 0.5f);
+}
+
+float Border::GetBorderFirstPos()
+{
+	return firstPosition_;
 }

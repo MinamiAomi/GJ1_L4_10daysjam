@@ -139,16 +139,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	Wall* wall = Wall::GetInstance();
 	wall->Initialize(&camera);
-	
+
 	Ground* ground = Ground::GetInstance();
 
 	//初期化にWall使用
 	Border* border = Border::GetInstance();
 	border->Initialize();
 
-	ParticleManager particleManager;
-	particleManager.Initialize();
-	
+	ParticleManager* particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize();
+
 	Player player;
 
 	player.Initialize();
@@ -177,7 +177,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::Text("FullScreen : TAB\n");
 		ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
 		ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
-		ImGui::DragFloat3("cameraPos", &cameraPosition.x, 1.0f);  
+		ImGui::DragFloat3("cameraPos", &cameraPosition.x, 1.0f);
 		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 1.0f);
 		ImGui::End();
 #endif // _DEBUG
@@ -272,15 +272,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 						{
 						case TitleSceneState::start:
 							gameScene = inGame;
+
+							wall->Initialize(&camera);
+							border->Initialize();
+							particleManager->Initialize();
+
 							backGround.Initialize();
-							particleManager.Initialize();
 							player.Initialize();
 							player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-							border->Initialize();
 							score.Initialize();
-
-							border->Initialize();
-							wall->Initialize(&camera);
 
 							// 音
 							// タイトルBGM停止
@@ -356,7 +356,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			score.Update();
 
-			particleManager.Update();
+			particleManager->Update();
 
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
 				TOMATOsEngine::RequestQuit();
@@ -392,10 +392,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				gameScene = title;
 
 				//初期化
-				backGround.Initialize();
-				particleManager.Initialize();
-				player.Initialize();
+				wall->Initialize(&camera);
 				border->Initialize();
+				particleManager->Initialize();
+
+				backGround.Initialize();
+				player.Initialize();
 
 
 				// 音
@@ -452,7 +454,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			border->Draw();
 			score.Draw();
 			player.Draw();
-			particleManager.Draw();
+			particleManager->Draw();
 			TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
 			break;
 		}
