@@ -6,6 +6,7 @@
 class Border {
 public:
 	const float kWallWidth = 3.0f;
+	const float kWallHeight = 50.0f;
 
 	static Border* GetInstance();
 
@@ -25,7 +26,10 @@ public:
 
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
+	//現在の真ん中の
 	float GetBorderCenterPos();
+
+	float GetBorderFirstPos();
 private:
 	//手前のライン
 	float position_;
@@ -37,5 +41,5 @@ private:
 	float pushBackCoefficient_;
 
 	int color_;
-
+	float firstPosition_;
 };

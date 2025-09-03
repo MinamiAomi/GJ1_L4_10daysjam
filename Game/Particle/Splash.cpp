@@ -16,15 +16,15 @@ void Splash::Initialize() {
 	}
 }
 
-void Splash::Create(const Vector2 emitter, Vector4 color,uint32_t textureHandle, uint32_t MaxParticle) {
+void Splash::Create(const Vector2 emitter, Vector4 color, uint32_t textureHandle, uint32_t MaxParticle) {
 	Random::RandomNumberGenerator rnd{};
 	emitter_ = emitter;
 	const uint32_t deathtime_Min = 8;
 	const uint32_t deathtime_Max = 16;
-	const float speed_Min = 5.0f;
-	const float speed_Max = 10.0f;
-	const float size_Min = 5.0f;
-	const float size_Max = 10.0f;
+	const float speed_Min = 1.0f;
+	const float speed_Max = 5.0f;
+	const float size_Min = 0.1f;
+	const float size_Max = 0.5f;
 	const uint32_t count_Max = MaxParticle;
 	uint32_t count = 0;
 
@@ -62,7 +62,7 @@ void Splash::Create(const Vector2 emitter, Vector4 color,uint32_t textureHandle,
 }
 
 void Splash::Update() {
-	const float kGravity = -1.0f;
+	const float kGravity = -0.2f;
 	for (auto& particle : particles_) {
 		if (particle->isAlive_) {
 			particle->count_++;
@@ -95,7 +95,20 @@ void Splash::Update() {
 void Splash::Draw() {
 	for (auto& particle : particles_) {
 		if (particle->isAlive_) {
-			TOMATOsEngine::DrawSpriteRectAngle(particle->position_, particle->size_, Vector2(0.5f, 0.5f), 0.0f , {}, Vector2(32.0f, 32.0f), particle->textureHandle_,  Color(particle->color_));
+			float top = particle->position_.y + particle->size_.y * 0.5f;
+			float bottom = particle->position_.y - particle->size_.y * 0.5f;
+			float left = particle->position_.x - particle->size_.x * 0.5f;
+			float right = particle->position_.x + particle->size_.x * 0.5f;
+
+			Vector2 bottomLeft = { left, bottom };
+			Vector2 topLeft = { left, top };
+			Vector2 bottomRight = { right, bottom };
+			Vector2 topRight = { right, top };
+
+			TOMATOsEngine::DrawLine3D(bottomLeft, topLeft, Color(particle->color_));
+			TOMATOsEngine::DrawLine3D(topLeft, topRight, Color(particle->color_));
+			TOMATOsEngine::DrawLine3D(topRight, bottomRight, Color(particle->color_));
+			TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, Color(particle->color_));
 		}
 	}
 }

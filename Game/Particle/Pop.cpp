@@ -5,45 +5,67 @@
 #include "Math/Random.h"
 
 void Pop::Initialize() {
-	emitter_ = {0.0f, 0.0f};
-	textureHandle_.at(static_cast<uint32_t>(Texture::kWhite1x1)) = TOMATOsEngine::LoadTexture("Resources/Particle/white1x1.png");
-	textureHandle_.at(static_cast<uint32_t>(Texture::kBlock)) = TOMATOsEngine::LoadTexture("Resources/block.png");
+	emitter_ = { 0.0f, 0.0f };
 	for (auto& particle : particles_) {
 		particle = std::make_unique<Particle>();
 	}
 }
 
-void Pop::Create(const Vector2 emitter, Vector4 color,uint32_t textureHandle, uint32_t MaxParticle) {
+void Pop::Create(const Vector2 emitter, Vector4 color, uint32_t MaxParticle) {
 	Random::RandomNumberGenerator rnd{};
-	const uint32_t deathtime_Min = 5;
-	const uint32_t deathtime_Max = 10;
-	const float size_Min = 10.0f;
-	const float size_Max = 15.0f;
-	const uint32_t count_Max = MaxParticle;
-	uint32_t count = 0;
+	const uint32_t deathtime_Min = 20;
+	const uint32_t deathtime_Max = 30;
+	//const float radius = 0.5f;
+	const float size_Min = 0.8f;
+	const float size_Max = 1.5f;
+	const float speed_Min = 0.9f;
+	const float speed_Max = 1.2f;
+
 	emitter_ = emitter;
+
+	if (MaxParticle == 0) {
+		return;
+	}
+
+	const float angleStep = Math::TwoPi / static_cast<float>(MaxParticle);
+	const float randomAngleMarginDegrees = 15.0f;
+	const float randomAngleMarginRadians = randomAngleMarginDegrees * Math::ToRadian;
+
+	// 全体の初期角度をランダム化する
+	const float baseRotation = rnd.NextFloatRange(0.0f, Math::TwoPi);
+
+	uint32_t count = 0;
 	for (auto& particle : particles_) {
-		if (count < count_Max && !particle->isAlive_) {
-			// 座標
-			particle->position_ = emitter_;
-			// 色
-			particle->color_ = color;
-			// 速度
-			float velocity_X = rnd.NextFloatRange(-100.0f, 100.0f);
-			float velocity_Y = rnd.NextFloatRange(-100.0f, 100.0f);
-			Vector2 velocity = {velocity_X, velocity_Y};
-			velocity.Normalize(); 
-			float speed = rnd.NextFloatRange(size_Min, size_Max);
-			particle->velocity_ = velocity * speed;
-			// 加速度
-			particle->acceleration_ = {0.0f, 0.0f};
-			// サイズ
+		if (count >= MaxParticle) {
+			break;
+		}
+
+		if (!particle->isAlive_) {
+			// このパーティクルの分割された角度
+			float dividedAngle = static_cast<float>(count) * angleStep;
+
+			// 個別のランダムなブレ
+			float randomOffset = rnd.NextFloatRange(-randomAngleMarginRadians, randomAngleMarginRadians);
+
+			// 計算した「ベース回転」を最終的な角度に加える 
+			float finalAngle = baseRotation + dividedAngle + randomOffset;
+
+			// 最終的な角度から方向ベクトルを生成
+			particle->direction_ = { std::cosf(finalAngle), std::sinf(finalAngle) };
+
+
+			// 速度・サイズ・寿命
+			float speed = rnd.NextFloatRange(speed_Min, speed_Max);
+			particle->velocity_ = particle->direction_ * speed;
+
 			float size = rnd.NextFloatRange(size_Min, size_Max);
-			particle->size_Origin_ = {size, size};
+			particle->size_Origin_ = { size, size };
 			particle->size_ = particle->size_Origin_;
-			// テクスチャ
-			particle->textureHandle_ = textureHandle_.at(textureHandle);
-			// 寿命
+
+			// 座標・色
+			particle->position_ = emitter_ + particle->direction_ * size;
+			particle->color_ = color;
+
 			particle->time_ = rnd.NextUIntRange(deathtime_Min, deathtime_Max);
 			particle->count_ = 0;
 
@@ -60,9 +82,23 @@ void Pop::Update() {
 			particle->count_++;
 			if (particle->count_ >= particle->time_) {
 				particle->isAlive_ = false;
-			} else {
+			}
+			else {
+				float t = std::clamp(
+					static_cast<float>(particle->count_) /
+					static_cast<float>(particle->time_),
+					0.0f, 1.0f);
 				// 移動
-				particle->position_ += particle->velocity_;
+				Vector2 currentVelocity = Vector2(Math::Lerp(t, particle->velocity_.x, 0.0f), Math::Lerp(t, particle->velocity_.y, 0.0f));
+				particle->position_ += currentVelocity;
+				//// 色
+				//particle->color_ = Vector4(
+				//    1.0f, 1.0f, 1.0f,
+				//	Math::Lerp(t,1.0f, 0.0f));
+
+				// サイズ
+				float size = Math::Lerp(t, particle->size_Origin_.x, 0.0f);
+				particle->size_ = { size, size };
 			}
 		}
 	}
@@ -71,7 +107,27 @@ void Pop::Update() {
 void Pop::Draw() {
 	for (auto& particle : particles_) {
 		if (particle->isAlive_) {
-			TOMATOsEngine::DrawSpriteRectAngle(particle->position_, particle->size_, Vector2(0.5f, 0.5f), 0.0f, {}, Vector2(32.0f, 32.0f), particle->textureHandle_, Color(particle->color_));
+			//float top = particle->position_.y + particle->size_.y * 0.5f;
+			//float bottom = particle->position_.y - particle->size_.y * 0.5f;
+			//float left = particle->position_.x - particle->size_.x * 0.5f;
+			//float right = particle->position_.x + particle->size_.x * 0.5f;
+			//
+			//Vector2 bottomLeft = { left, bottom };
+			//Vector2 topLeft = { left, top };
+			//Vector2 bottomRight = { right, bottom };
+			//Vector2 topRight = { right, top };
+			//
+			//TOMATOsEngine::DrawLine3D(bottomLeft, topLeft, Color(particle->color_));
+			//TOMATOsEngine::DrawLine3D(topLeft, topRight, Color(particle->color_));
+			//TOMATOsEngine::DrawLine3D(topRight, bottomRight, Color(particle->color_));
+			//TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, Color(particle->color_));
+
+			Vector2 center = particle->position_;
+
+			Vector2 start = center - particle->direction_ * particle->size_.y;
+			Vector2 end = center + particle->direction_ * particle->size_.y;
+
+			TOMATOsEngine::DrawLine3D(start, end, Color(particle->color_));
 		}
 	}
 }

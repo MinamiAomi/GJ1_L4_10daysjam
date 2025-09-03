@@ -2,7 +2,13 @@
 
 #include "TOMATOsEngine.h"
 
-void ParticleManager::Initialize() { 
+ParticleManager* ParticleManager::GetInstance()
+{
+	static ParticleManager instance;
+	return &instance;
+}
+
+void ParticleManager::Initialize() {
 	// 円
 	circle_ = new Circle();
 	circle_->Initialize();
@@ -28,11 +34,12 @@ void ParticleManager::Update() {
 	ImGui::Begin("InGame");
 	if (ImGui::BeginMenu("ParticleManager")) {
 		if (ImGui::Button("Create")) {
-			circle_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
-			follow_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
-			splash_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
-			yenLetter_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
-			verticleLine_->Create({ 20.0,20.0f }, Vector4(0.0f, 0.0f, 1.0f, 1.0f), 0, {5.0f,1.0f});
+			//circle_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,5);
+			//follow_->Create({25.0,20.0f},Vector4(0.0f,1.0f,0.0f,1.0f),0,5);
+			//splash_->Create({20.0,20.0f},Vector4(1.0f,0.0f,0.0f,1.0f),0,5);
+			pop_->Create({40.0,20.0f},Vector4(1.0f,1.0f,1.0f,1.0f),10);
+			//yenLetter_->Create({40.0,20.0f},Vector4(1.0f,1.0f,0.0f,1.0f),0);
+			//verticleLine_->Create({ 45.0,20.0f }, Vector4(1.0f, 0.0f, 1.0f, 1.0f), 0, {5.0f,1.0f});
 		}
 		ImGui::EndMenu();
 	}
