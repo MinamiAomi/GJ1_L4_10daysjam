@@ -14,6 +14,7 @@ public:
 	void Draw();
 private:
 	float score_;
+	float preScore_;
 
 	Vector2 position_;
 	
