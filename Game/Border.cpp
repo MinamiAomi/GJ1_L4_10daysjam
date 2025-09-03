@@ -85,11 +85,6 @@ float Border::GetBorderSidePos()
 	return position_;
 }
 
-float Border::GetBorderCenterPos()
-{
-	return position_ + (kWallWidth * 0.5f);
-}
-
 float Border::GetBorderFirstPos()
 {
 	return firstPosition_;

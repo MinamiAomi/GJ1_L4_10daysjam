@@ -9,22 +9,21 @@
 
 void Splash::Initialize() {
 	emitter_ = { 0.0f, 0.0f };
-	textureHandle_.at(static_cast<uint32_t>(Texture::kWhite1x1)) = TOMATOsEngine::LoadTexture("Resources/Particle/white1x1.png");
-	textureHandle_.at(static_cast<uint32_t>(Texture::kBlock)) = TOMATOsEngine::LoadTexture("Resources/block.png");
 	for (auto& particle : particles_) {
 		particle = std::make_unique<Particle>();
 	}
 }
 
-void Splash::Create(const Vector2 emitter, Vector4 color, uint32_t textureHandle, uint32_t MaxParticle) {
+void Splash::Create(const Vector2& emitter, const Vector2& direction, Vector4 color, uint32_t MaxParticle) {
 	Random::RandomNumberGenerator rnd{};
 	emitter_ = emitter;
 	const uint32_t deathtime_Min = 8;
 	const uint32_t deathtime_Max = 16;
-	const float speed_Min = 1.0f;
-	const float speed_Max = 5.0f;
+	const float speed_Min = 0.5f;
+	const float speed_Max = 1.0f;
 	const float size_Min = 0.1f;
 	const float size_Max = 0.5f;
+	const float spreadRadians = 15.0f * Math::ToRadian;
 	const uint32_t count_Max = MaxParticle;
 	uint32_t count = 0;
 
@@ -35,21 +34,23 @@ void Splash::Create(const Vector2 emitter, Vector4 color, uint32_t textureHandle
 			// 色
 			particle->color_ = color;
 			// 速度
-			Vector2 move{};
-			move.x = std::cos(rnd.NextFloatRange(30.0f * Math::ToRadian, 150.0f * Math::ToRadian));
-			move.y = std::sin(rnd.NextFloatRange(30.0f * Math::ToRadian, 150.0f * Math::ToRadian));
-			move.Normalize();
-			// すくりん変換用逆
+			float randomAngle = rnd.NextFloatRange(-spreadRadians, spreadRadians);
+
+			float cos_a = std::cosf(randomAngle);
+			float sin_a = std::sinf(randomAngle);
+
+			Vector2 finalDirection;
+			finalDirection.x = direction.x * cos_a - direction.y * sin_a;
+			finalDirection.y = direction.x * sin_a + direction.y * cos_a;
+
 			float speed = rnd.NextFloatRange(speed_Min, speed_Max);
-			particle->velocity_ = move * speed;
+			particle->velocity_ = finalDirection * speed;
 			// 加速度
 			particle->acceleration_ = { 0.0f, 0.0f };
 			// サイズ
 			float size = rnd.NextFloatRange(size_Min, size_Max);
 			particle->size_Origin_ = { size, size };
 			particle->size_ = particle->size_Origin_;
-			// テクスチャ
-			particle->textureHandle_ = textureHandle_.at(textureHandle);
 			// 寿命
 			particle->time_ = rnd.NextUIntRange(deathtime_Min, deathtime_Max);
 			particle->count_ = 0;
@@ -62,7 +63,7 @@ void Splash::Create(const Vector2 emitter, Vector4 color, uint32_t textureHandle
 }
 
 void Splash::Update() {
-	const float kGravity = -0.2f;
+	const float kGravity = -0.1f;
 	for (auto& particle : particles_) {
 		if (particle->isAlive_) {
 			particle->count_++;
@@ -75,17 +76,16 @@ void Splash::Update() {
 					static_cast<float>(particle->time_),
 					0.0f, 1.0f);
 				// 移動
-				particle->velocity_.y += kGravity;
-				particle->acceleration_ += particle->velocity_;
-				particle->position_ += particle->acceleration_;
-				particle->acceleration_ = Vector2(0.0f, 0.0f);
+				particle->acceleration_.y = kGravity;
+				particle->velocity_ += particle->acceleration_;
+				particle->position_ += particle->velocity_;
 				// 色
 				particle->color_ = Vector4(
 					1.0f, 1.0f, 1.0f,
 					Math::Lerp(t, 1.0f, 0.0f));
 
 				// サイズ
-				float size = Math::Lerp(t, particle->size_Origin_.x, 0.0f);
+				float size = Math::Lerp(t, 0.0f, particle->size_Origin_.x);
 				particle->size_ = { size, size };
 			}
 		}
