@@ -4,6 +4,8 @@
 
 #include "Easing.h"
 
+#include "Wall.h"
+
 //収束値
 static const float SNAP_THRESHOLD = 0.01f;
 
@@ -15,15 +17,13 @@ Border* Border::GetInstance()
 
 void Border::Initialize()
 {
-	position_ =
-	{ static_cast<float>(TOMATOsEngine::kMonitorWidth),
-		static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
-	size_ = { 2.0f, static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f };
-
+	position_ = { Wall::GetInstance()->GetPosition() + TOMATOsEngine::kMonitorWidth };
 
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 20.0f;
+
+	color_ = 0xFFFFFFFF;
 }
 
 void Border::Update()
@@ -46,39 +46,42 @@ void Border::Update()
 
 	//押し戻しがなければ
 	if (pushBackPosition_ != 0.0f) {
-		position_.x = Easing::easing(easingSpeed_, position_.x, pushBackPosition_);
+		position_ = Easing::easing(easingSpeed_, position_, pushBackPosition_);
 		//近くなったら
-		if (std::abs(position_.x - pushBackPosition_) < SNAP_THRESHOLD) {
-			position_.x = pushBackPosition_;
+		if (std::abs(position_ - pushBackPosition_) < SNAP_THRESHOLD) {
+			position_ = pushBackPosition_;
 			pushBackPosition_ = 0.0f;
 		}
-		else if (position_.x >= static_cast<float>(TOMATOsEngine::kMonitorWidth)) {
-			position_.x = static_cast<float>(TOMATOsEngine::kMonitorWidth);
-			pushBackPosition_ = 0.0f;
-		}
-	}
-
-	position_.x = std::clamp(position_.x, 0.0f, static_cast<float>(TOMATOsEngine::kMonitorWidth));    
-	//ゲームオーバー
-	if (position_.x <= 0) {
-
 	}
 }
 
 void Border::Draw()
 {
-	float l = position_.x - size_.x;
-	float r = position_.x + size_.x;
-	float t = position_.y + size_.y;
-	float b = position_.y - size_.y;
-	int color = 0xFFFFFFFF;
-	TOMATOsEngine::DrawLine3D({ l,b },{ l,t },color);
-	TOMATOsEngine::DrawLine3D({ l,b },{ r,b },color);
-	TOMATOsEngine::DrawLine3D({ r,t },{ l,t },color);
-	TOMATOsEngine::DrawLine3D({ r,t },{ r,b },color);
+	const auto& wall = Wall::GetInstance();
+
+	float t = wall->kWallHeight;
+	float b = 0.0f;
+	float r = position_ + kWallWidth;
+	float l = position_;
+	TOMATOsEngine::DrawLine3D({ l, b }, { l, t }, color_);
+	TOMATOsEngine::DrawLine3D({ l, b }, { r, b }, color_);
+
+	TOMATOsEngine::DrawLine3D({ r,  t }, { l ,t}, color_);
+	TOMATOsEngine::DrawLine3D({ r,  t }, { l, b}, color_);
+
 }
 
 void Border::PushBack(float add)
 {
-	pushBackPosition_ = position_.x + (add * pushBackCoefficient_);
+	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
+}
+
+float Border::GetBorderSidePos()
+{
+	return position_;
+}
+
+float Border::GetBorderCenterPos()
+{
+	return position_ + (kWallWidth * 0.5f);
 }

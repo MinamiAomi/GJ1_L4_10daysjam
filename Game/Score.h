@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <vector>
 
 #include "TextureHandle.h"
 #include "Math/MathUtils.h"
@@ -14,10 +14,17 @@ public:
 	void Draw();
 private:
 	float score_;
+
+	Vector2 position_;
+	
 	//文字の間
 	float spacing_;
-	//文字サイズ
+	// 色
+	int color_;
+	//文字のサイズ
 	float scale_;
-	Vector2 position_;
-	//float comboAcceptanceTime_;
+	//描画する頂点
+	std::vector<Vector2> drawVertex_;
+
+	void UpdateDrawVertex();
 };

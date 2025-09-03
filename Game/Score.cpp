@@ -2,14 +2,17 @@
 
 #include "TOMATOsEngine.h"
 
+#include "Wall.h"
 #include "Border.h"
 #include "HexagonSevenSegmentDisplay.h"
+
 void Score::Initialize()
 {
 	score_ = 0.0f;
-	position_ = { -15.0f,10.0f };
-	spacing_ = 4.0f;
-	scale_ = 0.4f;
+	position_ = { 70.0f,40.0f };
+	spacing_ = 4.5f;
+	scale_ = 0.3f;
+	color_ = 0xFFFFFFFF;
 }
 
 void Score::Update()
@@ -25,70 +28,79 @@ void Score::Update()
 	}
 	ImGui::End();
 #endif // _DEBUG
+	drawVertex_.clear();
+
 	//大きいと更新
-	if (score_ < Border::GetInstance()->GetBorderLinePos()) {
-		score_ = Border::GetInstance()->GetBorderLinePos();
+	if (score_ < Border::GetInstance()->GetBorderSidePos()) {
+		score_ = Border::GetInstance()->GetBorderSidePos();
 	}
+	UpdateDrawVertex();
 }
 
 void Score::Draw() {
+	static	const int verticesPerHexagon = 6;
+	if (!drawVertex_.empty()) {
+		for (size_t i = 0; i < drawVertex_.size(); i += verticesPerHexagon) {
+			for (int j = 0; j < verticesPerHexagon; ++j) {
+				Vector2 start = drawVertex_.at(i + j);
+				Vector2 end = drawVertex_.at(i + (j + 1) % verticesPerHexagon);
+				TOMATOsEngine::DrawLine3D({ start.x, start.y, 0.0f }, { end.x, end.y, 0.0f }, color_);
+			}
+		}
+	}
+}
 
-	// 1. スコアを "0000.00" 形式の文字列にフォーマットする
-	char buffer[10]; // "0000.00" + 終端文字で十分なサイズ
-	// C++11以降でより安全な snprintf を使用
+void Score::UpdateDrawVertex()
+{
+	// スコアを "0000.00" 形式に
+	char buffer[10];
 	snprintf(buffer, sizeof(buffer), "%07.2f", score_);
 	std::string scoreStr(buffer);
 
-	// 2. 文字列を1文字ずつ描画していく
-	
-	Vector2 currentPosition = position_ ;
+	if (scoreStr.length() == 0) {
+		return;
+	}
+
+	// 文字列の長さを計算
+	const float totalWidth = (scoreStr.length() - 1) * spacing_;
+
+	//wallが親
+	Vector2 worldPos = position_ + Vector2(Wall::GetInstance()->GetPosition(), 0.0f);
+	//描画開始位置を総幅の半分だけ左にずらす
+	Vector2 drawingStartPosition = worldPos;
+	drawingStartPosition.x -= totalWidth * 0.5f;
+
+	//各文字の中心
+	Vector2 currentCharacterPosition = drawingStartPosition;
+
 	for (char c : scoreStr) {
-		std::vector<Vector2> vertices;
-
 		if (c == '.') {
-			// 3a. 小数点の場合: 'g'セグメント(中央の横棒)を下にずらして描画する
-			Vector2 dpPosition = currentPosition;
-			dpPosition.y -= scale_ * 6.0f; // 'd'セグメントの位置を参考に下にずらす
+			// 小数点専用の小さな六角形
+			const std::vector<Vector2> baseDecimalVertices = {
+				{-1, 0}, {-0.5, 1}, {0.5, 1}, {1, 0}, {0.5, -1}, {-0.5, -1}
+			};
 
-			// GenerateSegmentVertices はクラス外の関数として前回作成したもの
-			vertices = HexagonSevenSegmentDisplay::GetInstance()->GenerateSegmentVertices('g', { 0, 0 }); // まず原点中心で生成
+			Vector2 dpPosition = currentCharacterPosition;
+			// Y軸オフセット
+			dpPosition.y -= 6.0f;
 
-			// 手動で平行移動とスケーリングを行う
-			for (auto& v : vertices) {
-				v.x *= scale_;
-				v.y *= scale_;
-				v = v + dpPosition;
+			// スケールと移動を行う
+			for (const auto& v : baseDecimalVertices) {
+				drawVertex_.push_back(Vector2({ v.x * scale_, v.y * scale_ }) + dpPosition);
 			}
 
 		}
 		else if (isdigit(c)) {
-			// 3b. 数字の場合
-			int digit = c - '0'; // 文字を整数に変換
-			vertices = HexagonSevenSegmentDisplay::GetInstance()->GetNumberVertex(digit, currentPosition);
+			int digit = c - '0';
+			std::vector<Vector2> baseVertices = HexagonSevenSegmentDisplay::GetInstance()->GetNumberVertex(digit);
 
-			// 取得した頂点をスケーリングし、現在の描画位置に平行移動させる
-			for (auto& v : vertices) {
-				// まず原点周りでスケーリング
-				v.x *= scale_;
-				v.y *= scale_;
-				// 次に描画位置へ平行移動
-				v = v + currentPosition;
+			// スケールと移動を行う
+			for (const auto& v : baseVertices) {
+				drawVertex_.push_back(Vector2({ v.x * scale_, v.y * scale_ }) + currentCharacterPosition);
 			}
 		}
 
-		// 4. 取得・加工した頂点を使って六角形を描画する
-		if (!vertices.empty()) {
-			const int verticesPerHexagon = 6;
-			for (size_t i = 0; i < vertices.size(); i += verticesPerHexagon) {
-				for (int j = 0; j < verticesPerHexagon; ++j) {
-					const Vector2& start = vertices.at(i + j);
-					const Vector2& end = vertices.at(i + (j + 1) % verticesPerHexagon);
-					TOMATOsEngine::DrawLine3D(start, end, 0x0000FFFF);
-				}
-			}
-		}
-
-		// 5. 次の文字の描画位置へ移動
-		currentPosition.x += spacing_;
+		//次の文字の描画中心位置へ移動
+		currentCharacterPosition.x += spacing_;
 	}
 }

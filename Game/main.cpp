@@ -41,8 +41,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	Vector3 cameraPosition = { 0.0f, 3.0f, -50.0f };
 	Vector3 cameraRotate = {};
-	Camera* camera=Camera::GetInstance();
-	camera->SetPosition({ 0.0f, 3.0f, -10.0f });
+	Camera camera;
+	camera.SetPosition({ 0.0f, 3.0f, -10.0f });
 
 
 
@@ -136,9 +136,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region クラス宣言/初期化関連
+
+	Wall* wall = Wall::GetInstance();
+	wall->Initialize(&camera);
+	
+	Ground* ground = Ground::GetInstance();
+
+	//初期化にWall使用
+	Border* border = Border::GetInstance();
+	border->Initialize();
+
 	ParticleManager particleManager;
-	Player player;
 	particleManager.Initialize();
+	
+	Player player;
 
 	player.Initialize();
 
@@ -146,13 +157,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	backGround.Initialize();
 	backGround.SetPlayer(&player);
 
-	Ground* ground = Ground::GetInstance();
-
-	Border* border = Border::GetInstance();
-	border->Initialize();
-
-	Wall* wall = Wall::GetInstance();
-	wall->Initialize(camera);
 
 	Score score;
 	score.Initialize();
@@ -178,10 +182,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::End();
 #endif // _DEBUG
 
-		camera->SetPosition(cameraPosition);
-		camera->SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
-		camera->UpdateMatrices();
-		TOMATOsEngine::SetCameraMatrix(camera->GetViewProjectionMatrix());
+		camera.SetPosition(cameraPosition);
+		camera.SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
+		camera.UpdateMatrices();
+		TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
 
 		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
 		switch (gameScene) {
@@ -276,7 +280,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							score.Initialize();
 
 							border->Initialize();
-							wall->Initialize(camera);
+							wall->Initialize(&camera);
 
 							// 音
 							// タイトルBGM停止
@@ -344,8 +348,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
-
-
 			backGround.Update();
 			player.Update();
 
@@ -360,11 +362,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				TOMATOsEngine::RequestQuit();
 			}
 			// 音
-			if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE)) {
+		/*	if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE)) {
 				gameScene = gameClear;
 				TOMATOsEngine::StopAudio(ingamePlayHandle);
 				ingamePlayHandle = INVALID_PLAY_HANDLE;
-			}
+			}*/
 			break;
 		}
 		case gameClear:
@@ -450,6 +452,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			border->Draw();
 			score.Draw();
 			player.Draw();
+			particleManager.Draw();
 			TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
 			break;
 		}

@@ -24,6 +24,21 @@ void ParticleManager::Initialize() {
 }
 
 void ParticleManager::Update() { 
+#ifdef _DEBUG
+	ImGui::Begin("InGame");
+	if (ImGui::BeginMenu("ParticleManager")) {
+		if (ImGui::Button("Create")) {
+			circle_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
+			follow_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
+			splash_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
+			yenLetter_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,1);
+			verticleLine_->Create({ 20.0,20.0f }, Vector4(0.0f, 0.0f, 1.0f, 1.0f), 0, {5.0f,1.0f});
+		}
+		ImGui::EndMenu();
+	}
+	ImGui::End();
+#endif // _DEBUG
+
 	circle_->Update();
 	follow_->Update();
 	splash_->Update();

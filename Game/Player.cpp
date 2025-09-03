@@ -102,8 +102,8 @@ void Player::CheckCollisions()
 		wallDirection_ = -1;
 		isFacing = true;
 	}
-	else if (position_.x >= Border::GetInstance()->GetBorderLineSidePos() - size_.x / 2.0f) {
-		position_.x = Border::GetInstance()->GetBorderLineSidePos() - size_.x / 2.0f;
+	else if (position_.x >= Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f) {
+		position_.x = Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f;
 		velocity_.x = 0;
 		wallDirection_ = 1;
 		isFacing = false;

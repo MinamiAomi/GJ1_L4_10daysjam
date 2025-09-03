@@ -19,6 +19,7 @@ public:
     void Draw();
 
     void SetIsMove(bool isMove) { isMove_ = isMove; }
+    float GetPosition() { return position_; }
 
 private:
     float position_ = 0.0f;

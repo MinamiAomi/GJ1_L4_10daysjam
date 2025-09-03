@@ -5,6 +5,7 @@
 
 class Border {
 public:
+	const float kWallWidth = 3.0f;
 
 	static Border* GetInstance();
 
@@ -23,20 +24,18 @@ public:
 	void PushBack(float add);
 
 	//現在の横BorderLinePos
-	float GetBorderLineSidePos() {
-		return position_.x - size_.x;
-	}
-	float GetBorderLinePos() {
-		return position_.x - size_.x;
-	}
+	float GetBorderSidePos();
+	float GetBorderCenterPos();
 private:
-	Vector2 position_;
-	Vector2 size_;
+	//手前のライン
+	float position_;
 	//押し戻しのポジション
 	float pushBackPosition_;
 	//イージングの速度
 	float easingSpeed_;
 	//押し戻し係数
 	float pushBackCoefficient_;
+
+	int color_;
 
 };
