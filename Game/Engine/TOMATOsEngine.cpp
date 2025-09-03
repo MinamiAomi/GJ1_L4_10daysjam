@@ -496,6 +496,23 @@ namespace TOMATOsEngine {
             color);
     }
 
+    void DrawBoxLine3D(const Vector2& center, const Vector2& size, uint32_t color)
+    {
+        Vector2 leftTop = { center.x - size.x / 2.0f,center.y + size.y / 2.0f };
+        Vector2 rightTop = center + size / 2.0f;
+        Vector2 leftBottom = center - size / 2.0f;
+        Vector2 rightBottom = { center.x + size.x / 2.0f,center.y - size.y / 2.0f };
+        DrawLine3D(leftTop, rightTop,color);
+        DrawLine3D(rightTop, rightBottom, color);
+        DrawLine3D(leftBottom, rightBottom, color);
+        DrawLine3D(leftTop, leftBottom, color);
+    }
+
+    void DrawBoxLine3D(const Square& square, uint32_t color)
+    {
+        DrawBoxLine3D(square.center, square.size, color);
+    }
+
     bool IsKeyPressed(unsigned char keycode) {
         return input->IsKeyPressed(keycode);
     }

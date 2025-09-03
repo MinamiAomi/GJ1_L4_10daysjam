@@ -47,6 +47,8 @@ namespace TOMATOsEngine {
     void SetCameraMatrix(const Matrix4x4& matrix);
     void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color);
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color);
+    void DrawBoxLine3D(const Vector2& start, const Vector2& end, uint32_t color);
+    void DrawBoxLine3D(const Square& square, uint32_t color);
 
     bool IsKeyPressed(unsigned char keycode);
     bool IsKeyTrigger(unsigned char keycode);

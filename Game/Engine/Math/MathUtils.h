@@ -31,6 +31,7 @@ namespace Math {
 
 #pragma region 前方宣言
 class Vector2;
+class Square;
 class Vector3;
 class Vector4;
 class Quaternion;
@@ -184,6 +185,43 @@ public:
 #pragma endregion
 #pragma region メンバ変数
     float x, y;
+#pragma endregion
+};
+
+class Square {
+public:
+#pragma region 定数
+
+#pragma endregion
+#pragma region コンストラクタ
+    inline constexpr Square() noexcept : center(0.0f, 0.0f), size(0.0f, 0.0f) {}
+    explicit constexpr Square(Vector2 center, Vector2 size) noexcept
+        : center(center), size(size) {
+    }
+#pragma endregion
+#pragma region 演算子のオーバーロード
+    friend inline constexpr Square operator+(const Square& s, const Vector2& v) noexcept {
+        return Square{ s.center + v, s.size };
+    }
+    friend inline constexpr Square operator-(const Square& s, const Vector2& v) noexcept {
+        return Square{ s.center - v, s.size };
+    }
+    friend inline constexpr Square operator*(const Square& s, float scalar) noexcept {
+        return Square{ s.center, s.size * scalar };
+    }
+    friend inline constexpr Square operator*(float scalar, const Square& s) noexcept {
+        return Square{ s.center, s.size * scalar };
+    }
+#pragma endregion
+#pragma region メンバ関数
+    
+#pragma endregion
+#pragma region 静的関数
+   
+#pragma endregion
+#pragma region メンバ変数
+    Vector2 center;
+    Vector2 size;
 #pragma endregion
 };
 

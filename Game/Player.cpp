@@ -11,7 +11,7 @@
 void Player::Initialize() {
 	position_ = Vector2::zero;
 	velocity_ = Vector2::zero;
-	size_ = { 10.0f, 10.0f };
+	size_ = { 3.0f, 3.0f };
 	playerModel_.Initialize(this);
 }
 
