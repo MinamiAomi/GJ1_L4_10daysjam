@@ -36,12 +36,12 @@ private:
 	bool isFacing = true; // 向いている方向(false 左,true 右 )
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
 
-	const float gravity_ = -0.05f;
-	const float moveAcceleration_ = 0.08f;
-	const float airAcceleration_ = 0.04f;
-	const float maxMoveSpeed_ = 0.9f;
+	const float gravity_ = -0.035f;
+	const float moveAcceleration_ = 0.06f;
+	const float airAcceleration_ = 0.03f;
+	const float maxMoveSpeed_ = 0.45f;
 	const float friction_ = 0.9f;
-	const float jumpPower_ = 1.7f;
-	const float wallSlideSpeed_ = -0.3f;
-	const Vector2 wallJumpPower_ = { 1.2f,1.3f };
+	const float jumpPower_ = 0.8f;
+	const float wallSlideSpeed_ = -0.15f;
+	const Vector2 wallJumpPower_ = { 0.8f,0.7f };
 };
