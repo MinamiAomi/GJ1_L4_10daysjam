@@ -1,6 +1,7 @@
 #pragma once
 
-#include <List>
+#include <list>
+#include <memory>
 
 #include "Bomb.h"
 
@@ -13,10 +14,8 @@ public:
 	void Draw();
 
 	void Spawn(const Vector2& position,float radius,int color);
-	
-	void Despawn(const Bomb& bomb);
 
-	std::list<Bomb>& GetBombs() { return bombs_; }
+	const std::list<std::unique_ptr<Bomb>>& GetBombs() const { return bombs_; }
 private:
-	std::list<Bomb> bombs_;
+	std::list<std::unique_ptr<Bomb>> bombs_;
 };

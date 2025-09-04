@@ -4,39 +4,76 @@
 
 #include "TOMATOsEngine.h"
 #include "ImGuiManager.h"
+#include "Easing.h"
 
 Wall* Wall::GetInstance() {
     static Wall instance;
     return &instance;
 }
 
-void Wall::Initialize(Camera* camera) {
-    assert(camera != nullptr);
-    camera_ = camera;
+void Wall::Initialize() {
+    camera_ = Camera::GetInstance();
+    border_ = Border::GetInstance();
 
     position_ = 0.0f;
     isMove_ = true;
+    isBurst_ = false;
 }
 
 void Wall::Update() {
+
+    assert(camera_ != nullptr);
+    assert(border_ != nullptr);
 
 #ifdef _DEBUG
     ImGui::Begin("InGame");
     if (ImGui::BeginMenu("Wall")) {
         ImGui::DragFloat("position", &position_, 0.1f);
-        ImGui::DragFloat("velocity", &velocity_, 0.01f);
+        ImGui::DragFloat("speed", &speed_, 0.01f);
         ImGui::Checkbox("isMove", &isMove_);
+        if (ImGui::Button("burst")) {
+            border_->PushBack(10);
+        }
         ImGui::EndMenu();
     }
     ImGui::End();
 #endif // _DEBUG
 
-    // 自動で動く
-    if (isMove_) {
-        position_ += velocity_;
+    // バースト条件
+
+    // 通常動作
+    if (!isBurst_) {
+        // 自動で動く
+        if (isMove_) {
+            position_ += speed_;
+        }
+        
+        float borderPosition = border_->GetBorderSidePos();
+        // 距離が離れて動いていないなら
+        if (borderPosition - position_ > kBurstDistance && !border_->IsMove()) {
+            isBurst_ = true;
+            burstElapsedTime_ = 0.0f;
+            burstStartPosition_ = position_;
+        }
+    }
+    // バースト
+    else {
+        burstElapsedTime_ += 1.0f / 60.0f;
+
+        float burstEndPosition = border_->GetBorderSidePos() - kBurstEndDistance;
+        float distance = burstEndPosition - burstStartPosition_;
+        float duration = distance / kBurstSpeed;
+        float t = std::clamp(burstElapsedTime_ / duration, 0.0f, 1.0f);
+        position_ = burstStartPosition_ + (burstEndPosition - burstStartPosition_) * Easing::OutCubic(t);
+        
+        if (t >= 1.0f) {
+            isBurst_ = false;
+            position_ = burstEndPosition;
+        }
     }
 
-    camera_->SetPosition({ position_, kWallHeight * 0.5f, kCameraOffsetZ});
+    // カメラの位置を固定角
+    camera_->SetPosition({ position_, kWallHeight * 0.5f, kCameraOffsetZ });
     camera_->SetRotate(Quaternion::MakeForYAxis(kCameraRotateY * Math::ToRadian));
     camera_->UpdateMatrices();
     TOMATOsEngine::SetCameraMatrix(camera_->GetViewProjectionMatrix());

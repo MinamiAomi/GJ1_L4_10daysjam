@@ -13,13 +13,13 @@ void Pop::Initialize() {
 
 void Pop::Create(const Vector2 emitter, Vector4 color, uint32_t MaxParticle) {
 	Random::RandomNumberGenerator rnd{};
-	const uint32_t deathtime_Min = 20;
-	const uint32_t deathtime_Max = 30;
+	const uint32_t deathtime_Min = 12;
+	const uint32_t deathtime_Max = 20;
 	//const float radius = 0.5f;
-	const float size_Min = 0.8f;
-	const float size_Max = 1.5f;
-	const float speed_Min = 0.9f;
-	const float speed_Max = 1.2f;
+	const float size_Min = 0.2f;
+	const float size_Max = 0.6f;
+	const float speed_Min = 0.5f;
+	const float speed_Max = 0.8f;
 
 	emitter_ = emitter;
 

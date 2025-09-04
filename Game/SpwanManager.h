@@ -10,6 +10,10 @@ public:
 private:
 	void Spawn();
 
+	void SpawnBomb(int createCount);
+
+	int CalculationCreateCount();
+
 	float range_;
 	float position_;
 };
