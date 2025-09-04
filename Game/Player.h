@@ -18,7 +18,7 @@ public:
 	void Draw();
 
 	void SetPosition (const Vector2& position) { position_ = position; }
-	void AddHitBom() { hitBomNum_++; };
+	void AddHitBom();
 	bool GetFacing () const { return isFacing; }
 	Vector2 GetSize ()const { return size_; }
 	Vector2 GetPosition()const { return position_; }
@@ -28,6 +28,7 @@ private:
 
 	void Move();
 	void HipDrop();
+	void PushBack();
 	void CheckCollisions();
 
 	PlayerModel playerModel_;

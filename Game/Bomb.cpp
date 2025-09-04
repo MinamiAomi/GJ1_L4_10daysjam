@@ -44,5 +44,4 @@ void Bomb::OnPlayerHitCollision()
 	ParticleManager::GetInstance()->GetPop()->Create(position_, { 1.0f,1.0f,1.0f,1.0 }, 10);
 	isAlive_ = false;
 	
-	Border::GetInstance()->PushBack(1);
 }

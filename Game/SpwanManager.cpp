@@ -34,7 +34,7 @@ void SpawnManager::Update()
 
 void SpawnManager::Spawn()
 {
-	int createCount = 5;
+	int createCount = 8;
 
 	SpawnBomb(createCount);
 }

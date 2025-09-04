@@ -50,10 +50,16 @@ void Player::Update() {
 	CheckCollisions();
 
 	playerModel_.Update();
+	PushBack();
 }
 
 void Player::Draw() {
 	playerModel_.Draw();
+}
+
+void Player::AddHitBom()
+{
+	hitBomNum_++;
 }
 
 void Player::Move() {
@@ -132,6 +138,18 @@ void Player::HipDrop()
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
+	}
+}
+
+void Player::PushBack()
+{
+	if (!isHipDrop_) {
+		Border::GetInstance()->PushBack(hitBomNum_);
+		hitBomNum_ = 0;
+	}
+	else {
+		Border::GetInstance()->PushBackHipDrop(hitBomNum_);
+		hitBomNum_ = 0;
 	}
 }
 

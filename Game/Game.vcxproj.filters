@@ -474,7 +474,7 @@
       <Filter>Game\Collision</Filter>
     </ClCompile>
     <ClCompile Include="SpwanManager.cpp">
-      <Filter>Game\StageObjects</Filter>
+      <Filter>Game\StageObjects\Spawn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
