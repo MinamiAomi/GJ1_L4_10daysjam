@@ -6,6 +6,13 @@
 #include "ImGuiManager.h"
 #include "Easing.h"
 
+#ifdef _DEBUG
+static bool freeCamera = false;
+static Vector3 freeCameraPosition;
+static Vector3 freeCameraRotate;
+#endif // _DEBUG
+
+
 Wall* Wall::GetInstance() {
     static Wall instance;
     return &instance;
@@ -34,6 +41,18 @@ void Wall::Update() {
         if (ImGui::Button("burst")) {
             border_->PushBack(10);
         }
+        ImGui::Checkbox("FreeCamera", &freeCamera);
+        if (ImGui::BeginMenu("FreeCamera")) {
+            ImGui::DragFloat3("Position", &freeCameraPosition.x, 0.1f);
+            ImGui::DragFloat3("Rotate", &freeCameraRotate.x, 1.0f);
+            camera_->SetPosition(freeCameraPosition);
+            camera_->SetRotate(Quaternion::MakeFromEulerAngle(freeCameraRotate * Math::ToRadian));
+            if (ImGui::Button("SyncGameCamera")) {
+                freeCameraPosition = { position_, kWallHeight * 0.5f, kCameraOffsetZ };
+                freeCameraRotate = { 0.0f, kCameraRotateY, 0.0f };
+            }
+            ImGui::EndMenu();
+        }
         ImGui::EndMenu();
     }
     ImGui::End();
@@ -47,7 +66,7 @@ void Wall::Update() {
         if (isMove_) {
             position_ += speed_;
         }
-        
+
         float borderPosition = border_->GetBorderSidePos();
         // 距離が離れて動いていないなら
         if (borderPosition - position_ > kBurstDistance && !border_->IsMove()) {
@@ -65,7 +84,7 @@ void Wall::Update() {
         float duration = distance / kBurstSpeed;
         float t = std::clamp(burstElapsedTime_ / duration, 0.0f, 1.0f);
         position_ = burstStartPosition_ + (burstEndPosition - burstStartPosition_) * Easing::OutCubic(t);
-        
+
         if (t >= 1.0f) {
             isBurst_ = false;
             position_ = burstEndPosition;
@@ -73,8 +92,14 @@ void Wall::Update() {
     }
 
     // カメラの位置を固定角
-    camera_->SetPosition({ position_, kWallHeight * 0.5f, kCameraOffsetZ });
-    camera_->SetRotate(Quaternion::MakeForYAxis(kCameraRotateY * Math::ToRadian));
+#ifdef _DEBUG
+    if (!freeCamera) {
+#endif // _DEBUG
+        camera_->SetPosition({ position_, kWallHeight * 0.5f, kCameraOffsetZ });
+        camera_->SetRotate(Quaternion::MakeForYAxis(kCameraRotateY * Math::ToRadian));
+#ifdef _DEBUG
+    }
+#endif // _DEBUG
     camera_->UpdateMatrices();
     TOMATOsEngine::SetCameraMatrix(camera_->GetViewProjectionMatrix());
 }
