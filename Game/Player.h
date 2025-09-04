@@ -43,5 +43,5 @@ private:
 	const float friction_ = 0.9f;
 	const float jumpPower_ = 0.8f;
 	const float wallSlideSpeed_ = -0.15f;
-	const Vector2 wallJumpPower_ = { 0.8f,0.7f };
+	const Vector2 wallJumpPower_ = { 0.75f,0.65f };
 };

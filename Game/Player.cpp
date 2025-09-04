@@ -21,6 +21,7 @@ void Player::Update() {
 	const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
 	Vector2 move = Vector2::zero;
+	playerModel_.SetState(PlayerModel::kIdle);
 
 	if (TOMATOsEngine::IsKeyPressed(DIK_D) ||
 		TOMATOsEngine::IsKeyPressed(DIK_RIGHT) ||
@@ -29,6 +30,7 @@ void Player::Update() {
 
 		move.x = 1.0f;
 		isFacing = true;
+		playerModel_.SetState(PlayerModel::kMove);
 
 	} else if (TOMATOsEngine::IsKeyPressed(DIK_A) ||
 		TOMATOsEngine::IsKeyPressed(DIK_LEFT) ||
@@ -37,6 +39,7 @@ void Player::Update() {
 
 		move.x = -1.0f;
 		isFacing = false;
+		playerModel_.SetState(PlayerModel::kMove);
 	  }
 
 	bool isJumpPressed = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
@@ -56,6 +59,7 @@ void Player::Update() {
 			//地上ジャンプ
 			velocity_.y = jumpPower_;
 			isOnGround_ = false;
+			playerModel_.SetState(PlayerModel::kJump);
 		}
 		else if (isWallSliding_) {
 			//壁キック
@@ -99,13 +103,11 @@ void Player::CheckCollisions()
 	//壁
 	if (position_.x <= Wall::GetInstance()->GetPosition() + size_.x / 2.0f) {
 		position_.x = Wall::GetInstance()->GetPosition() + size_.x / 2.0f;
-		//velocity_.x = 0;
 		wallDirection_ = -1;
 		isFacing = true;
 	}
 	else if (position_.x >= Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f) {
 		position_.x = Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f;
-		//velocity_.x = 0;
 		wallDirection_ = 1;
 		isFacing = false;
 	}
