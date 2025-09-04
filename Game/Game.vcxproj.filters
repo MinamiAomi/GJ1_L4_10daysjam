@@ -46,6 +46,9 @@
     <Filter Include="Game\StageObjects\Spawn">
       <UniqueIdentifier>{e7025f2c-f22c-48b9-aa64-fdbd04f01174}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Collision">
+      <UniqueIdentifier>{8e0cf1b5-80b8-4169-b65d-27fe269bd675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Externals\ImGui\imconfig.h">
@@ -268,6 +271,12 @@
     <ClInclude Include="SpwanManager.h">
       <Filter>Game\StageObjects\Spawn</Filter>
     </ClInclude>
+    <ClInclude Include="ICollider.h">
+      <Filter>Game\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Game\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -461,7 +470,12 @@
     <ClCompile Include="BombManager.cpp">
       <Filter>Game\StageObjects\Bomb</Filter>
     </ClCompile>
-    <ClCompile Include="SpwanManager.cpp" />
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Game\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SpwanManager.cpp">
+      <Filter>Game\StageObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">

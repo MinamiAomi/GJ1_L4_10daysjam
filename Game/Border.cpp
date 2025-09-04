@@ -71,8 +71,8 @@ void Border::Draw()
 
 	TOMATOsEngine::DrawLine3D(bottomLeft, topLeft, color_);
 	TOMATOsEngine::DrawLine3D(topLeft, topRight, color_);
-	TOMATOsEngine::DrawLine3D(topRight, bottomRight, color_); 
-	TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, color_); 
+	TOMATOsEngine::DrawLine3D(topRight, bottomRight, color_);
+	TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, color_);
 }
 
 void Border::PushBack(float add)
@@ -88,4 +88,9 @@ float Border::GetBorderSidePos()
 float Border::GetBorderFirstPos()
 {
 	return firstPosition_;
+}
+
+float Border::GetPushBackPosition()
+{
+	return pushBackPosition_;
 }

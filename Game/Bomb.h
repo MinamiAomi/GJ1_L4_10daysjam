@@ -1,20 +1,24 @@
 #pragma once
 
+#include "ICollider.h"
+
 #include "Math/MathUtils.h"
 
-class Bomb {
+class Bomb : public ICollider {
 public:
-	void Initialize(const Vector2& position,float radius,int color);
+	void Initialize(const Vector2& position, float radius, int color);
 
 	void Update();
 
 	void Draw();
 
-	const Vector2& GetPosition() { return position_; }
-	float GetRadius() { return radius_; }
+	bool GetIsAlive() { return isAlive_; }
+
 	int GetColor() { return color_; }
 private:
-	Vector2 position_;
-	float radius_;
+	void OnCollision(const Vector2& position, float radius)override;
+	void OnPlayerHitCollision()override;
+
+	bool isAlive_;
 	int color_;
 };

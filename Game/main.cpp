@@ -15,6 +15,7 @@
 #include "Particle/ParticleManager.h"
 #include "StageObjectManager.h"
 #include "SpwanManager.h"
+#include "CollisionManager.h"
 
 #include "BackGround.h"
 #include "Player.h"
@@ -145,6 +146,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	SpawnManager* spawnManager=SpawnManager::GetInstance();
 	spawnManager->Initialize();
 
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	collisionManager->Initialize();
+
 	Wall* wall = Wall::GetInstance();
 	wall->Initialize(&camera);
 
@@ -158,8 +162,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	particleManager->Initialize();
 
 	Player player;
-
 	player.Initialize();
+	collisionManager->SetPlayer(&player);
 
 	BackGround backGround;
 	backGround.Initialize();
@@ -281,6 +285,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 						case TitleSceneState::start:
 							gameScene = inGame;
 
+							collisionManager->Initialize();
 							stageObjectManager->Initialize();
 							spawnManager->Initialize();
 
@@ -367,6 +372,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			border->Update();
 			wall->Update();
+
+			collisionManager->Update();
 
 			score.Update();
 

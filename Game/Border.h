@@ -31,6 +31,9 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	float GetBorderFirstPos();
+
+	//ボーダーが移動する
+	float GetPushBackPosition();
 private:
 	//手前のライン
 	float position_;
