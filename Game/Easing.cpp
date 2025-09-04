@@ -16,8 +16,8 @@ float Easing::easing(float& t, float start, float end , float speed, EasingMode 
 		t += speed;
 	}
 	t = std::clamp(t, 0.0f, 1.0f);
-
-	return((1.0f - easingFunction[easingMode](t)) * start + easingFunction[easingMode](t) * end);
+	float easeT = easingFunction[easingMode](t);
+	return((1.0f - easeT) * start + easeT * end);
 }
 
 float Easing::easing(float t, float start, float end) {
@@ -30,7 +30,8 @@ Vector2 Easing::easing(float& t, Vector2 start, Vector2 end, float speed, Easing
 		t += speed;
 	}
 	t = std::clamp(t, 0.0f, 1.0f);
-	return{ ((1.0f - easingFunction[easingMode](t)) * start.x + easingFunction[easingMode](t) * end.x) ,((1.0f - easingFunction[easingMode](t)) * start.y + easingFunction[easingMode](t) * end.y) };
+	float easeT = easingFunction[easingMode](t);
+	return{ ((1.0f - easeT) * start.x + easeT * end.x) ,((1.0f - easeT) * start.y + easeT * end.y) };
 }
 
 
@@ -69,10 +70,11 @@ Vector3 Easing::easing(
 		t += speed;
 	}
 	t = std::clamp(t, 0.0f, 1.0f);
+	float easeT = easingFunction[easingMode](t);
 	return {
-	    ((1.0f - easingFunction[easingMode](t)) * start.x + easingFunction[easingMode](t) * end.x),
-	    ((1.0f - easingFunction[easingMode](t)) * start.y + easingFunction[easingMode](t) * end.y),
-		((1.0f - easingFunction[easingMode](t)) * start.z +easingFunction[easingMode](t) * end.z)};
+	    ((1.0f - easeT) * start.x + easeT * end.x),
+	    ((1.0f - easeT) * start.y + easeT * end.y),
+		((1.0f - easeT) * start.z + easeT * end.z)};
 }
 
 Vector3 Easing::Bezier(
@@ -154,10 +156,10 @@ float Easing::InOutQuint(float x){
 return x < 0.5f ? 16.0f * x * x * x * x * x : 1.0f - powf(-2.0f * x + 2.0f, 5.0f) / 2.0f;
 }
 float Easing::InExpo(float x){
-return x = 0.0f ? 0.0f : powf(2.0f, 10.0f * x - 10.0f);
+return x == 0.0f ? 0.0f : powf(2.0f, 10.0f * x - 10.0f);
 }
 float Easing::OutExpo(float x){
-return x = 1.0f ? 1.0f : 1.0f - powf(2.0f, -10.0f * x);
+return x == 1.0f ? 1.0f : 1.0f - powf(2.0f, -10.0f * x);
 }
 float Easing::InCirc(float x){
 return 1.0f - sqrtf(1.0f - powf(x, 2.0f));

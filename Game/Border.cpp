@@ -21,7 +21,7 @@ void Border::Initialize()
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
-	pushBackCoefficient_ = 20.0f;
+	pushBackCoefficient_ = 15.0f;
 
 	color_ = 0xFFFFFFFF;
 }
@@ -32,8 +32,9 @@ void Border::Update()
 	static float addPushBackCount = 0.5f;
 	ImGui::Begin("InGame");
 	if (ImGui::BeginMenu("Border")) {
-		ImGui::DragFloat("easingSpeed", &easingSpeed_, 0.01f);
-		ImGui::DragFloat("pushBackCoefficient", &pushBackCoefficient_, 1.0f);
+		ImGui::DragFloat("Position", &position_, 0.1f);
+		ImGui::DragFloat("EasingSpeed", &easingSpeed_, 0.01f);
+		ImGui::DragFloat("EushBackCoefficient", &pushBackCoefficient_, 1.0f);
 
 		ImGui::DragFloat("AddPushBackCount", &addPushBackCount, 1.0f, 0.5f, 5.0f);
 		if (ImGui::Button("AddPushBack")) {

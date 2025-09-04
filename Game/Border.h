@@ -24,6 +24,7 @@ public:
 	/// <param name="add"></param>
 	void PushBack(float add);
 
+	bool IsMove() { return pushBackPosition_ != 0.0f; }
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
 	/// <summary>

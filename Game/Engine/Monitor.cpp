@@ -131,6 +131,7 @@ void Monitor::Initilaize(uint32_t bufferWidth, uint32_t bufferHeight, DXGI_FORMA
 
         file.close();
 
+
         vertexBuffer_.Create(L"Monitor VertexBuffer", vertices.size(), sizeof(vertices[0]));
         vertexBuffer_.Copy(vertices.data(), vertices.size() * sizeof(vertices[0]));
         vbView_.BufferLocation = vertexBuffer_.GetGPUVirtualAddress();
