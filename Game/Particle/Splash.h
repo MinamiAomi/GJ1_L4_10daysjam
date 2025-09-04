@@ -29,12 +29,10 @@ public:
 	};
 public:
 	void Initialize();
-	void Create(const Vector2 emitter, Vector4 color, uint32_t textureHandle, uint32_t MaxParticle = 1);
+	void Create(const Vector2& emitter, const Vector2& direction,Vector4 color, uint32_t MaxParticle = 1);
 	void Update();
 	void Draw();
 private:
 	Vector2 emitter_;
-	static const size_t kTextureMax = static_cast<size_t>(Texture::kCount);
-	std::array<TextureHandle, kTextureMax > textureHandle_;
 	std::array<std::unique_ptr<Particle>,200> particles_;
 };

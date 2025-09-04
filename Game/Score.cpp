@@ -13,7 +13,7 @@ void Score::Initialize()
 	position_ = { 20.0f,20.0f };
 	spacing_ = 4.5f;
 	scale_ = 0.3f;
-	color_ = 0x050505FF;
+	color_ = 0x808080FF;
 }
 
 void Score::Update()
@@ -43,10 +43,10 @@ void Score::Draw() {
 
 	if (!drawVertex_.empty()) {
 		if (score_ != preScore_) {
-			color_ = 0xFF8C00FF;
+			color_ = 0xDCDCDCFF;
 		}
 		else {
-			color_ = 0x050505FF;
+			color_ = 0x808080FF;
 		}
 		for (size_t i = 0; i < drawVertex_.size(); i += verticesPerHexagon) {
 			for (int j = 0; j < verticesPerHexagon; ++j) {

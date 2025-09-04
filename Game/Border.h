@@ -26,9 +26,10 @@ public:
 
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
-	//現在の真ん中の
-	float GetBorderCenterPos();
-
+	/// <summary>
+	/// ゲームスタート時のPosition(俺以外使わないと思う)
+	/// </summary>
+	/// <returns></returns>
 	float GetBorderFirstPos();
 private:
 	//手前のライン

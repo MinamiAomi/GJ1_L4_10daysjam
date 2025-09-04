@@ -41,6 +41,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="BackGround.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="BombManager.h" />
     <ClInclude Include="Border.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Engine\ArcadeMachine.h" />
@@ -99,6 +101,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="SpwanManager.h" />
+    <ClInclude Include="StageObjectManager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +135,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="BombManager.cpp" />
     <ClCompile Include="Border.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Engine\ArcadeMachine.cpp" />
@@ -184,6 +190,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerModel.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="SpwanManager.cpp" />
+    <ClCompile Include="StageObjectManager.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>

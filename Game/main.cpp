@@ -12,8 +12,11 @@
 #include "Math/Animation.h"
 
 //ゲームオブジェクトinclude
-#include "BackGround.h"
 #include "Particle/ParticleManager.h"
+#include "StageObjectManager.h"
+#include "SpwanManager.h"
+
+#include "BackGround.h"
 #include "Player.h"
 #include "Ground.h"
 #include "Border.h"
@@ -136,6 +139,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region クラス宣言/初期化関連
+	StageObjectManager* stageObjectManager = StageObjectManager::GetInstance();
+	stageObjectManager->Initialize();
+
+	SpawnManager* spawnManager=SpawnManager::GetInstance();
+	spawnManager->Initialize();
 
 	Wall* wall = Wall::GetInstance();
 	wall->Initialize(&camera);
@@ -273,6 +281,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 						case TitleSceneState::start:
 							gameScene = inGame;
 
+							stageObjectManager->Initialize();
+							spawnManager->Initialize();
+
 							wall->Initialize(&camera);
 							border->Initialize();
 							particleManager->Initialize();
@@ -348,6 +359,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
+			stageObjectManager->Update();
+			spawnManager->Update();
+
 			backGround.Update();
 			player.Update();
 
@@ -392,6 +406,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				gameScene = title;
 
 				//初期化
+				stageObjectManager->Initialize();
+				spawnManager->Initialize();
+
 				wall->Initialize(&camera);
 				border->Initialize();
 				particleManager->Initialize();
@@ -448,6 +465,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
+
+			stageObjectManager->Draw();
+
 			backGround.Draw();
 			ground->Draw();
 			wall->Draw();

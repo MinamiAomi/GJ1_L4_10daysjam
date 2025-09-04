@@ -37,6 +37,15 @@
     <Filter Include="Engine\Audio">
       <UniqueIdentifier>{e9e6fbd5-4544-472b-9347-419aa6aff440}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\StageObjects">
+      <UniqueIdentifier>{666b9a60-0b2e-48cc-95e1-4e3fe01cb8b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\StageObjects\Bomb">
+      <UniqueIdentifier>{26681059-4e0c-4dbe-820d-c43313007304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\StageObjects\Spawn">
+      <UniqueIdentifier>{e7025f2c-f22c-48b9-aa64-fdbd04f01174}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Externals\ImGui\imconfig.h">
@@ -247,6 +256,18 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Engine\LineRenderer.h" />
+    <ClInclude Include="StageObjectManager.h">
+      <Filter>Game\StageObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Game\StageObjects\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="BombManager.h">
+      <Filter>Game\StageObjects\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="SpwanManager.h">
+      <Filter>Game\StageObjects\Spawn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -422,10 +443,25 @@
     <ClCompile Include="PlayerModel.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
     <ClCompile Include="Ground.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="HexagonSevenSegmentDisplay.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObjectManager.cpp">
+      <Filter>Game\StageObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>Game\StageObjects\Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="BombManager.cpp">
+      <Filter>Game\StageObjects\Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="SpwanManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
