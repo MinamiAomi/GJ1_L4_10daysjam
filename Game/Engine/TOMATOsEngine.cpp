@@ -497,20 +497,59 @@ namespace TOMATOsEngine {
     }
 
     void DrawBoxLine3D(const Vector2& center, const Vector2& size, uint32_t color)
+
     {
+
         Vector2 leftTop = { center.x - size.x / 2.0f,center.y + size.y / 2.0f };
+
         Vector2 rightTop = center + size / 2.0f;
+
         Vector2 leftBottom = center - size / 2.0f;
+
         Vector2 rightBottom = { center.x + size.x / 2.0f,center.y - size.y / 2.0f };
-        DrawLine3D(leftTop, rightTop,color);
+
+        DrawLine3D(leftTop, rightTop, color);
+
         DrawLine3D(rightTop, rightBottom, color);
+
         DrawLine3D(leftBottom, rightBottom, color);
+
         DrawLine3D(leftTop, leftBottom, color);
+
     }
+
+
+
+    void DrawBoxLine3D(const Vector2& center, const Vector2& size, float radian, uint32_t color)
+    {
+        Vector2 halfSize = { size.x / 2.0f, size.y / 2.0f };
+        Vector2 corners[4] = {
+            {-halfSize.x,  halfSize.y}, // 左上
+            { halfSize.x,  halfSize.y}, // 右上
+            { halfSize.x, -halfSize.y}, // 右下
+            {-halfSize.x, -halfSize.y}  // 左下
+        };
+
+        Matrix3x3 rotateMatrix = Matrix3x3::MakeRotation(radian);
+
+        Vector2 rotatedCorners[4];
+
+        for (int i = 0; i < 4; ++i) {
+
+            rotatedCorners[i] = (corners[i] * rotateMatrix) + center;
+        }
+
+        DrawLine3D(rotatedCorners[0], rotatedCorners[1], color); // 左上 -> 右上
+        DrawLine3D(rotatedCorners[1], rotatedCorners[2], color); // 右上 -> 右下
+        DrawLine3D(rotatedCorners[2], rotatedCorners[3], color); // 右下 -> 左下
+        DrawLine3D(rotatedCorners[3], rotatedCorners[0], color); // 左下 -> 左上
+    }
+
+
 
     void DrawBoxLine3D(const Square& square, uint32_t color)
     {
-        DrawBoxLine3D(square.center, square.size, color);
+        DrawBoxLine3D(square.center, square.size, square.radian, color);
     }
 
     bool IsKeyPressed(unsigned char keycode) {

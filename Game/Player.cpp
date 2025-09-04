@@ -14,13 +14,59 @@ void Player::Initialize() {
 	velocity_ = Vector2::zero;
 	size_ = { 3.0f, 3.0f };
 	playerModel_.Initialize(this);
+	hitBomNum_ = 0;
+	isHipDrop_ = false;
+	isFacing = true;
+	rotate_ = 0.0f;
 }
 
 void Player::Update() {
 	const auto& pad = TOMATOsEngine::GetGamePadState();
 	const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
+	playerModel_.SetState(PlayerModel::kIdle);
+
+
+	//HipDrop
+	if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
+	   ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && (!isOnGround_ && !isWallSliding_))) {
+		isHipDrop_ = true;
+	}
+	
+	if (!isHipDrop_) {
+		Move();
+		if (!isOnGround_) {
+			playerModel_.SetState(PlayerModel::kJump);
+		}
+	}
+	else {
+		playerModel_.SetState(PlayerModel::kHipDrop);
+		HipDrop();
+	}
+
+
+	position_ += velocity_;
+
+	CheckCollisions();
+
+	playerModel_.Update();
+	PushBack();
+}
+
+void Player::Draw() {
+	playerModel_.Draw();
+}
+
+void Player::AddHitBom()
+{
+	hitBomNum_++;
+}
+
+void Player::Move() {
+
 	Vector2 move = Vector2::zero;
+	const auto& pad = TOMATOsEngine::GetGamePadState();
+	const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
 	if (TOMATOsEngine::IsKeyPressed(DIK_D) ||
 		TOMATOsEngine::IsKeyPressed(DIK_RIGHT) ||
@@ -29,15 +75,18 @@ void Player::Update() {
 
 		move.x = 1.0f;
 		isFacing = true;
+		playerModel_.SetState(PlayerModel::kMove);
 
-	} else if (TOMATOsEngine::IsKeyPressed(DIK_A) ||
+	}
+	else if (TOMATOsEngine::IsKeyPressed(DIK_A) ||
 		TOMATOsEngine::IsKeyPressed(DIK_LEFT) ||
 		pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT ||
 		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
 		isFacing = false;
-	  }
+		playerModel_.SetState(PlayerModel::kMove);
+	}
 
 	bool isJumpPressed = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
 
@@ -56,6 +105,7 @@ void Player::Update() {
 			//地上ジャンプ
 			velocity_.y = jumpPower_;
 			isOnGround_ = false;
+			playerModel_.SetState(PlayerModel::kJump);
 		}
 		else if (isWallSliding_) {
 			//壁キック
@@ -69,17 +119,40 @@ void Player::Update() {
 	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
 	}
-
-	position_ += velocity_;
-
-	CheckCollisions();
-
-	playerModel_.Update();
 }
 
-void Player::Draw() {
-	playerModel_.Draw();
+void Player::HipDrop()
+{
+	velocity_.x = 0.0f;
+
+	if (rotate_ < Math::TwoPi) {
+		rotate_ += hipDropRotateSpeed_;
+		velocity_.y = hipDropUpSpeed_;
+	}
+	else {
+		velocity_.y = -hipDropSpeed_;
+		rotate_ = Math::TwoPi;
+	}
+
+	if (isOnGround_) {
+		playerModel_.SetState(PlayerModel::kEndHipDrop);
+		isHipDrop_ = false;
+		rotate_ = 0.0f;
+	}
 }
+
+void Player::PushBack()
+{
+	if (!isHipDrop_) {
+		Border::GetInstance()->PushBack(hitBomNum_);
+		hitBomNum_ = 0;
+	}
+	else {
+		Border::GetInstance()->PushBackHipDrop(hitBomNum_);
+		hitBomNum_ = 0;
+	}
+}
+
 
 void Player::CheckCollisions()
 {
@@ -99,20 +172,18 @@ void Player::CheckCollisions()
 	//壁
 	if (position_.x <= Wall::GetInstance()->GetPosition() + size_.x / 2.0f) {
 		position_.x = Wall::GetInstance()->GetPosition() + size_.x / 2.0f;
-		//velocity_.x = 0;
 		wallDirection_ = -1;
 		isFacing = true;
 	}
 	else if (position_.x >= Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f) {
 		position_.x = Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f;
-		//velocity_.x = 0;
 		wallDirection_ = 1;
 		isFacing = false;
 	}
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
-		
+		playerModel_.SetState(PlayerModel::kWallSliding);
 	}
 
 }

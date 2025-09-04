@@ -34,7 +34,7 @@ void SpawnManager::Update()
 
 void SpawnManager::Spawn()
 {
-	int createCount = CalculationCreateCount();
+	int createCount = 8;
 
 	SpawnBomb(createCount);
 }
@@ -87,7 +87,7 @@ void SpawnManager::SpawnBomb(int createCount)
 
 		// 重ならない位置が見つかった場合生成
 		if (!isOverlapping) {
-			bombManager.Spawn(pos, radius, 0xFF0000FF);
+			bombManager.Spawn(pos, radius, 0xff1919FF);
 			spawnedBombs.push_back({ pos, radius });
 		}
 	}

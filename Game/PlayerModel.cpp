@@ -1,4 +1,5 @@
 #include "PlayerModel.h"
+#include "ImGuiManager.h"
 
 #include "TOMATOsEngine.h"
 #include "Math/Color.h"
@@ -11,18 +12,126 @@
 void PlayerModel::Initialize(const Player* player) {
 	player_ = player;
 	head_ = Square{ {0.0f,0.0f},player_->GetSize() - player_->GetSize() / 3.0f};
+	initialHead_ = head_;
 	leftFoot_ = Square{ -head_.size / 2.0f,player_->GetSize() / 3.0f };
+	initialLeftFoot_ = leftFoot_;
 	rightFoot_ = Square{ {head_.size.x / 2.0f,-head_.size.y / 2.0f},player_->GetSize() / 3.0f };
+	initialRightFoot_ = rightFoot_;
+	walkAmplitude_ = rightFoot_.size.y / 2.0f;
+	idleAmplitude_ = head_.size.y / 6.0f;
+	changeT_ = 0.0f;
+	jumpHead_ = Square{ head_.center,{head_.size.x - head_.size.x / 8.0f,head_.size.y + head_.size.y / 8.0f } };
+	endHipDropSquare_ = Square{ {0.0f, -player_->GetSize().y / 2.0f + 0.1f}  ,{head_.size.x * 6.0f,0.1f} };
+
 } 
 
 void PlayerModel::Update() {
+
+
+	if (state_ != preState_) {
+		changeT_ = 0.0f;
+	}
+
+	switch (state_)
+	{
+	case PlayerModel::kIdle:
+		Idle();
+		break;
+	case PlayerModel::kMove:
+		Move();
+		break;
+	case PlayerModel::kJump:
+		Jump();
+		break;
+	case PlayerModel::kWallSliding:
+		WallSliding();
+		break;
+	case PlayerModel::kHipDrop:
+		HipDrop();
+		break;
+	case PlayerModel::kEndHipDrop:
+		EndHipDrop();
+		break;
+	default:
+		break;
+	}
 	
+	preState_ = state_;
+	changeT_ = std::clamp(changeT_, 0.0f, 1.0f);
 }
 
 void PlayerModel::Draw() {
 	TOMATOsEngine::DrawBoxLine3D(head_ + player_->GetPosition(), 0xFFFFFFFF);
 	TOMATOsEngine::DrawBoxLine3D(leftFoot_ + player_->GetPosition(), 0xFFFFFFFF);
 	TOMATOsEngine::DrawBoxLine3D(rightFoot_ + player_->GetPosition(), 0xFFFFFFFF);
+}
+
+void PlayerModel::Idle()
+{
+	changeT_ += 0.1f;
+
+	leftFoot_ = Square::Lerp(changeT_, leftFoot_,initialLeftFoot_);
+	rightFoot_ = Square::Lerp(changeT_, rightFoot_, initialRightFoot_);
+	head_ = Square::Lerp(changeT_, head_, initialHead_);
+	if (changeT_ >= 1.0f) {
+		idleCycle_ += idleSpeed_;
+		float yOffset = sin(idleCycle_) * idleAmplitude_;
+
+		head_.center.y = initialHead_.center.y + yOffset;
+	}
+}
+
+void PlayerModel::Move()
+{
+	changeT_ += 0.1f;
+
+	leftFoot_ = Square::Lerp(changeT_, leftFoot_, initialLeftFoot_);
+	rightFoot_ = Square::Lerp(changeT_, rightFoot_, initialRightFoot_);
+	head_ = Square::Lerp(changeT_, head_, initialHead_);
+	
+	walkCycle_ += walkSpeed_;
+	float yOffset = sin(walkCycle_) * walkAmplitude_;
+
+	leftFoot_.center.y = initialLeftFoot_.center.y + yOffset;
+	rightFoot_.center.y = initialLeftFoot_.center.y - yOffset;
+}
+
+void PlayerModel::Jump()
+{
+	changeT_ += 0.2f;
+	head_ = Square::Lerp(changeT_, head_, jumpHead_);
+	leftFoot_ = Square::Lerp(changeT_, leftFoot_, initialLeftFoot_);
+	rightFoot_ = Square::Lerp(changeT_, rightFoot_, initialRightFoot_);
+	if (player_->GetVelocity().x != 0.0f) {
+		walkCycle_ += walkSpeed_;
+		float yOffset = sin(walkCycle_) * walkAmplitude_;
+
+		leftFoot_.center.y = initialLeftFoot_.center.y + yOffset;
+		rightFoot_.center.y = initialLeftFoot_.center.y - yOffset;
+	}
+}
+
+void PlayerModel::WallSliding()
+{
+
+}
+
+void PlayerModel::HipDrop()
+{
+	changeT_ += 0.1f;
+	head_ = Square::Lerp(changeT_, head_, jumpHead_);
+	head_.radian = player_->GetRotate();
+	leftFoot_.center = initialLeftFoot_.center * Matrix3x3::MakeRotation(player_->GetRotate());
+	rightFoot_.center = initialRightFoot_.center * Matrix3x3::MakeRotation(player_->GetRotate());
+}
+
+void PlayerModel::EndHipDrop()
+{
+	head_ = endHipDropSquare_;
+	leftFoot_ = endHipDropSquare_;
+	rightFoot_ = endHipDropSquare_;
+
+	ParticleManager::GetInstance()->GetSplash()->Create(player_->GetPosition() + endHipDropSquare_.center, { 0.0f,1.0f }, {1.0f,1.0f,1.0,1.0f},5);
 }
 
 

@@ -131,6 +131,7 @@ public:
     inline Vector2& Normalize() noexcept {
         return (*this = Normalized());
     }
+
 #pragma endregion
 #pragma region 静的関数
     static inline float Angle(const Vector2& from, const Vector2& to) noexcept {
@@ -194,34 +195,37 @@ public:
 
 #pragma endregion
 #pragma region コンストラクタ
-    inline constexpr Square() noexcept : center(0.0f, 0.0f), size(0.0f, 0.0f) {}
-    explicit constexpr Square(Vector2 center, Vector2 size) noexcept
-        : center(center), size(size) {
+    inline constexpr Square() noexcept : center(0.0f, 0.0f), size(0.0f, 0.0f), radian(0.0f) {}
+    explicit constexpr Square(Vector2 center, Vector2 size,float radian = 0) noexcept
+        : center(center), size(size),radian(radian) {
     }
 #pragma endregion
 #pragma region 演算子のオーバーロード
     friend inline constexpr Square operator+(const Square& s, const Vector2& v) noexcept {
-        return Square{ s.center + v, s.size };
+        return Square{ s.center + v, s.size ,s.radian};
     }
     friend inline constexpr Square operator-(const Square& s, const Vector2& v) noexcept {
-        return Square{ s.center - v, s.size };
+        return Square{ s.center - v, s.size,s.radian };
     }
     friend inline constexpr Square operator*(const Square& s, float scalar) noexcept {
-        return Square{ s.center, s.size * scalar };
+        return Square{ s.center, s.size * scalar,s.radian };
     }
     friend inline constexpr Square operator*(float scalar, const Square& s) noexcept {
-        return Square{ s.center, s.size * scalar };
+        return Square{ s.center, s.size * scalar ,s.radian };
     }
 #pragma endregion
 #pragma region メンバ関数
     
 #pragma endregion
 #pragma region 静的関数
-   
+    static inline constexpr Square Lerp(float t, const Square& start, const Square& end) noexcept {
+        return Square{ Vector2::Lerp(t,start.center,end.center),Vector2::Lerp(t,start.size,end.size),Math::Lerp(t,start.radian,end.radian) };
+    }
 #pragma endregion
 #pragma region メンバ変数
     Vector2 center;
     Vector2 size;
+    float radian;
 #pragma endregion
 };
 
