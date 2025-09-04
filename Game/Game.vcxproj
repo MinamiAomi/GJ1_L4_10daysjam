@@ -44,6 +44,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="BombManager.h" />
     <ClInclude Include="Border.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Engine\ArcadeMachine.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="PlayerModel.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="SpwanManager.h" />
+    <ClInclude Include="ICollider.h" />
     <ClInclude Include="StageObjectManager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
@@ -138,6 +140,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="BombManager.cpp" />
     <ClCompile Include="Border.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Engine\ArcadeMachine.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
