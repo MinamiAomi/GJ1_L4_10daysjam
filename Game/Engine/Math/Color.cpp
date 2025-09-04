@@ -69,8 +69,9 @@ uint32_t Color::Convert(const Vector4& rgba) {
 
 Vector4 Color::Convert(uint32_t rgba) {
     constexpr float reci = 1.0f / 255.0f;
+
     auto GetElement = [&](uint32_t index) {
-        return ((rgba & (0xFFu << index)) >> (8 * index)) * reci;
+        return static_cast<float>((rgba >> (8 * index)) & 0xFFu) * reci;
     };
     Vector4 result;
     result.x = std::clamp(GetElement(3), 0.0f, 1.0f);
