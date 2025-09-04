@@ -19,8 +19,6 @@ void SpawnManager::Initialize()
 {
 	position_ = range_;
 	range_ = 50.0f;
-
-
 }
 
 void SpawnManager::Update()
@@ -36,20 +34,25 @@ void SpawnManager::Update()
 
 void SpawnManager::Spawn()
 {
-	Random::RandomNumberGenerator rnd{};
+	int createCount = CalculationCreateCount();
+
+	SpawnBomb(createCount);
+}
+
+void SpawnManager::SpawnBomb(int createCount)
+{
 	auto& bombManager = StageObjectManager::GetInstance()->GetBombManager();
 
+	Random::RandomNumberGenerator rnd{};
 	//一時保管用
 	std::vector<std::pair<Vector2, float>> spawnedBombs;
 
-	// 生成する数
-	const int spawnCount = 5;
 	// 1体あたりの位置決めの最大試行回数
 	const int maxAttempts = 10;
 
-	for (int i = 0; i < spawnCount; i++) {
+	for (int i = 0; i < createCount; i++) {
 		Vector2 pos;
-		const float radius = 2.0f;
+		const float radius = 1.0f;
 		bool isOverlapping;
 		int attempts = 0;
 
@@ -88,4 +91,16 @@ void SpawnManager::Spawn()
 			spawnedBombs.push_back({ pos, radius });
 		}
 	}
+}
+
+int SpawnManager::CalculationCreateCount()
+{
+	const auto& wallPos = Wall::GetInstance()->GetPosition();
+
+	//距離を100で割ってます
+	float createCount = (wallPos + 200.0f) / 100.0f;
+
+	//敵個数Max10
+	createCount = std::clamp(createCount, 0.0f, 10.0f);
+	return int(createCount);
 }

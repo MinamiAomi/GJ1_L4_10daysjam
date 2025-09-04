@@ -17,12 +17,14 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 0.5f->ヒップドロップ
-	/// 1.0ff->1爆弾
-	/// 2.0ff->2爆弾
+	/// 0->0爆弾
+	/// 1->1爆弾
+	/// 2->2爆弾
 	/// </summary>
 	/// <param name="add"></param>
-	void PushBack(float add);
+	void PushBack(int add);
+
+	void PushBackHipDrop(int add);
 
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
@@ -43,6 +45,7 @@ private:
 	float easingSpeed_;
 	//押し戻し係数
 	float pushBackCoefficient_;
+	float pushBackHipDropCoefficient_;
 
 	int color_;
 	float firstPosition_;

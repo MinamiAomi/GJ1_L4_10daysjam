@@ -22,6 +22,7 @@ void Border::Initialize()
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 20.0f;
+	pushBackHipDropCoefficient_ = 1.3f;
 
 	color_ = 0xFFFFFFFF;
 }
@@ -29,13 +30,14 @@ void Border::Initialize()
 void Border::Update()
 {
 #ifdef _DEBUG
-	static float addPushBackCount = 0.5f;
+	static int addPushBackCount = 1;
 	ImGui::Begin("InGame");
 	if (ImGui::BeginMenu("Border")) {
 		ImGui::DragFloat("easingSpeed", &easingSpeed_, 0.01f);
 		ImGui::DragFloat("pushBackCoefficient", &pushBackCoefficient_, 1.0f);
+		ImGui::DragFloat("pushBackHipDropCoefficient", &pushBackHipDropCoefficient_, 0.1f);
 
-		ImGui::DragFloat("AddPushBackCount", &addPushBackCount, 1.0f, 0.5f, 5.0f);
+		ImGui::DragInt("AddPushBackCount", &addPushBackCount, 1, 0);
 		if (ImGui::Button("AddPushBack")) {
 			PushBack(addPushBackCount);
 		}
@@ -75,9 +77,14 @@ void Border::Draw()
 	TOMATOsEngine::DrawLine3D(bottomRight, bottomLeft, color_);
 }
 
-void Border::PushBack(float add)
+void Border::PushBack(int add)
 {
 	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
+}
+
+void Border::PushBackHipDrop(int add)
+{
+	pushBackPosition_ = position_ + ((add * pushBackCoefficient_) * pushBackHipDropCoefficient_);
 }
 
 float Border::GetBorderSidePos()
