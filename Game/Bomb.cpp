@@ -41,7 +41,7 @@ void Bomb::OnCollision(const Vector2& position, float radius)
 
 void Bomb::OnPlayerHitCollision()
 {
-	ParticleManager::GetInstance()->GetPop()->Create(position_, { 1.0f,1.0f,1.0f,1.0 }, 10);
+	ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
 	isAlive_ = false;
 	
 }
