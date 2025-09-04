@@ -150,7 +150,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	collisionManager->Initialize();
 
 	Wall* wall = Wall::GetInstance();
-	wall->Initialize(&camera);
+	wall->Initialize();
 
 	Ground* ground = Ground::GetInstance();
 
@@ -289,7 +289,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							stageObjectManager->Initialize();
 							spawnManager->Initialize();
 
-							wall->Initialize(&camera);
+							wall->Initialize();
 							border->Initialize();
 							particleManager->Initialize();
 
@@ -364,6 +364,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
+			wall->Update();
 			stageObjectManager->Update();
 			spawnManager->Update();
 
@@ -371,7 +372,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			player.Update();
 
 			border->Update();
-			wall->Update();
 
 			collisionManager->Update();
 
@@ -416,12 +416,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				stageObjectManager->Initialize();
 				spawnManager->Initialize();
 
-				wall->Initialize(&camera);
 				border->Initialize();
+				wall->Initialize();
 				particleManager->Initialize();
 
 				backGround.Initialize();
 				player.Initialize();
+				
 
 
 				// 音
@@ -475,14 +476,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			stageObjectManager->Draw();
 
-			backGround.Draw();
+			//backGround.Draw();
 			ground->Draw();
 			wall->Draw();
 			border->Draw();
 			score.Draw();
 			player.Draw();
 			particleManager->Draw();
-			TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
+			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
 			break;
 		}
 		case gameClear:

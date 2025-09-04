@@ -3,7 +3,7 @@
 #include "TOMATOsEngine.h"
 
 void RealWorld::Initialize() {
-    camera_.SetPosition({ 0.0f, 1.18f, -1.3f });
+    camera_.SetPosition({ 0.0f, 1.17f, -0.73f });
     camera_.SetRotate(Quaternion::identity);
     //camera_.SetRotate(Quaternion::MakeLookRotation(Vector3(0.0f, -1.0f, 0.1f).Normalized()));
     room_.CreateFromObj("Resources/Model/room.obj");
@@ -15,7 +15,7 @@ void RealWorld::Initialize() {
 void RealWorld::Update() {
     arcadeMachine_.Update();
 
-    Vector3 position = camera_.GetPosition();
+   /* Vector3 position = camera_.GetPosition();
     Quaternion rotate = camera_.GetRotate();
 
     switch (viewMode_)
@@ -31,7 +31,7 @@ void RealWorld::Update() {
         break;
     }
     camera_.SetPosition(position);
-    camera_.SetRotate(rotate);
+    camera_.SetRotate(rotate);*/
 }
 
 void RealWorld::Draw(CommandContext& commandContext) {

@@ -26,6 +26,7 @@ public:
 
 	void PushBackHipDrop(int add);
 
+	bool IsMove() { return pushBackPosition_ != 0.0f; }
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
 	/// <summary>
