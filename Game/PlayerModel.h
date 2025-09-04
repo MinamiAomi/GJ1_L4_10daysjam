@@ -14,7 +14,10 @@ public:
 	enum State {
 		kIdle,
 		kMove,
-		kJump
+		kJump,
+		kWallSliding,
+		kHipDrop,
+		kEndHipDrop //1frameしか入らない
 	};
 
 
@@ -27,11 +30,14 @@ public:
 private:
 	const Player* player_;
 	State state_;
+	State preState_;
 	Square head_;
 	Square leftFoot_;
 	Square rightFoot_;
 	Square leftEye_;
 	Square rightEye_;
+
+	float changeT_ = 0.0f;
 
 	float walkCycle_ = 0.0f; 
 	float walkSpeed_ = 0.2f;         
@@ -41,11 +47,17 @@ private:
 	float idleSpeed_ = 0.2f;
 	float idleAmplitude_ = 0.0f;
 
-	Vector2 initialLeftFootPos_;
-	Vector2 initialRightFootPos_;
+	Square initialLeftFoot_;
+	Square initialRightFoot_;
+	Square initialHead_;
 
-	void AnimationInitialize();
+	Square jumpHead_;
+	Square endHipDropSquare_;
+
 	void Idle();
 	void Move();
 	void Jump();
+	void WallSliding();
+	void HipDrop();
+	void EndHipDrop();
 };
