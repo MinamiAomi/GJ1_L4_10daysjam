@@ -16,12 +16,6 @@
     <Filter Include="Engine\Application">
       <UniqueIdentifier>{86df4ca4-8e58-4f73-9ada-f2fbb5f0329d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Externals">
-      <UniqueIdentifier>{646b347e-aec3-4f2e-b8d2-08cb6d0198fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Externals\ImGui">
-      <UniqueIdentifier>{651a51f8-3cc7-4c96-856c-809e0bc05071}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{f36aec4f-fb6d-4c5e-ad63-b4ec29307422}</UniqueIdentifier>
     </Filter>
@@ -49,31 +43,37 @@
     <Filter Include="Game\Collision">
       <UniqueIdentifier>{8e0cf1b5-80b8-4169-b65d-27fe269bd675}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Externals">
+      <UniqueIdentifier>{646b347e-aec3-4f2e-b8d2-08cb6d0198fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Externals\ImGui">
+      <UniqueIdentifier>{651a51f8-3cc7-4c96-856c-809e0bc05071}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Externals\ImGui\imconfig.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imgui.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imgui_impl_dx12.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imgui_impl_win32.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imgui_internal.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imstb_rectpack.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imstb_textedit.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\Externals\ImGui\imstb_truetype.h">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\DescriptorHandle.h">
       <Filter>Engine\Graphics</Filter>
@@ -280,25 +280,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_demo.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_draw.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_impl_dx12.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_impl_win32.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_tables.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\Externals\ImGui\imgui_widgets.cpp">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility.cpp">
       <Filter>Engine</Filter>
@@ -479,7 +479,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
-      <Filter>Externals\ImGui</Filter>
+      <Filter>Engine\Externals\ImGui</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

@@ -130,8 +130,6 @@ void PlayerModel::EndHipDrop()
 	head_ = endHipDropSquare_;
 	leftFoot_ = endHipDropSquare_;
 	rightFoot_ = endHipDropSquare_;
-
-	ParticleManager::GetInstance()->GetSplash()->Create(player_->GetPosition() + endHipDropSquare_.center, { 0.0f,1.0f }, {1.0f,1.0f,1.0,1.0f},5);
 }
 
 

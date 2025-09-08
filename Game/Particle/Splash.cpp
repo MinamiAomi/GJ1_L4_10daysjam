@@ -19,11 +19,11 @@ void Splash::Create(const Vector2& emitter, const Vector2& direction, Vector4 co
 	emitter_ = emitter;
 	const uint32_t deathtime_Min = 8;
 	const uint32_t deathtime_Max = 16;
-	const float speed_Min = 0.5f;
-	const float speed_Max = 1.0f;
+	const float speed_Min = 0.2f;
+	const float speed_Max = 1.3f;
 	const float size_Min = 0.1f;
 	const float size_Max = 0.5f;
-	const float spreadRadians = 15.0f * Math::ToRadian;
+	const float spreadRadians = 40.0f * Math::ToRadian;
 	const uint32_t count_Max = MaxParticle;
 	uint32_t count = 0;
 
@@ -33,7 +33,7 @@ void Splash::Create(const Vector2& emitter, const Vector2& direction, Vector4 co
 			particle->position_ = emitter_;
 			// 色
 			particle->color_ = color;
-			// 速度
+
 			float randomAngle = rnd.NextFloatRange(-spreadRadians, spreadRadians);
 
 			float cos_a = std::cosf(randomAngle);
@@ -63,7 +63,7 @@ void Splash::Create(const Vector2& emitter, const Vector2& direction, Vector4 co
 }
 
 void Splash::Update() {
-	const float kGravity = -0.1f;
+	const float kGravity = -0.2f;
 	for (auto& particle : particles_) {
 		if (particle->isAlive_) {
 			particle->count_++;
@@ -85,7 +85,7 @@ void Splash::Update() {
 					Math::Lerp(t, 1.0f, 0.0f));
 
 				// サイズ
-				float size = Math::Lerp(t, 0.0f, particle->size_Origin_.x);
+				float size = Math::Lerp(t,  particle->size_Origin_.x, 0.0f);
 				particle->size_ = { size, size };
 			}
 		}

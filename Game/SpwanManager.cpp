@@ -19,6 +19,9 @@ void SpawnManager::Initialize()
 {
 	position_ = range_;
 	range_ = 50.0f;
+
+	bombRadius_ = 2.0f;
+	offset_ = 10.0f;
 }
 
 void SpawnManager::Update()
@@ -52,14 +55,13 @@ void SpawnManager::SpawnBomb(int createCount)
 
 	for (int i = 0; i < createCount; i++) {
 		Vector2 pos;
-		const float radius = 1.0f;
 		bool isOverlapping;
 		int attempts = 0;
 
 		// 重ならない位置が見つかるか、試行回数が上限に達するまでループ
 		do {
-			pos.x = rnd.NextFloatRange(position_ + radius, position_ + range_);
-			pos.y = rnd.NextFloatRange(radius, Wall::GetInstance()->kWallHeight);
+			pos.x = rnd.NextFloatRange(position_ + bombRadius_, position_ + range_);
+			pos.y = rnd.NextFloatRange(offset_ + bombRadius_, Wall::GetInstance()->kWallHeight);
 
 			// 今まで生成したものと重なっているかどうか
 			isOverlapping = false;
@@ -72,7 +74,7 @@ void SpawnManager::SpawnBomb(int createCount)
 				float dy = pos.y - spawnedPos.y;
 				float distance = (dx * dx) + (dy * dy);
 
-				float sumRadius = radius + spawnedRadius;
+				float sumRadius = bombRadius_ + spawnedRadius;
 
 				//重なっているか
 				if (distance < (sumRadius * sumRadius)) {
@@ -87,8 +89,8 @@ void SpawnManager::SpawnBomb(int createCount)
 
 		// 重ならない位置が見つかった場合生成
 		if (!isOverlapping) {
-			bombManager.Spawn(pos, radius, 0xff1919FF);
-			spawnedBombs.push_back({ pos, radius });
+			bombManager.Spawn(pos, bombRadius_, 0xff1919FF);
+			spawnedBombs.push_back({ pos, bombRadius_ });
 		}
 	}
 }

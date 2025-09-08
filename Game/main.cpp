@@ -109,21 +109,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 音
-    auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
-    auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
-    auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-    auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
-    size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
-    auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+	//イワシロ音楽素材 使用の際は追記
+	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
+	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
+	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
+	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
+	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
 
-    // タイトルははじめから流す
-    size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-    TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
-    size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-    size_t clearPlayHandle = INVALID_PLAY_HANDLE;
-    // 音の溜め必要
-    bool ingameToClear = false;
-    bool clearToTitle = false;
+	// タイトルははじめから流す
+	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+	TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
+	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
+	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+	// 音の溜め必要
+	bool ingameToClear = false;
+	bool clearToTitle = false;
 #pragma endregion
 
 #pragma region シャットダウン
@@ -165,10 +166,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     player.Initialize();
     collisionManager->SetPlayer(&player);
 
-    BackGround backGround;
-    backGround.Initialize();
-    backGround.SetPlayer(&player);
-
+	BackGround backGround;
+	backGround.Initialize();
+	
 
     Score score;
     score.Initialize();
@@ -298,26 +298,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                             player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
                             score.Initialize();
 
-                            // 音
-                            // タイトルBGM停止
-                            TOMATOsEngine::StopAudio(titlePlayHandle);
-                            // インゲームBGM
-                            ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-                            break;
-                        case TitleSceneState::operation:
-                            TOMATOsEngine::SwitchViewMode();
-                            isSwitchViewMode = true;
-                            break;
-                        case TitleSceneState::end:
-                            isShutdown = true;
-                            TOMATOsEngine::PlayAudio(shutdownSoundHandle);
-                            break;
-                        case TitleSceneState::count:
-                            break;
-                        default:
-                            break;
-                        }
-                    }
+							// 音
+							// タイトルBGM停止
+							TOMATOsEngine::StopAudio(titlePlayHandle);
+							// インゲームBGM
+							ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+							TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
+							break;
+						case TitleSceneState::operation:
+							TOMATOsEngine::SwitchViewMode();
+							isSwitchViewMode = true;
+							break;
+						case TitleSceneState::end:
+							isShutdown = true;
+							TOMATOsEngine::PlayAudio(shutdownSoundHandle);
+							break;
+						case TitleSceneState::count:
+							break;
+						default:
+							break;
+						}
+					}
 #pragma endregion
                     //矢印のPositionを指定
                     switch (titleSceneState)
@@ -471,33 +472,33 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             break;
         }
 
-        case inGame:
-        {
+		case inGame:
+		{
+			backGround.Draw();
+			score.Draw();
+			stageObjectManager->Draw();
 
-            stageObjectManager->Draw();
-
-            //backGround.Draw();
-            ground->Draw();
-            wall->Draw();
-            border->Draw();
-            score.Draw();
-            player.Draw();
-            particleManager->Draw();
-            //TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
-            break;
-        }
-        case gameClear:
-        {
-            backGround.Draw();
-            player.Draw();
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
-    }
+			//backGround.Draw();
+			ground->Draw();
+			wall->Draw();
+			border->Draw();
+			player.Draw();
+			particleManager->Draw();
+			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
+			break;
+		}
+		case gameClear:
+		{
+			backGround.Draw();
+			player.Draw();
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
 
     TOMATOsEngine::Shutdown();
 
