@@ -12,6 +12,21 @@ static Vector3 freeCameraPosition;
 static Vector3 freeCameraRotate;
 #endif // _DEBUG
 
+void Wall::BurstEffect::Initialize(Random::RandomNumberGenerator* rng, float borderPosition) {
+    assert(rng != nullptr);
+
+    offset_ = rng->NextFloatRange(0.0f, 10.0f);
+    position_.x = borderPosition + rng->NextFloatRange(10.0f, 50.0f);
+    position_.y = rng->NextFloatRange(10, Wall::kWallHeight - 10.0f);
+}
+
+void Wall::BurstEffect::Draw(float wallPosition) {
+    if (wallPosition + offset_ >= position_.x) {
+        return;
+    }
+    Vector2 start = { wallPosition + offset_, position_.y };
+    TOMATOsEngine::DrawLine3D(start, position_, 0xFFFFFFFF);
+}
 
 Wall* Wall::GetInstance() {
     static Wall instance;
@@ -59,6 +74,7 @@ void Wall::Update() {
 #endif // _DEBUG
 
     // バースト条件
+    const float kDeltaTime = 1.0f / 60.0f;
 
     // 通常動作
     if (!isBurst_) {
@@ -73,11 +89,16 @@ void Wall::Update() {
             isBurst_ = true;
             burstElapsedTime_ = 0.0f;
             burstStartPosition_ = position_;
+            
+          /*  burstEffects_.resize(kNumBurstEffects);
+            for (auto& burstEffect : burstEffects_) {
+                burstEffect.Initialize(&rng_, borderPosition);
+            }*/
         }
     }
     // バースト
     else {
-        burstElapsedTime_ += 1.0f / 60.0f;
+        burstElapsedTime_ += kDeltaTime;
 
         float burstEndPosition = border_->GetBorderSidePos() - kBurstEndDistance;
         float distance = burstEndPosition - burstStartPosition_;
@@ -88,6 +109,7 @@ void Wall::Update() {
         if (t >= 1.0f) {
             isBurst_ = false;
             position_ = burstEndPosition;
+            //burstEffects_.clear();
         }
     }
 
@@ -105,6 +127,10 @@ void Wall::Update() {
 }
 
 void Wall::Draw() {
+
+   /* for (auto& burstEffect : burstEffects_) {
+        burstEffect.Draw(position_);
+    }*/
 
     TOMATOsEngine::DrawLine3D({ position_, 0.0f }, { position_, kWallHeight }, 0xFFFFFFFF);
     TOMATOsEngine::DrawLine3D({ position_ - kWallWidth, 0.0f }, { position_ - kWallWidth, kWallHeight }, 0xFFFFFFFF);

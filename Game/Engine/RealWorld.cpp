@@ -36,10 +36,13 @@ void RealWorld::Update() {
 
 void RealWorld::Draw(CommandContext& commandContext) {
 #ifdef _DEBUG
-    ImGui::Begin("Camera");
-    Vector3 pos = camera_.GetPosition();
-    ImGui::DragFloat3("Pos", &pos.x, 0.01f);
-    camera_.SetPosition(pos);
+    ImGui::Begin("Menu");
+    if (ImGui::TreeNode("RealWorld")) {
+        Vector3 pos = camera_.GetPosition();
+        ImGui::DragFloat3("Camera Position", &pos.x, 0.01f);
+        camera_.SetPosition(pos);
+        ImGui::TreePop();
+    }
     ImGui::End();
 #endif // _DEBUG
 
