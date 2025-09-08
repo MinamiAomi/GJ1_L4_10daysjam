@@ -14,8 +14,10 @@
 #include "Model.h"
 #include "RealWorld.h"
 #include "Monitor.h"
+#include "Math/Random.h"
 
 #include "Audio/Audio.h"
+#include "ImGuiManager.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -38,6 +40,12 @@ namespace {
     Monitor* monitor = nullptr;
     std::unique_ptr<RealWorld> realWorld;
     RealWorld::ViewMode viewMode;
+
+    Random::RandomNumberGenerator rng;
+    bool applyLineShakeX = false;
+    bool applyLineShakeY = false;
+    bool applyLineShakeZ = false;
+    Vector3 lineShakeValue = {};
 
     std::chrono::steady_clock::time_point referenceTime;
 
@@ -166,6 +174,21 @@ namespace TOMATOsEngine {
 
         monitor->BeginRender(renderManager->GetCommandContext());
 
+#ifdef _DEBUG
+        ImGui::Begin("Menu");
+        if (ImGui::TreeNode("Engine")) {
+            ImGui::Text("Apply Line Shake");
+            ImGui::SameLine();
+            ImGui::Checkbox("X", &applyLineShakeX);
+            ImGui::SameLine();
+            ImGui::Checkbox("Y", &applyLineShakeY);
+            ImGui::SameLine();
+            ImGui::Checkbox("Z", &applyLineShakeZ);
+            ImGui::DragFloat3("Line Shake Value", &lineShakeValue.x, 0.01f, 0.0f, 10.0f);
+            ImGui::TreePop();
+        }
+        ImGui::End();
+#endif // _DEBUG
 
         return true;
     }
@@ -493,10 +516,29 @@ namespace TOMATOsEngine {
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color) {
         color = RGBAtoABGR(color);
 
+        Vector3 s = start;
+        Vector3 e = end;
+
+        if (applyLineShakeX) {
+            s.x += rng.NextFloatUnit() * lineShakeValue.x;
+            e.x += rng.NextFloatUnit() * lineShakeValue.x;
+        }
+
+        if (applyLineShakeY) {
+            s.y += rng.NextFloatUnit() * lineShakeValue.y;
+            e.y += rng.NextFloatUnit() * lineShakeValue.y;
+        }
+
+        if (applyLineShakeZ) {
+            s.z += rng.NextFloatUnit() * lineShakeValue.z;
+            e.z += rng.NextFloatUnit() * lineShakeValue.z;
+        }
+
         lineRenderer->Draw(
-            start,
-            end,
+            s,
+            e,
             color);
+
     }
 
     void DrawBoxLine3D(const Vector2& center, const Vector2& size, uint32_t color)

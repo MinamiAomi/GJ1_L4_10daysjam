@@ -144,8 +144,11 @@ void Player::HipDrop()
 void Player::PushBack()
 {
 	if (!isHipDrop_) {
-		Border::GetInstance()->PushBack(hitBomNum_);
-		hitBomNum_ = 0;
+		// 爆弾が0でないなら
+		if (hitBomNum_ != 0) {
+			Border::GetInstance()->PushBack(hitBomNum_);
+			hitBomNum_ = 0;
+		}
 	}
 	else {
 		Border::GetInstance()->PushBackHipDrop(hitBomNum_);
