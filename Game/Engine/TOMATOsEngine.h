@@ -22,8 +22,8 @@ namespace TOMATOsEngine {
 
     static uint32_t kWindowWidth = 1280;
     static uint32_t kWindowHeight = 720;
-    static uint32_t kMonitorWidth = 100;
-    static uint32_t kMonitorHeight = 75;
+    static uint32_t kMonitorWidth = 160;
+    static uint32_t kMonitorHeight = 120;
 
     void Initialize();
     void Shutdown();
