@@ -474,13 +474,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case inGame:
 		{
 
+			score.Draw();
 			stageObjectManager->Draw();
 
 			//backGround.Draw();
 			ground->Draw();
 			wall->Draw();
 			border->Draw();
-			score.Draw();
 			player.Draw();
 			particleManager->Draw();
 			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);

@@ -46,6 +46,8 @@ private:
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
 	bool isHipDrop_ = false;
 
+	Vector4 playerParticleColor_;
+
 	const float gravity_ = -0.035f;
 	const float moveAcceleration_ = 0.06f;
 	const float airAcceleration_ = 0.03f;
