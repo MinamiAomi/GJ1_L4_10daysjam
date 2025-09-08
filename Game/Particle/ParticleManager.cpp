@@ -36,8 +36,8 @@ void ParticleManager::Update() {
 		if (ImGui::Button("Create")) {
 			//circle_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,5);
 			//follow_->Create({25.0,20.0f},Vector4(0.0f,1.0f,0.0f,1.0f),0,5);
-			splash_->Create({ 40.0,20.0f }, { 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 20);
-			pop_->Create({ 40.0,20.0f }, Vector4(1.0f, 1.0f, 1.0f, 1.0f), 10);
+			splash_->Create({ 40.0,20.0f }, { 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 20);
+			//pop_->Create({ 40.0,20.0f }, Vector4(1.0f, 1.0f, 1.0f, 1.0f), 10);
 			//pop_->Create({40.0,20.0f},Vector4(1.0f,1.0f,1.0f,1.0f),10);
 			//yenLetter_->Create({40.0,20.0f},Vector4(1.0f,1.0f,0.0f,1.0f),0);
 			//verticleLine_->Create({ 45.0,20.0f }, Vector4(1.0f, 0.0f, 1.0f, 1.0f), 0, {5.0f,1.0f});

@@ -18,9 +18,20 @@ void Player::Initialize() {
 	isHipDrop_ = false;
 	isFacing = true;
 	rotate_ = 0.0f;
+	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
 }
 
 void Player::Update() {
+#ifdef _DEBUG
+	ImGui::Begin("InGame");
+	if (ImGui::BeginMenu("Player")) {
+		ImGui::Text("Position:x%f,y:%f", position_.x, position_.y);
+		ImGui::EndMenu();
+	}
+	ImGui::End();
+#endif // _DEBUG
+
+
 	const auto& pad = TOMATOsEngine::GetGamePadState();
 	const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
@@ -29,10 +40,10 @@ void Player::Update() {
 
 	//HipDrop
 	if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-	   ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && (!isOnGround_ && !isWallSliding_))) {
+		((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && (!isOnGround_ && !isWallSliding_))) {
 		isHipDrop_ = true;
 	}
-	
+
 	if (!isHipDrop_) {
 		Move();
 		if (!isOnGround_) {
@@ -111,6 +122,8 @@ void Player::Move() {
 			//壁キック
 			velocity_.y = wallJumpPower_.y;
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
+			Vector2 particlePos = { position_.x + (isFacing ? (size_.x / 2.0f) : (-size_.x / 2.0f)) ,position_.y };
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? 1.0f : -1.0f ,0.0f }, playerParticleColor_, 8);
 		}
 	}
 
@@ -135,6 +148,8 @@ void Player::HipDrop()
 	}
 
 	if (isOnGround_) {
+		Vector2 particlePos = { position_.x,position_.y + (-size_.y / 2.0f + 0.1f) };
+		ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { 0.0f,1.0f }, { 1.0f,1.0f,1.0,1.0f }, 8);
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
@@ -171,7 +186,7 @@ void Player::CheckCollisions()
 		}
 		isOnGround_ = true;
 	}
-	
+
 	//壁
 	if (position_.x <= Wall::GetInstance()->GetPosition() + size_.x / 2.0f) {
 		position_.x = Wall::GetInstance()->GetPosition() + size_.x / 2.0f;

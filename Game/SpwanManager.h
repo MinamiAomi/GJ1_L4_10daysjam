@@ -16,4 +16,8 @@ private:
 
 	float range_;
 	float position_;
+
+	float bombRadius_;
+	//どの高さからスポーンするか
+	float offset_;
 };
