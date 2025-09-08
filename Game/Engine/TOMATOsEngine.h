@@ -45,6 +45,9 @@ namespace TOMATOsEngine {
     void SetBlendMode(BlendMode blendMode);
 
     void SetCameraMatrix(const Matrix4x4& matrix);
+    void SetLineShakeX(bool apply, float value);
+    void SetLineShakeY(bool apply, float value);
+    void SetLineShakeZ(bool apply, float value);
     void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color);
     void DrawLine3D(const Vector2& start, const Vector2& end,float z, uint32_t color);
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color);

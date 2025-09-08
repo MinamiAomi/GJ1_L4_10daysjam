@@ -61,7 +61,6 @@ void Player::Update() {
 	CheckCollisions();
 
 	playerModel_.Update();
-	PushBack();
 }
 
 void Player::Draw() {
@@ -132,6 +131,12 @@ void Player::Move() {
 	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
 	}
+
+	// 爆弾が0でないなら
+	if (hitBomNum_ != 0) {
+		Border::GetInstance()->PushBack(hitBomNum_);
+		hitBomNum_ = 0;
+	}
 }
 
 void Player::HipDrop()
@@ -153,6 +158,9 @@ void Player::HipDrop()
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
+		// 爆発はここ
+		Border::GetInstance()->PushBackHipDrop(hitBomNum_);
+		hitBomNum_ = 0;
 	}
 }
 
