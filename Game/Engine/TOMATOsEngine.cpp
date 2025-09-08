@@ -208,6 +208,9 @@ namespace TOMATOsEngine {
         DrawLine3D({ start.x, start.y, 0.0f }, { end.x, end.y, 0.0f }, color);
     }
 
+    void DrawLine3D(const Vector2& start, const Vector2& end, float z, uint32_t color) {
+        DrawLine3D({ start.x, start.y, z }, { end.x, end.y, z }, color);
+    }
 
     void DrawTriangle(const Vector2& pos0, const Vector2& pos1, const Vector2& pos2, uint32_t color) {
         color = RGBAtoABGR(color);
@@ -551,6 +554,80 @@ namespace TOMATOsEngine {
     {
         DrawBoxLine3D(square.center, square.size, square.radian, color);
     }
+
+    void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, uint32_t color) {
+        const int numVertices = 10;
+        std::vector<Vector2> vertices(numVertices);
+
+        for (int i = 0; i < numVertices; ++i) {
+            float radius = (i % 2 == 0) ? outerRadius : innerRadius;
+
+            float angle = (2.0f * Math::Pi * i / numVertices) - (Math::Pi / 2.0f);
+
+            vertices[i].x = center.x + radius * std::cos(angle);
+            vertices[i].y = center.y + radius * std::sin(angle);
+        }
+
+        for (int i = 0; i < numVertices; ++i) {
+            const Vector2& startPoint = vertices[i];
+            const Vector2& endPoint = vertices[(i + 1) % numVertices];
+
+            DrawLine3D(startPoint, endPoint,z, color);
+        }
+    }
+
+    void DrawWavingFlower(const Vector2& basePos,float z, float stemHeight, float time,uint32_t color) {
+        // === 揺れの計算 ===
+        float flowerTilt = std::sin(time * 1.0f) * 0.1f;
+
+        // === 花の描画 ===
+
+        float petalLength = 3.0f;
+        float petalRadius = 2.0f;
+        float centerRadius = 1.25f;
+
+        Vector2 flowerCenter = { basePos.x, basePos.y + stemHeight + centerRadius };
+        flowerCenter.x += std::sin(time * 1.0f) * 1.0f;
+        flowerCenter.y;
+
+
+        for (int i = 0; i < 5; ++i) {
+            float angle = (2.0f * Math::Pi * i / 5.0f) + flowerTilt;
+            Vector2 p2 = { flowerCenter.x + std::cos(angle) * petalRadius, flowerCenter.y + std::sin(angle) * petalRadius };
+            Vector2 p3 = { flowerCenter.x + std::cos(angle) * petalLength, flowerCenter.y + std::sin(angle) * petalLength };
+            DrawLine3D(p2, p3,z, color);
+        }
+
+        Vector2 underFlowerPoint;
+
+        for (int i = 0; i < 8; ++i) {
+            float angle1 = (2.0f * Math::Pi * i / 8.0f);
+            float angle2 = (2.0f * Math::Pi * (i + 1) / 8.0f);
+            Vector2 c1 = { flowerCenter.x + std::cos(angle1) * centerRadius, flowerCenter.y + std::sin(angle1) * centerRadius };
+            Vector2 c2 = { flowerCenter.x + std::cos(angle2) * centerRadius, flowerCenter.y + std::sin(angle2) * centerRadius };
+            DrawLine3D(c1, c2,z, color);
+            if (i == 5) {
+                underFlowerPoint = c2;
+            }
+        }
+
+        // === 茎の描画 ===
+
+        DrawLine3D(basePos, underFlowerPoint, z, color);
+
+        // === 草の描画 ===
+        float grassWidth = 4.0f;
+        float grassHeight = 2.0f;
+        float grassSwayXOffset = std::sin(time * 1.0f) * 0.5f;
+        float grassSwayYOffset = std::sin(time * 1.0f) * 0.5f;
+
+        Vector2 grassL_tip = { basePos.x - grassWidth / 2.0f + grassSwayXOffset, basePos.y + grassHeight + grassSwayYOffset };
+        Vector2 grassR_tip = { basePos.x + grassWidth / 2.0f + grassSwayXOffset, basePos.y + grassHeight + grassSwayYOffset };
+
+        DrawLine3D(basePos, grassL_tip, z, color);
+        DrawLine3D(basePos, grassR_tip, z, color);
+    }
+
 
     bool IsKeyPressed(unsigned char keycode) {
         return input->IsKeyPressed(keycode);

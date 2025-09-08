@@ -109,6 +109,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 音
+	//イワシロ音楽素材 使用の際は追記
 	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
 	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
 	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
@@ -118,7 +119,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// タイトルははじめから流す
 	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-	TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
+	TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
 	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
 	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
 	// 音の溜め必要
@@ -167,8 +168,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	BackGround backGround;
 	backGround.Initialize();
-	backGround.SetPlayer(&player);
-
+	
 
 	Score score;
 	score.Initialize();
@@ -303,6 +303,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 							TOMATOsEngine::StopAudio(titlePlayHandle);
 							// インゲームBGM
 							ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+							TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
 							break;
 						case TitleSceneState::operation:
 							TOMATOsEngine::SwitchViewMode();
@@ -473,14 +474,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		case inGame:
 		{
-
+			backGround.Draw();
+			score.Draw();
 			stageObjectManager->Draw();
 
 			//backGround.Draw();
 			ground->Draw();
 			wall->Draw();
 			border->Draw();
-			score.Draw();
 			player.Draw();
 			particleManager->Draw();
 			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);

@@ -6,7 +6,6 @@
 #include "Math/MathUtils.h"
 #include "TextureHandle.h"
 
-class Player;
 class BackGround {
 private:
 	
@@ -18,14 +17,15 @@ public:
 	void Update();
 	void Draw();
 
-	void SetPlayer(Player* player) { player_ = player; }
 	
 private:
-	// フレーム
-	TextureHandle fream_TextureHandle_;
-	Vector2 fream_Position_;
-	Vector2 fream_Size_;
-	float fream_ColorH_;
-	Player* player_;
+	float space_;
+	float z_;
+	float y_;
+	float outerRadius_;
+	float innerRadius_;
+	float stemHeight_;
+	float time_;
+	float addTime_;
 };
 

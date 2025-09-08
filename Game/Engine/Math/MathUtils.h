@@ -179,6 +179,12 @@ public:
     static inline constexpr Vector2 Lerp(float t, const Vector2& start, const Vector2& end) noexcept {
         return start + t * (end - start);
     }
+    static inline constexpr Vector2 GetMidPoint(const Vector2& p1, const Vector2& p2) {
+        Vector2 midpoint;
+        midpoint.x = (p1.x + p2.x) / 2.0f;
+        midpoint.y = (p1.y + p2.y) / 2.0f;
+        return midpoint;
+    }
     static Vector2 Slerp(float t, const Vector2& start, const Vector2& end) noexcept;
     static Vector2 CatmullRomSpline(float t, const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3) noexcept;
     static Vector2 QuadraticBezierCurve(float t, const Vector2& p0, const Vector2& p1, const Vector2& p2) noexcept;

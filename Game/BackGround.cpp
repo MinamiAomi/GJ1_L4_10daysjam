@@ -32,25 +32,42 @@ void HSLToRGB(float hue, float saturation, float lightness, Vector4& rgb) {
 #pragma endregion
 
 BackGround::BackGround() {
-	// フレーム
-	fream_TextureHandle_ = TOMATOsEngine::LoadTexture("Resources/frame.png");
-	fream_Position_ = { float(TOMATOsEngine::kMonitorWidth) * 0.5f,float(TOMATOsEngine::kMonitorHeight) * 0.5f - 40.0f };
-	fream_Size_ = { float(TOMATOsEngine::kMonitorWidth),float(TOMATOsEngine::kMonitorHeight) };
-	fream_ColorH_ = 0.319f;
-	Initialize();
 }
 
 BackGround::~BackGround() {}
 
 void BackGround::Initialize() {
-	
+	space_ = 33.0f;
+	z_ = 4.4f;
+	y_ = 27.0f;
+	innerRadius_ = 2.0f;
+	outerRadius_ = 5.0f;
+	stemHeight_ = 3.0f;
+	time_ = 0.0f;
+	addTime_ = 0.02f;
 }
 
 void BackGround::Update() {
-	
+	time_ += addTime_;
+#ifdef _DEBUG
+	ImGui::Begin("InGame");
+	if (ImGui::BeginMenu("BackGround")) {
+		ImGui::DragFloat("z", &z_, 0.1f);
+		ImGui::DragFloat("y", &y_, 0.01f);
+		ImGui::DragFloat("space", &space_, 0.01f);
+		ImGui::DragFloat("innerRadius", &innerRadius_, 0.01f);
+		ImGui::DragFloat("outerRadius", &outerRadius_, 0.01f);
+		ImGui::DragFloat("stemHeight", &stemHeight_, 0.01f);
+		ImGui::DragFloat("addTime", &addTime_, 0.01f);
+		ImGui::EndMenu();
+	}
+	ImGui::End();
+#endif
 }
 
 void BackGround::Draw() {
-	// フレーム
-	TOMATOsEngine::DrawFrame({ 0.0f,0.0f }, fream_Size_, Vector2::zero, 0.0f, Vector2::zero, {640.0f,480.0f}, fream_TextureHandle_, Color::HSVA(fream_ColorH_, 1.0f, 1.0f, 0.4f));
+	for (int i = 0; i < 10; i++) {
+		TOMATOsEngine::DrawStar2D({0.0f + space_ * i,y_}, innerRadius_,outerRadius_,z_,0x666666FF);
+		TOMATOsEngine::DrawWavingFlower({ 0.0f + space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
+	}
 }
