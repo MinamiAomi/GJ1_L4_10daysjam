@@ -60,8 +60,14 @@ void Wall::Update() {
         }
 
         // 通常時のカメラ
-        camera_->SetPosition({ position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ });
-        camera_->SetRotate(Quaternion::identity);
+        // auto cameraPosition = Vector3::Lerp(transitionT, { position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ }, { position_, kCameraOffsetY, kCameraOffsetZ });
+        auto cameraPosition = Vector3{ position_, kCameraOffsetY, kCameraOffsetZ };
+        // auto cameraRotate = Quaternion::Slerp(transitionT, Quaternion::identity, Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian));
+        auto cameraRotate = Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian);
+
+        // 通常時のカメラ
+        camera_->SetPosition(cameraPosition);
+        camera_->SetRotate(cameraRotate);
     }
     // バースト
     else {
@@ -93,9 +99,12 @@ void Wall::Update() {
         else {
             transitionT = 1.0f - (burstT - (1.0f - transitionLength)) / transitionLength;
         }
-                 
-        auto cameraPosition = Vector3::Lerp(transitionT, { position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ }, { position_, kCameraOffsetY, kCameraOffsetZ });
-        auto cameraRotate = Quaternion::Slerp(transitionT, Quaternion::identity, Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian));
+        
+
+        // auto cameraPosition = Vector3::Lerp(transitionT, { position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ }, { position_, kCameraOffsetY, kCameraOffsetZ });
+        auto cameraPosition = Vector3{ position_, kCameraOffsetY, kCameraOffsetZ };
+        // auto cameraRotate = Quaternion::Slerp(transitionT, Quaternion::identity, Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian));
+        auto cameraRotate = Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian);
 
         // 通常時のカメラ
         camera_->SetPosition(cameraPosition);
