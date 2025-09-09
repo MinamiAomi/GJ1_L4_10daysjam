@@ -12,8 +12,14 @@ class Wall {
 public:
     static constexpr float kWallWidth = 2.0f;
     static constexpr float kWallHeight = 30.0f;
+    
+    static constexpr float kCameraOffsetX = 30.0f;
+    static constexpr float kCameraOffsetY = kWallHeight * 0.5f;
     static constexpr float kCameraOffsetZ = -44.0f;
-    static constexpr float kCameraRotateY = 33.0f;
+
+    static constexpr float kBurstCameraRotate = 33.0f;
+    static constexpr float kBurstCameraTransition = 0.5f;
+
     static constexpr float kInitializeSpeed = 0.05f;
     static constexpr float kSpeedFactor = 0.0001f;
     static constexpr float kSpeedLimit = 0.5f;
