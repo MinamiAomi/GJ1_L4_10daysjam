@@ -56,6 +56,24 @@ void BombManager::Draw()
 	}
 }
 
+void BombManager::AllDespawnBomb()
+{
+	for (auto& bomb : bombs_) {
+		if (bomb->GetIsAlive()) {
+			bomb->Despawn();
+		}
+	}
+
+	for (auto& bomb : hitBombs_) {
+		if (bomb->GetIsAlive()) {
+			bomb->Despawn();
+		}
+	}
+
+	bombs_.clear();
+	hitBombs_.clear();
+}
+
 void BombManager::SpawnBomb(const Vector2& position, float radius, int color)
 {
 	auto newBomb = std::make_unique<Bomb>();
