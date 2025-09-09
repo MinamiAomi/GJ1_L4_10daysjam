@@ -45,5 +45,11 @@ void HitBomb::OnPlayerHitCollision(Player* player)
 	ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
 	isAlive_ = false;
 
-	player;
+	//ヒップドロップしているかどうか
+	if (player->GetIsHipDrop()) {
+		Border::GetInstance()->PushBackHipDrop(-1);
+	}
+	else {
+		Border::GetInstance()->PushBack(1);
+	}
 }

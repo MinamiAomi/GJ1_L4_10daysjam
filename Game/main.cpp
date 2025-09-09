@@ -155,14 +155,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
     Ground* ground = Ground::GetInstance();
 
+    Player player;
     //初期化にWall使用
     Border* border = Border::GetInstance();
     border->Initialize();
+    border->SetPlayer(&player);
 
     ParticleManager* particleManager = ParticleManager::GetInstance();
     particleManager->Initialize();
 
-    Player player;
     player.Initialize();
     collisionManager->SetPlayer(&player);
 

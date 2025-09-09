@@ -52,11 +52,11 @@ private:
 	//押し戻し係数
 	float pushBackCoefficient_;
 	float pushBackHipDropCoefficient_;
-	float comboCoefficient_;
-	
-	//コンボ継続時間
-	float comboDuration_;
-	float comboTime_;
+	//float comboCoefficient_;
+	//
+	////コンボ継続時間
+	//float comboDuration_;
+	//float comboTime_;
 
 	int color_;
 	float firstPosition_;

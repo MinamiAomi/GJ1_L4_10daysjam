@@ -25,10 +25,10 @@ void Border::Initialize()
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 10.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
-	comboCoefficient_=1.05f;
+	//comboCoefficient_ = 1.05f;
 
-	comboDuration_ = 2.0f;
-	comboTime_ = 0.0f;
+	//comboDuration_ = 2.0f;
+	//comboTime_ = 0.0f;
 
 	hitBombNum_ = 0;
 
@@ -45,8 +45,8 @@ void Border::Update()
 		ImGui::DragFloat("EasingSpeed", &easingSpeed_, 0.01f);
 		ImGui::DragFloat("EushBackCoefficient", &pushBackCoefficient_, 1.0f);
 		ImGui::DragFloat("PushBackHipDropCoefficient", &pushBackHipDropCoefficient_, 0.1f);
-		ImGui::DragFloat("ComboCoefficient_", &comboCoefficient_, 0.01f);
-		ImGui::DragFloat("ComboDuration_", &comboDuration_, 0.1f);
+		//ImGui::DragFloat("ComboCoefficient_", &comboCoefficient_, 0.01f);
+		//ImGui::DragFloat("ComboDuration_", &comboDuration_, 0.1f);
 
 		ImGui::DragInt("AddPushBackCount", &addPushBackCount, 1, 0);
 		if (ImGui::Button("AddPushBack")) {
@@ -56,6 +56,8 @@ void Border::Update()
 	}
 	ImGui::End();
 #endif // _DEBUG
+
+	CalcBomb();
 
 	//押し戻しがなければ
 	if (pushBackPosition_ != 0.0f) {
@@ -90,6 +92,12 @@ void Border::Draw()
 
 void Border::PushBack(int add)
 {
+ 	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
+}
+
+void Border::PushBackHipDrop(int add)
+{
+	add;
 	hitBombNum_++;
 }
 
@@ -111,12 +119,8 @@ float Border::GetPushBackPosition()
 
 void Border::CalcBomb()
 {
-	/*if () {
-
+	if (!player_->GetIsHipDrop()) {
+		pushBackPosition_ = position_ + ((hitBombNum_* pushBackCoefficient_) * pushBackHipDropCoefficient_);
+		hitBombNum_ = 0;
 	}
-	if (player_->GetIsHipDrop()) {
-		pushBackPosition_ = position_ + (add * pushBackCoefficient_);
-
-		pushBackPosition_ = position_ + ((add * pushBackCoefficient_) * pushBackHipDropCoefficient_);
-	}*/
 }
