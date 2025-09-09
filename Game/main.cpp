@@ -51,20 +51,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
 #pragma region テクスチャハンドル
-    //タイトル
-    TextureHandle titleHandle = TOMATOsEngine::LoadTexture("Resources/BBtitle.png");
-    TextureHandle startTextureHandle = TOMATOsEngine::LoadTexture("Resources/startText.png");
-    TextureHandle operationTextureHandle = TOMATOsEngine::LoadTexture("Resources/operationText.png");
-    TextureHandle endTextureHandle = TOMATOsEngine::LoadTexture("Resources/endText.png");
-    TextureHandle arrowTextureHandle = TOMATOsEngine::LoadTexture("Resources/arrow.png");
-    //SpaceかBボタンを押してね画像
-    TextureHandle spaceorBTextureHandle = TOMATOsEngine::LoadTexture("Resources/spaceorb.png");
-    //ゲームオーバー
-    TextureHandle gameOverHandle = TOMATOsEngine::LoadTexture("Resources/gameOver.png");
-
-    //モニター内の地面
-    TextureHandle floorHandle = TOMATOsEngine::LoadTexture("Resources/floor.png");
-
     //シャットダウン
     TextureHandle shutdownTextureHandle = TOMATOsEngine::LoadTexture("Resources/shpere.png");
 #pragma endregion
@@ -182,6 +168,34 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     //int hexagonSevenSegmentDisplayNumber = 0;
 #pragma endregion
 
+#pragma region まとめとく
+
+    auto initializeInGame = [&]() {
+        gameScene = inGame;
+
+        collisionManager->Initialize();
+        stageObjectManager->Initialize();
+        spawnManager->Initialize();
+
+        wall->Initialize();
+        border->Initialize();
+        particleManager->Initialize();
+
+        backGround.Initialize();
+        player.Initialize();
+        player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
+        score.Initialize();
+
+        // 音
+        // タイトルBGM停止
+        TOMATOsEngine::StopAudio(titlePlayHandle);
+        // インゲームBGM
+        ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+        TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
+        };
+
+#pragma endregion
+
     while (TOMATOsEngine::BeginFrame()) {
         auto pad = TOMATOsEngine::GetGamePadState();
         auto prepad = TOMATOsEngine::GetGamePadPreState();
@@ -289,27 +303,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                         switch (titleSceneState)
                         {
                         case TitleSceneState::start:
-                            gameScene = inGame;
-
-                            collisionManager->Initialize();
-                            stageObjectManager->Initialize();
-                            spawnManager->Initialize();
-
-                            wall->Initialize();
-                            border->Initialize();
-                            particleManager->Initialize();
-
-                            backGround.Initialize();
-                            player.Initialize();
-                            player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-                            score.Initialize();
-
-							// 音
-							// タイトルBGM停止
-							TOMATOsEngine::StopAudio(titlePlayHandle);
-							// インゲームBGM
-							ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-							TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
+                            initializeInGame();
 							break;
 						case TitleSceneState::operation:
 							TOMATOsEngine::SwitchViewMode();
@@ -439,6 +433,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                 // タイトルBGM
                 titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
                 TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
+
+
                 // スペースオン
                 auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
                 TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.1f);
@@ -459,17 +455,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         case title:
         {
             title_.Draw();
-            //TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, titleHandle, 0xFFFFFFFF);
-
-            TOMATOsEngine::DrawSpriteRectAngle(spaceorBPosition, spaceorBSize, { 0.5f,0.5f }, 0.0f, {}, { 150.0f, 32.0f }, spaceorBTextureHandle, 0xFFFFFFFF);
-            // スタート
-            TOMATOsEngine::DrawSpriteRectAngle(startTextPosition, arrowTextSize, { 0.5f,0.5f }, 0.0f, {}, { 64.0f, 32.0f }, startTextureHandle, 0xFFFFFFFF);
-            // 操作
-            TOMATOsEngine::DrawSpriteRectAngle(operationTextPosition, arrowTextSize, { 0.5f,0.5f }, 0.0f, {}, { 64.0f, 32.0f }, operationTextureHandle, 0xFFFFFFFF);
-            // 終わり
-            TOMATOsEngine::DrawSpriteRectAngle(endTextPosition, arrowTextSize, { 0.5f,0.5f }, 0.0f, {}, { 64.0f, 32.0f }, endTextureHandle, 0xFFFFFFFF);
-            // 矢印
-            TOMATOsEngine::DrawSpriteRectAngle(arrowPosition, arrowSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f, 32.0f }, arrowTextureHandle, arrowColor);
+                    
             if (isShutdown) {
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);

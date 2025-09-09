@@ -6,12 +6,6 @@
 #include "ImGuiManager.h"
 #include "Easing.h"
 
-#ifdef _DEBUG
-static bool freeCamera = false;
-static Vector3 freeCameraPosition;
-static Vector3 freeCameraRotate;
-#endif // _DEBUG
-
 Wall* Wall::GetInstance() {
     static Wall instance;
     return &instance;
@@ -40,18 +34,6 @@ void Wall::Update() {
         if (ImGui::Button("burst")) {
             border_->PushBack(10);
         }
-        ImGui::Checkbox("FreeCamera", &freeCamera);
-        if (ImGui::BeginMenu("FreeCamera")) {
-            ImGui::DragFloat3("Position", &freeCameraPosition.x, 0.1f);
-            ImGui::DragFloat3("Rotate", &freeCameraRotate.x, 1.0f);
-            camera_->SetPosition(freeCameraPosition);
-            camera_->SetRotate(Quaternion::MakeFromEulerAngle(freeCameraRotate * Math::ToRadian));
-            if (ImGui::Button("SyncGameCamera")) {
-                freeCameraPosition = { position_, kWallHeight * 0.5f, kCameraOffsetZ };
-                freeCameraRotate = { 0.0f, kCameraRotateY, 0.0f };
-            }
-            ImGui::EndMenu();
-        }
         ImGui::EndMenu();
     }
     ImGui::End();
@@ -76,33 +58,50 @@ void Wall::Update() {
             burstElapsedTime_ = 0.0f;
             burstStartPosition_ = position_;
         }
+
+        // 通常時のカメラ
+        camera_->SetPosition({ position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ });
+        camera_->SetRotate(Quaternion::identity);
     }
     // バースト
     else {
         burstElapsedTime_ += kDeltaTime;
 
+        // 壁移動
         float burstEndPosition = border_->GetBorderSidePos() - kBurstEndDistance;
         float distance = burstEndPosition - burstStartPosition_;
         float duration = distance / kBurstSpeed;
-        float t = std::clamp(burstElapsedTime_ / duration, 0.0f, 1.0f);
-        position_ = burstStartPosition_ + (burstEndPosition - burstStartPosition_) * Easing::OutCubic(t);
+        float burstT = std::clamp(burstElapsedTime_ / duration, 0.0f, 1.0f);
+        position_ = burstStartPosition_ + (burstEndPosition - burstStartPosition_) * Easing::OutCubic(burstT);
 
-        if (t >= 1.0f) {
+        if (burstT >= 1.0f) {
             isBurst_ = false;
             position_ = burstEndPosition;
         }
+
+        // 
+        const float transitionLength = kBurstCameraTransition / duration;
+        float transitionT = 0.0f;
+        // 始まり演出
+        if (burstT <= transitionLength) {
+            transitionT = burstT / transitionLength;
+        }
+        else if (burstT < 1.0f - transitionLength) {
+            transitionT = 1.0f;
+        }
+        // 終わり演出
+        else {
+            transitionT = 1.0f - (burstT - (1.0f - transitionLength)) / transitionLength;
+        }
+                 
+        auto cameraPosition = Vector3::Lerp(transitionT, { position_ + kCameraOffsetX, kCameraOffsetY, kCameraOffsetZ }, { position_, kCameraOffsetY, kCameraOffsetZ });
+        auto cameraRotate = Quaternion::Slerp(transitionT, Quaternion::identity, Quaternion::MakeForYAxis(kBurstCameraRotate * Math::ToRadian));
+
+        // 通常時のカメラ
+        camera_->SetPosition(cameraPosition);
+        camera_->SetRotate(cameraRotate);
     }
 
-    // カメラの位置を固定角
-#ifdef _DEBUG
-    if (!freeCamera) {
-#endif // _DEBUG
-        camera_->SetPosition({ position_, kWallHeight * 0.5f, kCameraOffsetZ });
-        camera_->SetRotate(Quaternion::MakeForYAxis(kCameraRotateY * Math::ToRadian));
-        //camera_->SetRotate(Quaternion::identity);
-#ifdef _DEBUG
-    }
-#endif // _DEBUG
     camera_->UpdateMatrices();
     TOMATOsEngine::SetCameraMatrix(camera_->GetViewProjectionMatrix());
 }
