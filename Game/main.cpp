@@ -382,6 +382,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
             particleManager->Update();
 
+            //近づくとシェイク
+            float wallToBordarGap = border->GetBorderSidePos() - wall->GetPosition();
+            float shakeStartDistance = 24.0f;
+            float amplitude = 0.4f;
+            float shakeValue = (shakeStartDistance - wallToBordarGap) / shakeStartDistance;
+            if (shakeValue >= 0.0f) {
+                TOMATOsEngine::SetLineShakeX(true, shakeValue * amplitude);
+                TOMATOsEngine::SetLineShakeY(true, shakeValue * amplitude);
+            }
+
+            //まけ判定
+            if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop()) {
+                gameScene = gameClear;
+            }
+
             if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
                 TOMATOsEngine::RequestQuit();
             }

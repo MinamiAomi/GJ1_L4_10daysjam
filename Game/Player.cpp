@@ -12,7 +12,7 @@
 void Player::Initialize() {
 	position_ = Vector2::zero;
 	velocity_ = Vector2::zero;
-	size_ = { 3.0f, 3.0f };
+	size_ = { 2.0f, 2.0f };
 	playerModel_.Initialize(this);
 	isHipDrop_ = false;
 	isJumping_ = false;
@@ -31,38 +31,39 @@ void Player::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	if (!Wall::GetInstance()->IsBurst()) {
+		const auto& pad = TOMATOsEngine::GetGamePadState();
+		const auto prepad = TOMATOsEngine::GetGamePadPreState();
 
-	const auto& pad = TOMATOsEngine::GetGamePadState();
-	const auto prepad = TOMATOsEngine::GetGamePadPreState();
-
-	playerModel_.SetState(PlayerModel::kIdle);
+		playerModel_.SetState(PlayerModel::kIdle);
 
 
-	//HipDrop
-	if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-		((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && !isOnGround_)) {
-		isHipDrop_ = true;
-	}
-
-	if (!isHipDrop_) {
-		Move();
-		if (!isOnGround_) {
-			playerModel_.SetState(PlayerModel::kJump);
+		//HipDrop
+		if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
+			((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && !isOnGround_)) {
+			isHipDrop_ = true;
 		}
-	}
-	else {
-		playerModel_.SetState(PlayerModel::kHipDrop);
-		HipDrop();
-	}
 
-	if (Wall::GetInstance()->IsMove()) {
-		position_.x += Wall::GetInstance()->GetSpeed();
+		if (!isHipDrop_) {
+			Move();
+			if (!isOnGround_) {
+				playerModel_.SetState(PlayerModel::kJump);
+			}
+		}
+		else {
+			playerModel_.SetState(PlayerModel::kHipDrop);
+			HipDrop();
+		}
+
+		if (Wall::GetInstance()->IsMove()) {
+			position_.x += Wall::GetInstance()->GetSpeed();
+		}
+		position_ += velocity_;
+
+		CheckCollisions();
+
+		playerModel_.Update();
 	}
-	position_ += velocity_;
-
-	CheckCollisions();
-
-	playerModel_.Update();
 }
 
 void Player::Draw() {
