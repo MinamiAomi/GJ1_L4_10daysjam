@@ -47,9 +47,9 @@ void HitBomb::OnPlayerHitCollision(Player* player)
 
 	//ヒップドロップしているかどうか
 	if (player->GetIsHipDrop()) {
-		Border::GetInstance()->PushBackHipDrop(-1);
+		Border::GetInstance()->PushBackHipDrop(1);
 	}
 	else {
-		Border::GetInstance()->PushBack(1);
+		Border::GetInstance()->PushBack(-1);
 	}
 }

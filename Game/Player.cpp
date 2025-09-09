@@ -127,7 +127,6 @@ void Player::Move() {
 	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
 	}
-
 }
 
 void Player::HipDrop()

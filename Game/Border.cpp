@@ -23,7 +23,7 @@ void Border::Initialize()
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
-	pushBackCoefficient_ = 10.0f;
+	pushBackCoefficient_ = 5.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
 	//comboCoefficient_ = 1.05f;
 
@@ -43,7 +43,7 @@ void Border::Update()
 	if (ImGui::BeginMenu("Border")) {
 		ImGui::DragFloat("Position", &position_, 0.1f);
 		ImGui::DragFloat("EasingSpeed", &easingSpeed_, 0.01f);
-		ImGui::DragFloat("EushBackCoefficient", &pushBackCoefficient_, 1.0f);
+		ImGui::DragFloat("PushBackCoefficient", &pushBackCoefficient_, 1.0f);
 		ImGui::DragFloat("PushBackHipDropCoefficient", &pushBackHipDropCoefficient_, 0.1f);
 		//ImGui::DragFloat("ComboCoefficient_", &comboCoefficient_, 0.01f);
 		//ImGui::DragFloat("ComboDuration_", &comboDuration_, 0.1f);
@@ -92,13 +92,12 @@ void Border::Draw()
 
 void Border::PushBack(int add)
 {
- 	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
+	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
 }
 
 void Border::PushBackHipDrop(int add)
 {
-	add;
-	hitBombNum_++;
+	hitBombNum_ += add;
 }
 
 float Border::GetBorderSidePos()
@@ -119,8 +118,8 @@ float Border::GetPushBackPosition()
 
 void Border::CalcBomb()
 {
-	if (!player_->GetIsHipDrop()) {
-		pushBackPosition_ = position_ + ((hitBombNum_* pushBackCoefficient_) * pushBackHipDropCoefficient_);
+	if (hitBombNum_ != 0 && !player_->GetIsHipDrop()) {
+		pushBackPosition_ = position_ + ((hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_);
 		hitBombNum_ = 0;
 	}
 }

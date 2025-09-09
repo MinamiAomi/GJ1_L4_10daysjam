@@ -15,4 +15,5 @@ public:
 	BombManager& GetBombManager(){ return bombManager_; }
 private:
 	BombManager bombManager_;
+
 };

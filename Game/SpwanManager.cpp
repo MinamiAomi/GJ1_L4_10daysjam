@@ -143,7 +143,7 @@ void SpawnManager::SpawnHitBomb(int createCount)
 
 		// 重ならない位置が見つかった場合生成
 		if (!isOverlapping) {
-			bombManager.SpawnBomb(pos, bombRadius_, 0x00E6E6FF);
+			bombManager.SpawnHitBomb(pos, bombRadius_, 0x00E6E6FF);
 			spawnedBombs.push_back({ pos, bombRadius_ });
 		}
 	}
