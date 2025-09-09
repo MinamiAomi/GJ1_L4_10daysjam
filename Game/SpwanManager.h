@@ -11,6 +11,7 @@ private:
 	void Spawn();
 
 	void SpawnBomb(int createCount);
+	void SpawnHitBomb(int createCount);
 
 	int CalculationCreateCount();
 

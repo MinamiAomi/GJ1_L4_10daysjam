@@ -1,5 +1,6 @@
 #include "CollisionManager.h"
 
+#include "Bomb.h"
 #include "Player.h"
 
 CollisionManager* CollisionManager::GetInstance()
@@ -32,9 +33,8 @@ void CollisionManager::Update()
 		// プレイヤーと各コライダーの当たり判定
 		for (const auto& colliderA : colliders_) {
 			if (IsSphereCollision(colliderA->GetPosition(), colliderA->GetRadius() * 0.5f, player_->GetPosition(), player_->GetSize().x)) {
-				
-				colliderA->OnPlayerHitCollision();
-				player_->AddHitBom(); 
+
+				colliderA->OnPlayerHitCollision(player_);
 			}
 		}
 

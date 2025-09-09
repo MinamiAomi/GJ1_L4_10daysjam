@@ -227,6 +227,21 @@ namespace TOMATOsEngine {
         cameraMatrix = matrix;
     }
 
+    void SetLineShakeX(bool apply, float value) {
+        applyLineShakeX = apply;
+        lineShakeValue.x = value;
+    }
+
+    void SetLineShakeY(bool apply, float value) {
+        applyLineShakeY = apply;
+        lineShakeValue.y = value;
+    }
+    
+    void SetLineShakeZ(bool apply, float value) {
+        applyLineShakeZ = apply;
+        lineShakeValue.z = value;
+    }
+
     void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color) {
         DrawLine3D({ start.x, start.y, 0.0f }, { end.x, end.y, 0.0f }, color);
     }
@@ -614,11 +629,11 @@ namespace TOMATOsEngine {
             const Vector2& startPoint = vertices[i];
             const Vector2& endPoint = vertices[(i + 1) % numVertices];
 
-            DrawLine3D(startPoint, endPoint,z, color);
+            DrawLine3D(startPoint, endPoint, z, color);
         }
     }
 
-    void DrawWavingFlower(const Vector2& basePos,float z, float stemHeight, float time,uint32_t color) {
+    void DrawWavingFlower(const Vector2& basePos, float z, float stemHeight, float time, uint32_t color) {
         // === 揺れの計算 ===
         float flowerTilt = std::sin(time * 1.0f) * 0.1f;
 
@@ -637,7 +652,7 @@ namespace TOMATOsEngine {
             float angle = (2.0f * Math::Pi * i / 5.0f) + flowerTilt;
             Vector2 p2 = { flowerCenter.x + std::cos(angle) * petalRadius, flowerCenter.y + std::sin(angle) * petalRadius };
             Vector2 p3 = { flowerCenter.x + std::cos(angle) * petalLength, flowerCenter.y + std::sin(angle) * petalLength };
-            DrawLine3D(p2, p3,z, color);
+            DrawLine3D(p2, p3, z, color);
         }
 
         Vector2 underFlowerPoint;
@@ -647,7 +662,7 @@ namespace TOMATOsEngine {
             float angle2 = (2.0f * Math::Pi * (i + 1) / 8.0f);
             Vector2 c1 = { flowerCenter.x + std::cos(angle1) * centerRadius, flowerCenter.y + std::sin(angle1) * centerRadius };
             Vector2 c2 = { flowerCenter.x + std::cos(angle2) * centerRadius, flowerCenter.y + std::sin(angle2) * centerRadius };
-            DrawLine3D(c1, c2,z, color);
+            DrawLine3D(c1, c2, z, color);
             if (i == 5) {
                 underFlowerPoint = c2;
             }

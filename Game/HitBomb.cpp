@@ -1,4 +1,4 @@
-#include "Bomb.h"
+#include "HitBomb.h"
 
 #include "TOMATOsEngine.h"
 
@@ -10,7 +10,7 @@
 
 #include "Math/Color.h"
 
-void Bomb::Initialize(const Vector2& position, float radius, int color)
+void HitBomb::Initialize(const Vector2& position, float radius, int color)
 {
 	position_ = position;
 	radius_ = radius;
@@ -18,7 +18,7 @@ void Bomb::Initialize(const Vector2& position, float radius, int color)
 	isAlive_ = true;
 }
 
-void Bomb::Update()
+void HitBomb::Update()
 {
 	const auto& wall = Wall::GetInstance();
 	//wallに触れたら
@@ -27,12 +27,12 @@ void Bomb::Update()
 	}
 }
 
-void Bomb::Draw()
+void HitBomb::Draw()
 {
 	TOMATOsEngine::DrawBoxLine3D(position_, { radius_,radius_ }, color_);
 }
 
-void Bomb::OnCollision(const Vector2& position, float radius)
+void HitBomb::OnCollision(const Vector2& position, float radius)
 {
 	//自分が当たってるやつより左にいるときだけ押し戻し
 	if (position_.x > position.x) {
@@ -40,11 +40,10 @@ void Bomb::OnCollision(const Vector2& position, float radius)
 	}
 }
 
-void Bomb::OnPlayerHitCollision(Player* player)
+void HitBomb::OnPlayerHitCollision(Player* player)
 {
 	ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
 	isAlive_ = false;
 
-
-	player->AddHitBom();
+	player;
 }

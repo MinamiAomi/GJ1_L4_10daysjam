@@ -22,8 +22,8 @@ namespace TOMATOsEngine {
 
     static uint32_t kWindowWidth = 1280;
     static uint32_t kWindowHeight = 720;
-    static uint32_t kMonitorWidth = 100;
-    static uint32_t kMonitorHeight = 75;
+    static uint32_t kMonitorWidth = 160;
+    static uint32_t kMonitorHeight = 120;
 
     void Initialize();
     void Shutdown();
@@ -45,6 +45,9 @@ namespace TOMATOsEngine {
     void SetBlendMode(BlendMode blendMode);
 
     void SetCameraMatrix(const Matrix4x4& matrix);
+    void SetLineShakeX(bool apply, float value);
+    void SetLineShakeY(bool apply, float value);
+    void SetLineShakeZ(bool apply, float value);
     void DrawLine3D(const Vector2& start, const Vector2& end, uint32_t color);
     void DrawLine3D(const Vector2& start, const Vector2& end,float z, uint32_t color);
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color);

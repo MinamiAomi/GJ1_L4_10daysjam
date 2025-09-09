@@ -23,6 +23,22 @@ void BombManager::Update()
 			CollisionManager::GetInstance()->AddCollision(bomb.get());
 		}
 	}
+
+	for (auto& bomb : hitBombs_) {
+		if (bomb->GetIsAlive()) {
+			bomb->Update();
+		}
+	}
+
+	hitBombs_.remove_if([](const std::unique_ptr<HitBomb>& bomb) {
+		return !bomb->GetIsAlive();
+		});
+
+	for (auto& bomb : hitBombs_) {
+		if (bomb->GetIsAlive()) {
+			CollisionManager::GetInstance()->AddCollision(bomb.get());
+		}
+	}
 }
 
 void BombManager::Draw()
@@ -32,13 +48,28 @@ void BombManager::Draw()
 			bomb->Draw();
 		}
 	}
+
+	for (auto& bomb : hitBombs_) {
+		if (bomb->GetIsAlive()) {
+			bomb->Draw();
+		}
+	}
 }
 
-void BombManager::Spawn(const Vector2& position, float radius, int color)
+void BombManager::SpawnBomb(const Vector2& position, float radius, int color)
 {
 	auto newBomb = std::make_unique<Bomb>();
 
 	newBomb->Initialize(position, radius, color);
 
 	bombs_.push_back(std::move(newBomb));
+}
+
+void BombManager::SpawnHitBomb(const Vector2& position, float radius, int color)
+{
+	auto newBomb = std::make_unique<HitBomb>();
+
+	newBomb->Initialize(position, radius, color);
+
+	hitBombs_.push_back(std::move(newBomb));
 }
