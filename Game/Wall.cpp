@@ -64,6 +64,8 @@ void Wall::Update() {
     if (!isBurst_) {
         // 自動で動く
         if (isMove_) {
+            speed_ = kInitializeSpeed + position_ * kSpeedFactor;
+            speed_ = std::min(speed_, kSpeedLimit);
             position_ += speed_;
         }
 

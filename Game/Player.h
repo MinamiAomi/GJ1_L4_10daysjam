@@ -48,7 +48,7 @@ private:
 
 	Vector4 playerParticleColor_;
 
-	const float gravity_ = -0.035f;
+	const float gravity_ = -0.015f;
 	const float moveAcceleration_ = 0.06f;
 	const float airAcceleration_ = 0.03f;
 	const float maxMoveSpeed_ = 0.45f;
