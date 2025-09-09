@@ -24,8 +24,6 @@ public:
 	/// <param name="add"></param>
 	void PushBack(int add);
 
-	void PushBackHipDrop(int add);
-
 	bool IsMove() { return pushBackPosition_ != 0.0f; }
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
@@ -39,6 +37,9 @@ public:
 	float GetPushBackPosition();
 
 	void SetPlayer(Player* player) { player_ = player; }
+
+	//プッシュバックの大きさを返す
+	float GetPushBackScore();
 private:
 	//ボムの計算
 	void CalcBomb();
@@ -64,4 +65,5 @@ private:
 	int hitBombNum_;
 
 	Player* player_;
+	bool prePlayerHipDrop_;
 };

@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "TextureHandle.h"
 #include "Math/MathUtils.h"
+#include "Math/Color.h"
 
 class Score {
 public:
@@ -22,8 +22,9 @@ private:
 	//文字の間
 	float spacing_;
 	// 色
-	int color_;
-	int defaultColor_;
+	Color color_;
+	Color defaultColor_;
+	Color burstColor_;
 
 	//文字のサイズ
 	float scale_;

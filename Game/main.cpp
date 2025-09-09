@@ -249,53 +249,54 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                     }
 #pragma region キー入力
                     //下押したとき
-                    if (TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-                        TOMATOsEngine::IsKeyTrigger(DIK_DOWN) ||
-                        ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
-                        (pad.Gamepad.sThumbLY < -5000 &&
-                            prepad.Gamepad.sThumbLY <= 4000.0f &&
-                            prepad.Gamepad.sThumbLY >= -4000.0f)) {
-                        //カウントがオーバーしてたら
-                        int currentStateInt = static_cast<int>(titleSceneState);
-                        int nextStateInt = currentStateInt + 1;
+                    //if (TOMATOsEngine::IsKeyTrigger(DIK_S) ||
+                    //    TOMATOsEngine::IsKeyTrigger(DIK_DOWN) ||
+                    //    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
+                    //    (pad.Gamepad.sThumbLY < -5000 &&
+                    //        prepad.Gamepad.sThumbLY <= 4000.0f &&
+                    //        prepad.Gamepad.sThumbLY >= -4000.0f)) {
+                    //    //カウントがオーバーしてたら
+                    //    int currentStateInt = static_cast<int>(titleSceneState);
+                    //    int nextStateInt = currentStateInt + 1;
 
-                        //次が範囲外か
-                        if (nextStateInt >= static_cast<int>(TitleSceneState::count)) {
-                            titleSceneState = TitleSceneState::start;
-                        }
-                        else {
-                            titleSceneState = static_cast<TitleSceneState>(nextStateInt);
-                        }
-                        //移動音
-                        TOMATOsEngine::PlayAudio(pickHandle);
-                        //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
-                        arrowColor = 0xFFFFFFFF;
-                    }
-                    //上押したとき
-                    if (TOMATOsEngine::IsKeyTrigger(DIK_W) ||
-                        TOMATOsEngine::IsKeyTrigger(DIK_UP) ||
-                        ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
-                        (pad.Gamepad.sThumbLY > +5000 &&
-                            prepad.Gamepad.sThumbLY <= 4000.0f &&
-                            prepad.Gamepad.sThumbLY >= -4000.0f)) {
+                    //    //次が範囲外か
+                    //    if (nextStateInt >= static_cast<int>(TitleSceneState::count)) {
+                    //        titleSceneState = TitleSceneState::start;
+                    //    }
+                    //    else {
+                    //        titleSceneState = static_cast<TitleSceneState>(nextStateInt);
+                    //    }
+                    //    //移動音
+                    //    TOMATOsEngine::PlayAudio(pickHandle);
+                    //    //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
+                    //    arrowColor = 0xFFFFFFFF;
+                    //}
+                    ////上押したとき
+                    //if (TOMATOsEngine::IsKeyTrigger(DIK_W) ||
+                    //    TOMATOsEngine::IsKeyTrigger(DIK_UP) ||
+                    //    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
+                    //    (pad.Gamepad.sThumbLY > +5000 &&
+                    //        prepad.Gamepad.sThumbLY <= 4000.0f &&
+                    //        prepad.Gamepad.sThumbLY >= -4000.0f)) {
 
-                        //カウントがオーバーしてたら
-                        int currentStateInt = static_cast<int>(titleSceneState);
-                        int preStateInt = currentStateInt - 1;
+                    //    //カウントがオーバーしてたら
+                    //    int currentStateInt = static_cast<int>(titleSceneState);
+                    //    int preStateInt = currentStateInt - 1;
 
-                        //次が範囲外か
-                        if (preStateInt < 0) {
-                            int lastStateInt = static_cast<int>(TitleSceneState::count) - 1;
-                            titleSceneState = static_cast<TitleSceneState>(lastStateInt);
-                        }
-                        else {
-                            titleSceneState = static_cast<TitleSceneState>(preStateInt);
-                        }
-                        //移動音
-                        TOMATOsEngine::PlayAudio(pickHandle);
-                        //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
-                        arrowColor = 0xFFFFFFFF;
-                    }
+                    //    //次が範囲外か
+                    //    if (preStateInt < 0) {
+                    //        int lastStateInt = static_cast<int>(TitleSceneState::count) - 1;
+                    //        titleSceneState = static_cast<TitleSceneState>(lastStateInt);
+                    //    }
+                    //    else {
+                    //        titleSceneState = static_cast<TitleSceneState>(preStateInt);
+                    //    }
+                    //    //移動音
+                    //    TOMATOsEngine::PlayAudio(pickHandle);
+                    //    //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
+                    //    arrowColor = 0xFFFFFFFF;
+                    //}
+
                     if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
                         ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
                             !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {

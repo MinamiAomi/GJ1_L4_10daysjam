@@ -42,14 +42,24 @@ void HitBomb::OnCollision(const Vector2& position, float radius)
 
 void HitBomb::OnPlayerHitCollision(Player* player)
 {
-	ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
+	const auto& border = Border::GetInstance();
+	const auto& particle = ParticleManager::GetInstance();
+
 	isAlive_ = false;
 
 	//ヒップドロップしているかどうか
 	if (player->GetIsHipDrop()) {
-		Border::GetInstance()->PushBackHipDrop(1);
+		border->PushBack(1);
+		//スコア表示パーティクル
+		particle->GetNumber()->Create(position_, Color(Color::white), int(border->GetPushBackScore()));
+
 	}
 	else {
-		Border::GetInstance()->PushBack(-1);
+		border->PushBack(-1);
+		//スコア表示パーティクル
+		particle->GetNumber()->Create(position_, Color::Convert(color_), int(border->GetPushBackScore()));
 	}
+	//死亡時飛び散りパーティクル
+	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
+
 }

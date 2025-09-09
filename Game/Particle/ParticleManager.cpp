@@ -27,6 +27,9 @@ void ParticleManager::Initialize() {
 	// 縦のライン
 	verticleLine_ = new VerticalLine();
 	verticleLine_->Initialize();
+	//Number
+	number_ = new Number();
+	number_->Initialize();
 }
 
 void ParticleManager::Update() {
@@ -36,7 +39,8 @@ void ParticleManager::Update() {
 		if (ImGui::Button("Create")) {
 			//circle_->Create({20.0,20.0f},Vector4(0.0f,0.0f,1.0f,1.0f),0,5);
 			//follow_->Create({25.0,20.0f},Vector4(0.0f,1.0f,0.0f,1.0f),0,5);
-			splash_->Create({ 40.0,20.0f }, { 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 20);
+			//splash_->Create({ 40.0,20.0f }, { 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, 20);
+			number_->Create({ 100.0,20.0f }, { 1.0f, 1.0f,1.0f,1.0f },10);
 			//pop_->Create({ 40.0,20.0f }, Vector4(1.0f, 1.0f, 1.0f, 1.0f), 10);
 			//pop_->Create({40.0,20.0f},Vector4(1.0f,1.0f,1.0f,1.0f),10);
 			//yenLetter_->Create({40.0,20.0f},Vector4(1.0f,1.0f,0.0f,1.0f),0);
@@ -53,6 +57,7 @@ void ParticleManager::Update() {
 	pop_->Update();
 	yenLetter_->Update();
 	verticleLine_->Update();
+	number_->Update();
 }
 
 void ParticleManager::Draw() {
@@ -64,5 +69,6 @@ void ParticleManager::Draw() {
 	pop_->Draw();
 	yenLetter_->Draw();
 	verticleLine_->Draw();
+	number_->Draw();
 	TOMATOsEngine::SetBlendMode(kBlendModeNormal);
 }

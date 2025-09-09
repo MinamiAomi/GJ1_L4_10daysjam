@@ -12,7 +12,8 @@ void Score::Initialize()
 	position_ = { 20.0f,20.0f };
 	spacing_ = 4.5f;
 	scale_ = 0.3f;
-	defaultColor_ = 0x808080FF;
+	defaultColor_ = Color(0x808080FF);
+	burstColor_ = Color(0xFFd700FF);
 	color_ = defaultColor_;
 }
 
@@ -30,6 +31,19 @@ void Score::Update()
 	ImGui::End();
 #endif // _DEBUG
 	drawVertex_.clear();
+	
+	//カラーイージング
+	float wallPos = Wall::GetInstance()->GetPosition();
+	float borderPos = Border::GetInstance()->GetBorderSidePos();
+	float t = std::clamp((borderPos - wallPos) / Wall::kBurstDistance, 0.0f, 1.0f);
+
+	float r = std::lerp(defaultColor_.GetR(), burstColor_.GetR(), t);
+	float g = std::lerp(defaultColor_.GetG(), burstColor_.GetG(), t);
+	float b = std::lerp(defaultColor_.GetB(), burstColor_.GetB(), t);
+	float a = std::lerp(defaultColor_.GetA(), burstColor_.GetA(), t);
+
+	Color finalColor = Color::RGBA(r, g, b, a);
+	color_ = finalColor;
 
 	//大きいと更新
 	if (score_ < Border::GetInstance()->GetBorderSidePos()) {
@@ -41,12 +55,7 @@ void Score::Update()
 void Score::Draw() {
 	static	const int verticesPerHexagon = 6;
 
-
-
 	if (!drawVertex_.empty()) {
-
-		color_ = 0x808080FF;
-
 		for (size_t i = 0; i < drawVertex_.size(); i += verticesPerHexagon) {
 			for (int j = 0; j < verticesPerHexagon; ++j) {
 				Vector2 start = drawVertex_.at(i + j);

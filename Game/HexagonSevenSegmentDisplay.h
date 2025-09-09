@@ -12,6 +12,21 @@ public:
 
 	//数字の頂点を取得
 	std::vector<Vector2> GetNumberVertex(int num);
+
+	
+	void Draw(
+		int num,
+		const Vector2& pos,
+		float scale = 1.0f,
+		float spacing = 20.0f,
+		uint32_t color = 0xFFFFFFFF);
+	//ただの線
+	void DrawWirefradme(
+		int num,
+		const Vector2& pos,
+		float scale = 1.0f,
+		float spacing = 20.0f,
+		uint32_t color = 0xFFFFFFFF);
 private:
 	HexagonSevenSegmentDisplay();
 	HexagonSevenSegmentDisplay(const HexagonSevenSegmentDisplay&) = delete;
