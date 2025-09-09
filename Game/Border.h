@@ -6,7 +6,7 @@ class Player;
 class Border {
 public:
 	const float kWallWidth = 2.0f;
-	const float kWallHeight = 50.0f;
+	const float kWallHeight = 1000.0f;
 
 	static Border* GetInstance();
 

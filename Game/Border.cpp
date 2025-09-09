@@ -73,9 +73,9 @@ void Border::Update()
 
 void Border::Draw()
 {
-	const auto& wall = Wall::GetInstance();
+	//const auto& wall = Wall::GetInstance();
 
-	float top = wall->kWallHeight;
+	float top = kWallHeight;
 	float bottom = 0.0f;
 	float right = position_ + kWallWidth;
 	float left = position_;
