@@ -1,9 +1,15 @@
 #include "HexagonSevenSegmentDisplay.h"
 
+#include <string>    
+#include <algorithm> 
+#include <array>
+
+#include "TOMATOsEngine.h"
+
 HexagonSevenSegmentDisplay* HexagonSevenSegmentDisplay::GetInstance()
 {
 	static HexagonSevenSegmentDisplay instance;
-	return &instance;
+	return &instance; 
 }
 
 HexagonSevenSegmentDisplay::HexagonSevenSegmentDisplay()
@@ -38,6 +44,87 @@ std::vector<Vector2> HexagonSevenSegmentDisplay::GetNumberVertex(int num)
 	}
 
 	return all_vertices;
+}
+
+void HexagonSevenSegmentDisplay::Draw(int num, const Vector2& pos, float scale , float spacing , uint32_t color)
+{
+	std::string numStr = std::to_string(std::abs(num));
+
+	const int numDigits = static_cast<int>(numStr.length());
+	if (numDigits == 0) return;
+
+	const float totalWidth = (numDigits - 1) * spacing;
+
+	Vector2 drawingStartPosition = pos;
+	drawingStartPosition.x -= totalWidth *0.5f;
+
+	Vector2 currentCharacterPosition = drawingStartPosition;
+	const int verticesPerHexagon = 6;
+
+	for (char c : numStr) {
+		int digit = c - '0';
+
+		std::vector<Vector2> baseVertices = GetNumberVertex(digit);
+
+		for (size_t i = 0; i < baseVertices.size(); i += verticesPerHexagon) {
+
+			std::array<Vector2, verticesPerHexagon> transformedCorners;
+			for (int j = 0; j < verticesPerHexagon; ++j) {
+				const Vector2& baseVertex = baseVertices[i + j];
+				transformedCorners[j] = (baseVertex * scale) + currentCharacterPosition;
+			}
+
+			for (int j = 0; j < verticesPerHexagon; ++j) {
+				const Vector2& start = transformedCorners[j];
+				const Vector2& end = transformedCorners[(j + 1) % verticesPerHexagon];
+
+				TOMATOsEngine::DrawLine3D({ start.x, start.y }, { end.x, end.y }, color);
+			}
+		}
+
+		// 次の桁の描画位置へ移動
+		currentCharacterPosition.x += spacing;
+	}
+}
+
+void HexagonSevenSegmentDisplay::DrawWirefradme(int num, const Vector2& pos, float scale, float spacing, uint32_t color)
+{
+	std::string numStr = std::to_string(std::abs(num));
+
+	const int numDigits = static_cast<int>(numStr.length());
+	if (numDigits == 0) return;
+	const float totalWidth = (numDigits - 1) * spacing;
+	Vector2 drawingStartPosition = pos;
+	drawingStartPosition.x -= totalWidth / 2.0f;
+
+	Vector2 currentCharacterPosition = drawingStartPosition;
+
+	for (char c : numStr) {
+		int digit = c - '0';
+
+		const auto& required_segments = numberMap_.at(digit);
+
+		for (char segment_id : required_segments) {
+			const Vector2& segmentCenter = segmentCenters_.at(segment_id);
+			Vector2 localStart, localEnd;
+
+			if (segment_id == 'b' || segment_id == 'c' || segment_id == 'e' || segment_id == 'f') {
+				localStart = { 0.0f, -3.0f };
+				localEnd = { 0.0f, 3.0f };
+			}
+			else {
+				localStart = { -3.0f, 0.0f };
+				localEnd = { 3.0f, 0.0f };
+			}
+
+			Vector2 finalStart = ((localStart + segmentCenter) * scale) + currentCharacterPosition;
+			Vector2 finalEnd = ((localEnd + segmentCenter) * scale) + currentCharacterPosition;
+
+			TOMATOsEngine::DrawLine3D({ finalStart.x, finalStart.y, 0.0f }, { finalEnd.x, finalEnd.y, 0.0f }, color);
+		}
+
+		currentCharacterPosition.x += spacing;
+	}
 }
 
 std::vector<Vector2> HexagonSevenSegmentDisplay::GenerateSegmentVertices(char id)

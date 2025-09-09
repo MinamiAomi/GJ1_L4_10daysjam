@@ -285,6 +285,9 @@
     <ClInclude Include="Engine\LineRenderer.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Number.h">
+      <Filter>Game\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -489,6 +492,9 @@
     </ClCompile>
     <ClCompile Include="Title.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Number.cpp">
+      <Filter>Game\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

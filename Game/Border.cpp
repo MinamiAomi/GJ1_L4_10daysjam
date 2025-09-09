@@ -3,6 +3,7 @@
 #include "Engine/TOMATOsEngine.h"
 
 #include "Easing.h"
+#include "Particle/ParticleManager.h"
 
 #include "Wall.h"
 
@@ -92,11 +93,6 @@ void Border::Draw()
 
 void Border::PushBack(int add)
 {
-	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
-}
-
-void Border::PushBackHipDrop(int add)
-{
 	hitBombNum_ += add;
 }
 
@@ -116,10 +112,31 @@ float Border::GetPushBackPosition()
 }
 
 
+float Border::GetPushBackScore()
+{
+	if (player_->GetIsHipDrop()) {
+
+		return (hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_;
+	}
+	else {
+		return (hitBombNum_ * pushBackCoefficient_);
+	}
+}
+
 void Border::CalcBomb()
 {
-	if (hitBombNum_ != 0 && !player_->GetIsHipDrop()) {
-		pushBackPosition_ = position_ + ((hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_);
-		hitBombNum_ = 0;
+	prePlayerHipDrop_ = player_->GetIsHipDrop();
+	if (hitBombNum_ != 0) {
+		//ヒップドロップし終わりならここ
+		if ((!player_->GetIsHipDrop() && prePlayerHipDrop_)) {
+			pushBackPosition_ = position_ + ((hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_);
+			hitBombNum_ = 0;
+		}
+		//ヒップドロップしていなかったら
+		else if (!player_->GetIsHipDrop())
+		{
+			pushBackPosition_ = position_ + (hitBombNum_ * pushBackCoefficient_);
+			hitBombNum_ = 0;
+		}
 	}
 }

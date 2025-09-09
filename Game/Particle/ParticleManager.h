@@ -6,6 +6,7 @@
 #include "Particle/Pop.h"
 #include "Particle/YenLetter.h"
 #include "Particle/VerticalLine.h"
+#include "Number.h"
 
 class ParticleManager {
 public:
@@ -22,6 +23,7 @@ public:
 	Pop* GetPop() { return pop_; }
 	YenLetter* GetYenLetter() { return yenLetter_; }
 	VerticalLine* GetVerticalLine() { return verticleLine_; }
+	Number* GetNumber() { return number_; }
 private:
 	Circle* circle_;
 	Follow* follow_;
@@ -29,4 +31,5 @@ private:
 	Pop* pop_;
 	YenLetter* yenLetter_;
 	VerticalLine* verticleLine_;
+	Number* number_;
 };
