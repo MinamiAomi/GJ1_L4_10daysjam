@@ -20,7 +20,7 @@ Border* Border::GetInstance()
 
 void Border::Initialize()
 {
-	position_ = { Wall::GetInstance()->GetPosition() + TOMATOsEngine::kMonitorWidth };
+	position_ = { Wall::GetInstance()->GetPosition() + 100.0f};
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = 0.0f;
@@ -73,9 +73,9 @@ void Border::Update()
 
 void Border::Draw()
 {
-	const auto& wall = Wall::GetInstance();
+	//const auto& wall = Wall::GetInstance();
 
-	float top = wall->kWallHeight;
+	float top = kWallHeight;
 	float bottom = 0.0f;
 	float right = position_ + kWallWidth;
 	float left = position_;

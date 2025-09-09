@@ -17,6 +17,8 @@ public:
 	void SpawnBomb(const Vector2& position,float radius,int color);
 	void SpawnHitBomb(const Vector2& position,float radius,int color);
 
+	void AllDespawnBomb();
+
 	const std::list<std::unique_ptr<Bomb>>& GetBombs() const { return bombs_; }
 	const std::list<std::unique_ptr<HitBomb>>& GetHitBombs() const { return hitBombs_; }
 private:

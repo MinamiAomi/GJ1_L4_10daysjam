@@ -20,3 +20,8 @@ void StageObjectManager::Draw()
 {
 	bombManager_.Draw();
 }
+
+void StageObjectManager::Despawn()
+{
+	bombManager_.AllDespawnBomb();
+}
