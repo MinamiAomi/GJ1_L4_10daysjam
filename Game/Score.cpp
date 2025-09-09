@@ -15,9 +15,13 @@ void Score::Initialize()
 	defaultColor_ = Color(0x808080FF);
 	burstColor_ = Color(0xFFd700FF);
 	color_ = defaultColor_;
+
+	orbitAngle_ = 0.0f;
+	orbitSpeed_ = 0.5f;
+	orbitRadius_ = 250.0f;
 }
 
-void Score::Update()
+void Score::Update(bool isTitle)
 {
 #ifdef _DEBUG
 	ImGui::Begin("InGame");
@@ -31,25 +35,33 @@ void Score::Update()
 	ImGui::End();
 #endif // _DEBUG
 	drawVertex_.clear();
-	
-	//カラーイージング
-	float wallPos = Wall::GetInstance()->GetPosition();
-	float borderPos = Border::GetInstance()->GetBorderSidePos();
-	float t = std::clamp((borderPos - wallPos) / Wall::kBurstDistance, 0.0f, 1.0f);
+	if (!isTitle) {
 
-	float r = std::lerp(defaultColor_.GetR(), burstColor_.GetR(), t);
-	float g = std::lerp(defaultColor_.GetG(), burstColor_.GetG(), t);
-	float b = std::lerp(defaultColor_.GetB(), burstColor_.GetB(), t);
-	float a = std::lerp(defaultColor_.GetA(), burstColor_.GetA(), t);
+		//カラーイージング
+		float wallPos = Wall::GetInstance()->GetPosition();
+		float borderPos = Border::GetInstance()->GetBorderSidePos();
+		float t = std::clamp((borderPos - wallPos) / Wall::kBurstDistance, 0.0f, 1.0f);
 
-	Color finalColor = Color::RGBA(r, g, b, a);
-	color_ = finalColor;
+		float r = std::lerp(defaultColor_.GetR(), burstColor_.GetR(), t);
+		float g = std::lerp(defaultColor_.GetG(), burstColor_.GetG(), t);
+		float b = std::lerp(defaultColor_.GetB(), burstColor_.GetB(), t);
+		float a = std::lerp(defaultColor_.GetA(), burstColor_.GetA(), t);
 
-	//大きいと更新
-	if (score_ < Border::GetInstance()->GetBorderSidePos()) {
-		score_ = Border::GetInstance()->GetBorderSidePos();
+		Color finalColor = Color::RGBA(r, g, b, a);
+		color_ = finalColor;
+
+		//大きいと更新
+		if (score_ < Border::GetInstance()->GetBorderSidePos()) {
+			score_ = Border::GetInstance()->GetBorderSidePos();
+		}
 	}
-	UpdateDrawVertex();
+	else {
+		orbitAngle_ += orbitSpeed_ * (1.0f / 60.0f);
+		orbitAngle_ = std::fmodf(orbitAngle_, 2.0f * Math::Pi);
+
+		color_ = Color::white;
+	}
+	UpdateDrawVertex(isTitle);
 }
 
 void Score::Draw() {
@@ -66,8 +78,9 @@ void Score::Draw() {
 	}
 }
 
-void Score::UpdateDrawVertex()
+void Score::UpdateDrawVertex(bool isTitle)
 {
+	isTitle;
 	float score = score_ - Border::GetInstance()->GetBorderFirstPos();
 	// スコアを "0000.00" 形式に
 	char buffer[10];

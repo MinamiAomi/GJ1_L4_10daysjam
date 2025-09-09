@@ -9,12 +9,23 @@ class Score {
 public:
 	void Initialize();
 
-	void Update();
+	/// <summary>
+	/// タイトルシーンか
+	/// </summary>
+	/// <param name="isTitle"></param>
+	void Update(bool isTitle);
 
+
+	/// <summary>
+	/// タイトルシーンか
+	/// </summary>
+	/// <param name="isTitle"></param>
 	void Draw();
 
 	void SetPosition(const Vector2& pos) { position_ = pos; }
 private:
+	void UpdateDrawVertex(bool isTitle);
+
 	float score_;
 
 	Vector2 position_;
@@ -31,5 +42,8 @@ private:
 	//描画する頂点
 	std::vector<Vector2> drawVertex_;
 
-	void UpdateDrawVertex();
+	float orbitAngle_;
+	float orbitSpeed_;
+	float orbitRadius_;
+	float outlineThickness_;
 };

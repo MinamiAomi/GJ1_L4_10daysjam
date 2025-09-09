@@ -11,40 +11,13 @@
 void Title::Initialize()
 {
 	titleText_.Initialize();
-	animationTime_ = 0.0f;
 }
 
 void Title::Update()
 {
 
-	switch (state_)
-	{
-	case Title::first:
-	{
-		animationTime_ += 1.0f / 60.0f;
-		float t = std::clamp(animationTime_ / kAnimationDuration, 0.0f, 1.0f);
-		titleText_.AnimateFirst(t);
-		if (animationTime_ >= kAnimationDuration) {
-			state_ = title;
-			animationTime_ = 0.0f;
-		}
-	}
-	break;
-	case Title::title:
-	{
-		animationTime_ += 1.0f / 60.0f;
-		titleText_.AnimateTitleLoop();
-		//float t = std::clamp(animationTime_ / kAnimationDuration, 0.0f, 1.0f);
-	}
-	break;
-	case Title::ingame:
-	{
-
-	}
-	break;
-	default:
-		break;
-	}
+	animationTime_ += 1.0f / 60.0f;
+	titleText_.AnimateTitleLoop();
 }
 
 void Title::Draw()
@@ -142,7 +115,7 @@ void Title::TitleText::Draw()
 			if (dir2D.LengthSquare() == 0.0f) continue;
 			dir2D.Normalize();
 			Vector2 perp2D = { -dir2D.y, dir2D.x };
-			
+
 			float thickness = outlineThickness_ * scale_;
 			Vector2 halfPerp = perp2D * (thickness / 2.0f);
 
