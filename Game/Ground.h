@@ -5,6 +5,4 @@ public:
 
     void Draw();
 
-private:
-
 };
