@@ -269,7 +269,14 @@ public:
     inline explicit operator Vector2() const {
         return { x,y };
     }
-
+    //わたくしが作りました2025:09:09
+    friend inline Vector3 operator+(const Vector3& v3, const Vector2& v2) {
+        return { v3.x + v2.x, v3.y + v2.y, v3.z };
+    }
+    //わたくしが作りました2025:09:09
+    friend inline Vector3 operator+(const Vector2& v2, const Vector3& v3) {
+        return v3 + v2;
+    }
     friend inline constexpr Vector3 operator+(const Vector3& rhs) noexcept {
         return rhs;
     }

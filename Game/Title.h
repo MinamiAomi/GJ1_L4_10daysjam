@@ -18,7 +18,7 @@ private:
 		title,
 		//インゲームに移行
 		ingame,
-	}state_ = first;
+	} state_ = first;
 
 	//アニメーション管理
 	float animationTime_;
@@ -31,11 +31,11 @@ private:
 		const float kOutlineThickness = 0.1f;
 
 		void Initialize();
-		void Update(float animationTime);
+		void AnimateFirst(float t);
+		void AnimateTitleLoop();
 		void Draw();
 	private:
 		Vector2 position_;
-
 		//文字の大きさ
 		float scale_;
 		//文字の間隔
@@ -44,6 +44,13 @@ private:
 		float outlineThickness_;
 		//色
 		Vector4 color_;
+		//回転
+		float rotateAngle_;
+		float rotateSpeed_;
+		float rotateRadius_;
+	
+
+		float jitterAmount_;
 
 
 		const std::vector<std::vector<Vector2>> titleText_ = {
