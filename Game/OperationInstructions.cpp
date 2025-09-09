@@ -59,14 +59,17 @@ void OperationInstructions::Draw(const Vector3& translate, const Vector3& scale)
     }
 
     // stick
-    Vector3 stickAnimeOffset = { Math::Lerp(1.0f - std::abs(t * 2.0f - 1.0f), -0.2f, 0.2f), 0.0f, 0.0f};
+    float stickSwingValue = 0.2f;
+    Vector3 stickAnimeOffset = { Math::Lerp(1.0f - std::abs(t * 2.0f - 1.0f), -stickSwingValue, stickSwingValue), 0.0f, 0.0f};
     DrawCircle(stickPosition + stickAnimeOffset, insideStickSize, matrix);
     DrawCircle(stickPosition, outsideStickSize, matrix);
 
     // button
+    float buttonAnimeSize = Math::Lerp(1.0f - std::abs(t * 2.0f - 1.0f), buttonSize, buttonSize * 2.0f);
+    float buttonAnimeOffset = Math::Lerp(1.0f - std::abs(t * 2.0f - 1.0f), 0.0f, buttonSize);
+    DrawCircle(buttonPosition + Vector3{buttonDistance + buttonAnimeOffset, 0.0f, 0.0f}, buttonAnimeSize, matrix);
+    DrawCircle(buttonPosition + Vector3{0.0f, -buttonDistance - buttonAnimeOffset, 0.0f}, buttonAnimeSize, matrix);
 
-    DrawCircle(buttonPosition + Vector3{buttonDistance, 0.0f, 0.0f}, buttonSize, matrix);
-    DrawCircle(buttonPosition + Vector3{0.0f, -buttonDistance, 0.0f}, buttonSize, matrix);
     DrawCircle(buttonPosition + Vector3{-buttonDistance, 0.0f, 0.0f}, buttonSize, matrix);
     DrawCircle(buttonPosition + Vector3{0.0f, buttonDistance, 0.0f}, buttonSize, matrix);
 
