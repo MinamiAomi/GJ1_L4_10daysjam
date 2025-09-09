@@ -534,13 +534,13 @@ namespace TOMATOsEngine {
 
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color) {
 
-        color = RGBAtoABGR(color);
         if (transition->isPreScene) {
-            color = RGBAtoABGR(Math::LerpRGBA(color, 0xFFFFFFFF, transition->t));
+            color = Math::LerpRGBA(color, 0xFFFFFFFF, transition->t);
         }
         if (transition->isNextScene) {
-            color = RGBAtoABGR(Math::LerpRGBA(0xFFFFFFFF, color, transition->t));
+            color = Math::LerpRGBA(0xFFFFFFFF, color, transition->t2);
         }
+        color = RGBAtoABGR(color);
 
         Vector3 s = start;
         Vector3 e = end;
