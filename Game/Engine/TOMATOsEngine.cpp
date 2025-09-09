@@ -685,6 +685,72 @@ namespace TOMATOsEngine {
         DrawLine3D(basePos, grassR_tip, z, color);
     }
 
+    void DrawCrescentMoon(const Vector2& center,float z, float outerRadius, float thickness, float rotation, uint32_t color) {
+        const int segments = 30; // 形状の滑らかさ (値を大きくすると滑らかになる)
+
+        // 内側の円の中心のX座標オフセット。
+        // thicknessが外側の円と内側の円の中心の距離になります。
+        // このoffsetが小さいほど太く、大きいほど細い三日月になります。
+        float innerCircleOffsetX = thickness;
+
+        // 内側の円の半径は、外側の円と同じか、わずかに小さくする
+        float innerRadius = outerRadius * 0.95f; // 例: 外側の95%の半径
+
+        // 内側の円の中心座標を計算
+        // outerRadiusの「方向」にinnerCircleOffsetXだけずらす
+        Vector2 innerCircleCenter;
+        innerCircleCenter.x = center.x + std::cos(rotation) * innerCircleOffsetX;
+        innerCircleCenter.y = center.y + std::sin(rotation) * innerCircleOffsetX;
+
+        // 三日月を構成する2つの円弧の頂点を格納するリスト
+        std::vector<Vector2> pointsOuterArc;
+        std::vector<Vector2> pointsInnerArc;
+
+        // 描画する円弧の角度範囲を決定
+        // 三日月は通常、半円よりも少し狭い範囲で構成されます
+        // 例えば、-PI/2 から PI/2 (Y軸に沿った半円) の代わりに、
+        // -PI/3 から PI/3 (より狭い範囲) など
+        float arcStartAngle = rotation - Math::Pi / 2.0f; // 外側の円弧の開始角度 (例: -90度から)
+        float arcEndAngle = rotation + Math::Pi / 2.0f; // 外側の円弧の終了角度 (例: +90度まで)
+        // この角度範囲を調整することで三日月の「太さ」や「切り込み」の深さが変わります。
+        // 例: rotation - PI * 0.4f から rotation + PI * 0.4f にすると少し細くなる
+
+        // 外側の円弧の頂点を計算
+        for (int i = 0; i <= segments; ++i) {
+            float angle = arcStartAngle + (arcEndAngle - arcStartAngle) * ((float)i / segments);
+            pointsOuterArc.push_back({
+                center.x + std::cos(angle) * outerRadius,
+                center.y + std::sin(angle) * outerRadius
+                });
+        }
+
+        // 内側の円弧の頂点を計算
+        // こちらも同じ角度範囲で、ずらした中心から描画する
+        for (int i = 0; i <= segments; ++i) {
+            float angle = arcStartAngle + (arcEndAngle - arcStartAngle) * ((float)i / segments);
+            pointsInnerArc.push_back({
+                innerCircleCenter.x + std::cos(angle) * innerRadius,
+                innerCircleCenter.y + std::sin(angle) * innerRadius
+                });
+        }
+
+        // 三日月の輪郭を描画
+        for (size_t i = 0; i < segments; ++i) {
+            DrawLine3D(pointsOuterArc[i], pointsOuterArc[i + 1],z, color); // 外側の弧
+            DrawLine3D(pointsInnerArc[i], pointsInnerArc[i + 1],z, color); // 内側の弧
+        }
+
+        // 始点と終点を結んで三日月の形を閉じる
+        DrawLine3D(pointsOuterArc[0], pointsInnerArc[0],z, color); // 三日月の尖った部分の片方
+        DrawLine3D(pointsOuterArc[segments], pointsInnerArc[segments],z, color); // 三日月のもう一方の尖った部分
+
+        // 中を塗りつぶすための線
+        // 外側の弧と内側の弧の対応する点を結ぶ
+        for (size_t i = 0; i <= segments; ++i) {
+            DrawLine3D(pointsOuterArc[i], pointsInnerArc[i],z, color);
+        }
+    }
+
 
     bool IsKeyPressed(unsigned char keycode) {
         return input->IsKeyPressed(keycode);
