@@ -248,7 +248,6 @@
     <ClInclude Include="Wall.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\LineRenderer.h" />
     <ClInclude Include="Engine\LineRenderer.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -282,6 +281,9 @@
     </ClInclude>
     <ClInclude Include="Title.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LineRenderer.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

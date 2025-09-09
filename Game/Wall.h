@@ -18,18 +18,6 @@ public:
     static constexpr float kBurstDistance = 100.0f;
     static constexpr float kBurstEndDistance = 75.0f;
     static constexpr float kBurstSpeed = 100.0f;
-    static constexpr int kNumBurstEffects = 5;
-
-    class BurstEffect {
-    public:
-        void Initialize(Random::RandomNumberGenerator* rng, float borderPosition);
-        void Draw(float wallPosition);
-
-    private:
-        float offset_;
-        Vector2 position_;
-
-    };
 
     static Wall* GetInstance();
 
@@ -54,6 +42,5 @@ private:
     Camera* camera_;
     Random::RandomNumberGenerator rng_;
     Border* border_;
-    std::vector<BurstEffect> burstEffects_;
 
 };
