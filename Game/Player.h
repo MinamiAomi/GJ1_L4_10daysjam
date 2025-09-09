@@ -7,9 +7,6 @@
 #include "TextureHandle.h"
 #include "PlayerModel.h"
 
-class Field;
-class ParticleManager;
-
 class Player {
 public:
 
@@ -17,28 +14,25 @@ public:
 	void Update();
 	void Draw();
 
-	void SetPosition (const Vector2& position) { position_ = position; }
-	void AddHitBom();
-	bool GetFacing () const { return isFacing; }
-	Vector2 GetSize ()const { return size_; }
+	void SetPosition(const Vector2& position) { position_ = position; }
+	bool GetFacing() const { return isFacing; }
+	Vector2 GetSize()const { return size_; }
 	Vector2 GetPosition()const { return position_; }
 	Vector2 GetVelocity() const { return velocity_; }
 	float GetRotate()const { return rotate_; }
+	bool GetIsHipDrop() const { return isHipDrop_; }
 private:
 
 	void Move();
 	void HipDrop();
-	void PushBack();
 	void CheckCollisions();
 
 	PlayerModel playerModel_;
-	
+
 	Vector2 position_;
 	float rotate_;
 	Vector2 velocity_;
 	Vector2 size_;
-
-	int hitBomNum_ = 0;
 
 	bool isOnGround_ = false;
 	bool isWallSliding_ = false;

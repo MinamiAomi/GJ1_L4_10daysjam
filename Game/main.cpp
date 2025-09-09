@@ -458,7 +458,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         case title:
         {
             title_.Draw();
-            TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, titleHandle, 0xFFFFFFFF);
+            //TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, titleHandle, 0xFFFFFFFF);
 
             TOMATOsEngine::DrawSpriteRectAngle(spaceorBPosition, spaceorBSize, { 0.5f,0.5f }, 0.0f, {}, { 150.0f, 32.0f }, spaceorBTextureHandle, 0xFFFFFFFF);
             // スタート

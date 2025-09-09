@@ -62,7 +62,7 @@ void Title::TitleText::Initialize()
 	rotateAngle_ = 0.0f;
 	rotateSpeed_ = -0.5f;
 	rotateRadius_ = 20.0f;
-	jitterAmount_ = 0.5f;
+	jitterAmount_ = 0.0f;
 }
 
 

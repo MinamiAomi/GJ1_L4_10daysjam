@@ -6,6 +6,8 @@
 
 #include "Wall.h"
 
+#include "Player.h"
+
 //収束値
 static const float SNAP_THRESHOLD = 0.01f;
 
@@ -23,6 +25,12 @@ void Border::Initialize()
 	pushBackPosition_ = 0.0f;
 	pushBackCoefficient_ = 10.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
+	comboCoefficient_=1.05f;
+
+	comboDuration_ = 2.0f;
+	comboTime_ = 0.0f;
+
+	hitBombNum_ = 0;
 
 	color_ = 0xFFFFFFFF;
 }
@@ -37,6 +45,8 @@ void Border::Update()
 		ImGui::DragFloat("EasingSpeed", &easingSpeed_, 0.01f);
 		ImGui::DragFloat("EushBackCoefficient", &pushBackCoefficient_, 1.0f);
 		ImGui::DragFloat("PushBackHipDropCoefficient", &pushBackHipDropCoefficient_, 0.1f);
+		ImGui::DragFloat("ComboCoefficient_", &comboCoefficient_, 0.01f);
+		ImGui::DragFloat("ComboDuration_", &comboDuration_, 0.1f);
 
 		ImGui::DragInt("AddPushBackCount", &addPushBackCount, 1, 0);
 		if (ImGui::Button("AddPushBack")) {
@@ -80,12 +90,7 @@ void Border::Draw()
 
 void Border::PushBack(int add)
 {
-	pushBackPosition_ = position_ + (add * pushBackCoefficient_);
-}
-
-void Border::PushBackHipDrop(int add)
-{
-	pushBackPosition_ = position_ + ((add * pushBackCoefficient_) * pushBackHipDropCoefficient_);
+	hitBombNum_++;
 }
 
 float Border::GetBorderSidePos()
@@ -101,4 +106,17 @@ float Border::GetBorderFirstPos()
 float Border::GetPushBackPosition()
 {
 	return pushBackPosition_;
+}
+
+
+void Border::CalcBomb()
+{
+	/*if () {
+
+	}
+	if (player_->GetIsHipDrop()) {
+		pushBackPosition_ = position_ + (add * pushBackCoefficient_);
+
+		pushBackPosition_ = position_ + ((add * pushBackCoefficient_) * pushBackHipDropCoefficient_);
+	}*/
 }

@@ -2,7 +2,7 @@
 
 #include "Math/MathUtils.h"
 
-
+class Player;
 class Border {
 public:
 	const float kWallWidth = 3.0f;
@@ -37,7 +37,12 @@ public:
 
 	//ボーダーが移動する
 	float GetPushBackPosition();
+
+	void SetPlayer(Player* player) { player_ = player; }
 private:
+	//ボムの計算
+	void CalcBomb();
+
 	//手前のライン
 	float position_;
 	//押し戻しのポジション
@@ -47,7 +52,16 @@ private:
 	//押し戻し係数
 	float pushBackCoefficient_;
 	float pushBackHipDropCoefficient_;
+	float comboCoefficient_;
+	
+	//コンボ継続時間
+	float comboDuration_;
+	float comboTime_;
 
 	int color_;
 	float firstPosition_;
+
+	int hitBombNum_;
+
+	Player* player_;
 };
