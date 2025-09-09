@@ -38,6 +38,7 @@ private:
 	bool isWallSliding_ = false;
 	bool isFacing = true; // 向いている方向(false 左,true 右 )
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
+	bool isJumping_ = false;
 	bool isHipDrop_ = false;
 
 	Vector4 playerParticleColor_;
@@ -48,6 +49,7 @@ private:
 	const float maxMoveSpeed_ = 0.45f;
 	const float friction_ = 0.9f;
 	const float jumpPower_ = 0.8f;
+	const float jumpStopForceMultiplier_ = 0.5f;
 	const float wallSlideSpeed_ = -0.15f;
 	const Vector2 wallJumpPower_ = { 0.75f,0.65f };
 	const float hipDropRotateSpeed_ = 36.0f * Math::ToRadian;

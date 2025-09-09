@@ -15,6 +15,7 @@ void Player::Initialize() {
 	size_ = { 3.0f, 3.0f };
 	playerModel_.Initialize(this);
 	isHipDrop_ = false;
+	isJumping_ = false;
 	isFacing = true;
 	rotate_ = 0.0f;
 	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
@@ -39,7 +40,7 @@ void Player::Update() {
 
 	//HipDrop
 	if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-		((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && (!isOnGround_ && !isWallSliding_))) {
+		((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && !isOnGround_)) {
 		isHipDrop_ = true;
 	}
 
@@ -94,8 +95,6 @@ void Player::Move() {
 		playerModel_.SetState(PlayerModel::kMove);
 	}
 
-	bool isJumpPressed = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
-
 	float acceleration = isOnGround_ ? moveAcceleration_ : airAcceleration_;
 	if (move.x != 0.0f) {
 		velocity_.x += move.x * acceleration;
@@ -106,20 +105,36 @@ void Player::Move() {
 
 	velocity_.x = std::clamp(velocity_.x, -maxMoveSpeed_, maxMoveSpeed_);
 
-	if (isJumpPressed) {
+	// ジャンプボタンの入力状態を取得
+	bool isJumpTriggered = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
+	bool isJumpPressed = TOMATOsEngine::IsKeyPressed(DIK_SPACE) || (pad.Gamepad.wButtons & XINPUT_GAMEPAD_B);
+
+	// 1. ジャンプ開始処理 (キーが押された瞬間)
+	if (isJumpTriggered) {
 		if (isOnGround_) {
-			//地上ジャンプ
+			// 地上ジャンプ
 			velocity_.y = jumpPower_;
 			isOnGround_ = false;
+			isJumping_ = true; // ジャンプ状態にする
 			playerModel_.SetState(PlayerModel::kJump);
 		}
 		else if (isWallSliding_) {
-			//壁キック
+			// 壁キック
 			velocity_.y = wallJumpPower_.y;
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
+			isJumping_ = true; // ジャンプ状態にする
 			Vector2 particlePos = { position_.x + (isFacing ? (size_.x / 2.0f) : (-size_.x / 2.0f)) ,position_.y };
 			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? 1.0f : -1.0f ,0.0f }, playerParticleColor_, 8);
 		}
+	}
+
+	// 2. ジャンプキーを離した時の処理
+	if (!isJumpPressed && isJumping_) {
+		// 上昇中（velocity_.y が正）の場合のみ、ジャンプの高さを抑える
+		if (velocity_.y > 0.0f) {
+			velocity_.y *= jumpStopForceMultiplier_;
+		}
+		isJumping_ = false; // ジャンプキーを離したのでフラグを折る
 	}
 
 	velocity_.y += gravity_;
