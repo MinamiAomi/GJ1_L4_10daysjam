@@ -224,7 +224,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         case title:
         {
             title_.Update();
-            score.Update();
+            score.Update(true);
             //シャットダウン
             if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
                 isShutdown = true;
@@ -379,7 +379,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
             collisionManager->Update();
 
-            score.Update();
+            score.Update(false);
 
             particleManager->Update();
 
