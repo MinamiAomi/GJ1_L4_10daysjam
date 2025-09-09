@@ -18,6 +18,7 @@
 
 #include "Audio/Audio.h"
 #include "ImGuiManager.h"
+#include "Transition.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -30,6 +31,7 @@ namespace {
     SpriteRenderer* spriteRenderer = nullptr;
     LineRenderer* lineRenderer = nullptr;
     TextureManager* textureManager = nullptr;
+    Transition* transition = nullptr;
     Input* input = nullptr;
     Audio* audio = nullptr;
 
@@ -119,6 +121,8 @@ namespace TOMATOsEngine {
         isEndRequest = false;
 
         referenceTime = std::chrono::steady_clock::now();
+
+        transition = Transition::GetInstance();
     }
 
     void Shutdown() {
@@ -529,24 +533,31 @@ namespace TOMATOsEngine {
     }
 
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color) {
+
         color = RGBAtoABGR(color);
+        if (transition->isPreScene) {
+            color = RGBAtoABGR(Math::LerpRGBA(color, 0xFFFFFFFF, transition->t));
+        }
+        if (transition->isNextScene) {
+            color = RGBAtoABGR(Math::LerpRGBA(0xFFFFFFFF, color, transition->t));
+        }
 
         Vector3 s = start;
         Vector3 e = end;
 
         if (applyLineShakeX) {
-            s.x += rng.NextFloatUnit() * lineShakeValue.x;
-            e.x += rng.NextFloatUnit() * lineShakeValue.x;
+            s.x += rng.NextFloatRange(-lineShakeValue.x, lineShakeValue.x);
+            e.x += rng.NextFloatRange(-lineShakeValue.x, lineShakeValue.x);
         }
 
         if (applyLineShakeY) {
-            s.y += rng.NextFloatUnit() * lineShakeValue.y;
-            e.y += rng.NextFloatUnit() * lineShakeValue.y;
+            s.y += rng.NextFloatRange(-lineShakeValue.y, lineShakeValue.y);
+            e.y += rng.NextFloatRange(-lineShakeValue.y, lineShakeValue.y);
         }
 
         if (applyLineShakeZ) {
-            s.z += rng.NextFloatUnit() * lineShakeValue.z;
-            e.z += rng.NextFloatUnit() * lineShakeValue.z;
+            s.z += rng.NextFloatRange(-lineShakeValue.z, lineShakeValue.z);
+            e.z += rng.NextFloatRange(-lineShakeValue.z, lineShakeValue.z);
         }
 
         lineRenderer->Draw(

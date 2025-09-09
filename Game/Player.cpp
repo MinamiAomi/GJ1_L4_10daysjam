@@ -12,7 +12,7 @@
 void Player::Initialize() {
 	position_ = Vector2::zero;
 	velocity_ = Vector2::zero;
-	size_ = { 2.0f, 2.0f };
+	size_ = { 3.0f, 3.0f };
 	playerModel_.Initialize(this);
 	isHipDrop_ = false;
 	isJumping_ = false;

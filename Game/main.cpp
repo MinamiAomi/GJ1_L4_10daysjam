@@ -25,8 +25,13 @@
 #include "Wall.h"
 #include "Title.h"
 #include "HexagonSevenSegmentDisplay.h"
+#include "OperationInstructions.h"
+#include "Transition.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
+
+
+
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
@@ -35,13 +40,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     TOMATOsEngine::SetFullScreen(false);
 #endif // _DEBUG
 
-    enum GameScene {
-        title,
-        inGame,
-        gameClear,
-    };
 
     GameScene gameScene = title;
+
+    Transition* transition = Transition::GetInstance();
+   
 
     Vector3 cameraPosition = { 0.0f, 3.0f, -50.0f };
     Vector3 cameraRotate = {};
@@ -72,45 +75,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     Vector2 startTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 180.0f };
     Vector2 operationTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,startTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
     Vector2 endTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,operationTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
-    ///スタート->0,操作説明->1,終了->2
-    enum class TitleSceneState {
-        start,
-        operation,
-        end,
-
-        count
-    } titleSceneState = TitleSceneState::start;
 
 
-    //タイトル画面の選択用矢印
-    Vector2 arrowPosition = { startTextPosition.x - arrowTextSize.x * 0.5f - 60.0f,startTextPosition.y };
-    Vector2 arrowSize = { 32.0f,32.0f };
-    uint32_t arrowAnimation = 0;
-    uint32_t arrowColor = 0xFFFFFFFF;
-
-    //矢印をちかちかさせるため
-    bool flag_ = false;
-    //操作説明もÐ－ト
-    bool isSwitchViewMode = false;
 #pragma endregion
 
 #pragma region 音
-	//イワシロ音楽素材 使用の際は追記
-	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
-	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
-	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
-	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
-	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+    //イワシロ音楽素材 使用の際は追記
+    auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
+    auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
+    auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
+    auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+    size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
+    auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
 
-	// タイトルははじめから流す
-	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-	TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
-	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
-	// 音の溜め必要
-	bool ingameToClear = false;
-	bool clearToTitle = false;
+    // タイトルははじめから流す
+    size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+    TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
+    size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
+    size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+    // 音の溜め必要
+    bool ingameToClear = false;
+    bool clearToTitle = false;
 #pragma endregion
 
 #pragma region シャットダウン
@@ -153,15 +138,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     player.Initialize();
     collisionManager->SetPlayer(&player);
 
-	BackGround backGround;
-	backGround.Initialize();
-	
+    BackGround backGround;
+    backGround.Initialize();
+
 
     Score score;
     score.Initialize();
     Vector2 titleScorePos = { 0.0f,-6.0f };
     score.SetPosition(titleScorePos);
-    
+
     //変数名かぶり
     Title title_;
     title_.Initialize();
@@ -173,7 +158,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region まとめとく
 
     auto initializeInGame = [&]() {
-        gameScene = inGame;
 
         collisionManager->Initialize();
         stageObjectManager->Initialize();
@@ -187,7 +171,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         player.Initialize();
         player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
         score.Initialize();
-
         // 音
         // タイトルBGM停止
         TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -201,6 +184,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     while (TOMATOsEngine::BeginFrame()) {
         auto pad = TOMATOsEngine::GetGamePadState();
         auto prepad = TOMATOsEngine::GetGamePadPreState();
+        const float commonShakeValue = 0.1f;
+        TOMATOsEngine::SetLineShakeX(true, commonShakeValue);
+        TOMATOsEngine::SetLineShakeY(true, commonShakeValue);
+        transition->GetInstance()->Update();
 #ifdef _DEBUG
         auto& io = ImGui::GetIO();
         ImGui::Begin("Menu");
@@ -220,6 +207,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
 
         ////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
+
+        float wallToBordarGap = border->GetBorderSidePos() - wall->GetPosition();
+        float shakeStartDistance = 24.0f;
+        float amplitude = 0.4f;
+        float shakeValue = (shakeStartDistance - wallToBordarGap) / shakeStartDistance;
+
         switch (gameScene) {
         case title:
         {
@@ -232,124 +225,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             }
 
             if (!isShutdown) {
-                const uint32_t kArrowAnimation = 25;
-                if (!isSwitchViewMode) {
 
-                    //矢印のアップデート
-                    arrowAnimation++;
-                    if (arrowAnimation >= kArrowAnimation) {
-                        if (flag_) {
-                            arrowColor = 0xFFFFFFFF;
-                        }
-                        else {
-                            arrowColor = 0xFFFFFF00;
-                        }
-                        flag_ ^= true;
-                        arrowAnimation = 0;
-                    }
 #pragma region キー入力
-                    //下押したとき
-                    //if (TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-                    //    TOMATOsEngine::IsKeyTrigger(DIK_DOWN) ||
-                    //    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)) ||
-                    //    (pad.Gamepad.sThumbLY < -5000 &&
-                    //        prepad.Gamepad.sThumbLY <= 4000.0f &&
-                    //        prepad.Gamepad.sThumbLY >= -4000.0f)) {
-                    //    //カウントがオーバーしてたら
-                    //    int currentStateInt = static_cast<int>(titleSceneState);
-                    //    int nextStateInt = currentStateInt + 1;
 
-                    //    //次が範囲外か
-                    //    if (nextStateInt >= static_cast<int>(TitleSceneState::count)) {
-                    //        titleSceneState = TitleSceneState::start;
-                    //    }
-                    //    else {
-                    //        titleSceneState = static_cast<TitleSceneState>(nextStateInt);
-                    //    }
-                    //    //移動音
-                    //    TOMATOsEngine::PlayAudio(pickHandle);
-                    //    //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
-                    //    arrowColor = 0xFFFFFFFF;
-                    //}
-                    ////上押したとき
-                    //if (TOMATOsEngine::IsKeyTrigger(DIK_W) ||
-                    //    TOMATOsEngine::IsKeyTrigger(DIK_UP) ||
-                    //    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)) ||
-                    //    (pad.Gamepad.sThumbLY > +5000 &&
-                    //        prepad.Gamepad.sThumbLY <= 4000.0f &&
-                    //        prepad.Gamepad.sThumbLY >= -4000.0f)) {
-
-                    //    //カウントがオーバーしてたら
-                    //    int currentStateInt = static_cast<int>(titleSceneState);
-                    //    int preStateInt = currentStateInt - 1;
-
-                    //    //次が範囲外か
-                    //    if (preStateInt < 0) {
-                    //        int lastStateInt = static_cast<int>(TitleSceneState::count) - 1;
-                    //        titleSceneState = static_cast<TitleSceneState>(lastStateInt);
-                    //    }
-                    //    else {
-                    //        titleSceneState = static_cast<TitleSceneState>(preStateInt);
-                    //    }
-                    //    //移動音
-                    //    TOMATOsEngine::PlayAudio(pickHandle);
-                    //    //移動した後に矢印がどこにあるのかはっきりさせたいので色をリセット
-                    //    arrowColor = 0xFFFFFFFF;
-                    //}
-
-                    if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
-                        ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
-                            !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
-                        TOMATOsEngine::PlayAudio(pickHandle);
-
-
-                        switch (titleSceneState)
-                        {
-                        case TitleSceneState::start:
-                            initializeInGame();
-							break;
-						case TitleSceneState::operation:
-							TOMATOsEngine::SwitchViewMode();
-							isSwitchViewMode = true;
-							break;
-						case TitleSceneState::end:
-							isShutdown = true;
-							TOMATOsEngine::PlayAudio(shutdownSoundHandle);
-							break;
-						case TitleSceneState::count:
-							break;
-						default:
-							break;
-						}
-					}
-#pragma endregion
-                    //矢印のPositionを指定
-                    switch (titleSceneState)
-                    {
-                    case TitleSceneState::start:
-                        arrowPosition.y = startTextPosition.y;
-                        break;
-                    case TitleSceneState::operation:
-                        arrowPosition.y = operationTextPosition.y;
-                        break;
-                    case TitleSceneState::end:
-                        arrowPosition.y = endTextPosition.y;
-                        break;
-                    case TitleSceneState::count:
-                        break;
-                    default:
-                        break;
-                    }
-
-                }
-                //操作説明から抜け出す
-                else if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
-                    (pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
-                    !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B)) {
+                if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
+                    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
+                        !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
                     TOMATOsEngine::PlayAudio(pickHandle);
-                    TOMATOsEngine::SwitchViewMode();
-                    isSwitchViewMode = false;
+
+                    transition->Start(title);
                 }
+
+                if (transition->isNextSceneFrame && transition->pre == title) {
+                    gameScene = inGame;
+                    initializeInGame();
+                }
+#pragma endregion
+
+
+
             }
             else {
                 //シャットダウンアップデート
@@ -368,6 +262,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
         case inGame:
         {
+
             wall->Update();
             stageObjectManager->Update();
             spawnManager->Update();
@@ -384,10 +279,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             particleManager->Update();
 
             //近づくとシェイク
-            float wallToBordarGap = border->GetBorderSidePos() - wall->GetPosition();
-            float shakeStartDistance = 24.0f;
-            float amplitude = 0.4f;
-            float shakeValue = (shakeStartDistance - wallToBordarGap) / shakeStartDistance;
             if (shakeValue >= 0.0f) {
                 TOMATOsEngine::SetLineShakeX(true, shakeValue * amplitude);
                 TOMATOsEngine::SetLineShakeY(true, shakeValue * amplitude);
@@ -395,19 +286,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
             //まけ判定
             if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop()) {
-                stageObjectManager->Despawn();
+                transition->Start(inGame);
+            }
+
+            if (transition->isNextSceneFrame && transition->pre == inGame) {
                 gameScene = gameClear;
+                TOMATOsEngine::StopAudio(ingamePlayHandle);
+                ingamePlayHandle = INVALID_PLAY_HANDLE;
             }
 
             if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
                 TOMATOsEngine::RequestQuit();
+
             }
-            // 音
-        /*	if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE)) {
-                gameScene = gameClear;
-                TOMATOsEngine::StopAudio(ingamePlayHandle);
-                ingamePlayHandle = INVALID_PLAY_HANDLE;
-            }*/
+
             break;
         }
         case gameClear:
@@ -426,10 +318,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                 ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
                     !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 
-                arrowPosition = { startTextPosition.x - arrowTextSize.x * 0.5f - 30.0f,startTextPosition.y };
-                titleSceneState = TitleSceneState::start;
-                arrowAnimation = 0;
+                transition->Start(gameClear);
+            }
 
+
+            if (transition->isNextSceneFrame && transition->pre == gameClear) {
                 gameScene = title;
 
                 score.SetPosition(titleScorePos);
@@ -462,6 +355,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                 clearToTitle = false;
                 ingameToClear = false;
             }
+
             break;
         }
 
@@ -475,8 +369,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         switch (gameScene) {
         case title:
         {
+
             title_.Draw();
             score.Draw();
+            OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
+
             if (isShutdown) {
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);
@@ -487,35 +384,37 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             break;
         }
 
-		case inGame:
-		{
-			backGround.Draw();
-			score.Draw();
-			stageObjectManager->Draw();
+        case inGame:
+        {
+            backGround.Draw();
+            score.Draw();
+            stageObjectManager->Draw();
 
-			//backGround.Draw();
-			ground->Draw();
-			wall->Draw();
-			border->Draw();
-			player.Draw();
-			particleManager->Draw();
-			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
-			break;
-		}
-		case gameClear:
-		{
-			backGround.Draw();
-			player.Draw();
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
-	}
+            //backGround.Draw();
+            ground->Draw();
+            wall->Draw();
+            border->Draw();
+            player.Draw();
+            particleManager->Draw();
+            //TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
+            break;
+        }
+        case gameClear:
+        {
+            backGround.Draw();
+            player.Draw();
+            break;
+        }
+        default:
+        {
+            break;
+        }
+        }
+    }
 
-    TOMATOsEngine::Shutdown();
+        TOMATOsEngine::Shutdown();
 
     return 0;
-}
+ }
+
+

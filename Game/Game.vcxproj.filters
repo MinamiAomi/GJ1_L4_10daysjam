@@ -288,6 +288,10 @@
     <ClInclude Include="Number.h">
       <Filter>Game\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="OperationInstructions.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Transition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -496,6 +500,10 @@
     <ClCompile Include="Number.cpp">
       <Filter>Game\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="OperationInstructions.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Transition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
