@@ -4,6 +4,7 @@
 #include "Engine/TOMATOsEngine.h"
 #include "Math/Random.h"
 #include "Player.h"
+#include "Wall.h"
 
 #pragma region 色
 float HueToRGB(float p, float q, float t) {
@@ -45,6 +46,15 @@ void BackGround::Initialize() {
 	stemHeight_ = 3.0f;
 	time_ = 0.0f;
 	addTime_ = 0.02f;
+	moonOffset_ = { 75.0f,37.0f };
+	moonThickness_ = 2.7f;
+	moonRotation_ = 0.0f;
+	moonOuterRadius_ = 3.3f;
+	for (int i = 0; i < kStarNum_; i++) {
+		starPosOffsets_[i] = { random_.NextFloatRange(0.0f,100.0f), random_.NextFloatRange(25.0f,40.0f) };
+	}
+	starSquare_.radian = 0.0f;
+	starSquare_.size = { 0.1f,0.1f };
 }
 
 void BackGround::Update() {
@@ -59,6 +69,11 @@ void BackGround::Update() {
 		ImGui::DragFloat("outerRadius", &outerRadius_, 0.01f);
 		ImGui::DragFloat("stemHeight", &stemHeight_, 0.01f);
 		ImGui::DragFloat("addTime", &addTime_, 0.01f);
+		ImGui::DragFloat2("moonOffset",&moonOffset_.x,0.1f);
+		ImGui::DragFloat("moonThickness", &moonThickness_, 0.1f);
+		ImGui::DragFloat("moonOuterRadius", &moonOuterRadius_, 0.1f);
+		ImGui::DragFloat("moonRotation", &moonRotation_, 0.1f);
+		ImGui::DragFloat2("starSquareSize", &starSquare_.size.x, 0.1f);
 		ImGui::EndMenu();
 	}
 	ImGui::End();
@@ -70,4 +85,6 @@ void BackGround::Draw() {
 		TOMATOsEngine::DrawStar2D({0.0f + space_ * i,y_}, innerRadius_,outerRadius_,z_,0x666666FF);
 		TOMATOsEngine::DrawWavingFlower({ 0.0f + space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
 	}
+	
+	TOMATOsEngine::DrawCrescentMoon({ moonOffset_.x + Wall::GetInstance()->GetPosition() , moonOffset_.y},z_, moonOuterRadius_, moonThickness_,moonRotation_,0x666666FF);
 }

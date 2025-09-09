@@ -56,6 +56,7 @@ namespace TOMATOsEngine {
     void DrawBoxLine3D(const Square& square, uint32_t color);
     void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, uint32_t color);
     void DrawWavingFlower(const Vector2& basePos, float z, float stemHeight, float time,uint32_t color);
+    void DrawCrescentMoon(const Vector2& center, float z, float radius, float thickness, float rotation, uint32_t color);
 
     bool IsKeyPressed(unsigned char keycode);
     bool IsKeyTrigger(unsigned char keycode);
