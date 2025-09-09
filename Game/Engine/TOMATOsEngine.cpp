@@ -18,6 +18,7 @@
 
 #include "Audio/Audio.h"
 #include "ImGuiManager.h"
+#include "Transition.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -30,6 +31,7 @@ namespace {
     SpriteRenderer* spriteRenderer = nullptr;
     LineRenderer* lineRenderer = nullptr;
     TextureManager* textureManager = nullptr;
+    Transition* transition = nullptr;
     Input* input = nullptr;
     Audio* audio = nullptr;
 
@@ -119,6 +121,8 @@ namespace TOMATOsEngine {
         isEndRequest = false;
 
         referenceTime = std::chrono::steady_clock::now();
+
+        transition = Transition::GetInstance();
     }
 
     void Shutdown() {
@@ -529,7 +533,14 @@ namespace TOMATOsEngine {
     }
 
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color) {
+
         color = RGBAtoABGR(color);
+        if (transition->isPreScene) {
+            color = RGBAtoABGR(Math::LerpRGBA(color, 0xFFFFFFFF, transition->t));
+        }
+        if (transition->isNextScene) {
+            color = RGBAtoABGR(Math::LerpRGBA(0xFFFFFFFF, color, transition->t));
+        }
 
         Vector3 s = start;
         Vector3 e = end;

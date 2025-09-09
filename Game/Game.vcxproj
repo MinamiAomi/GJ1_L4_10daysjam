@@ -108,6 +108,7 @@
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="StageObjectManager.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Transition.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +202,7 @@
     <ClCompile Include="SpwanManager.cpp" />
     <ClCompile Include="StageObjectManager.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Transition.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>

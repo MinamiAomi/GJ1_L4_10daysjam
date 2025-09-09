@@ -27,6 +27,32 @@ namespace Math {
         return start + t * (end - start);
     }
 
+    inline constexpr uint32_t LerpRGBA(uint32_t color, uint32_t toColor, float t) {
+        // 開始色の各チャンネル（R, G, B, A）を抽出
+        uint8_t sr = (color >> 24) & 0xFF;
+        uint8_t sg = (color >> 16) & 0xFF;
+        uint8_t sb = (color >> 8) & 0xFF;
+        uint8_t sa = (color) & 0xFF;
+
+        // 終了色の各チャンネル（R, G, B, A）を抽出
+        uint8_t er = (toColor >> 24) & 0xFF;
+        uint8_t eg = (toColor >> 16) & 0xFF;
+        uint8_t eb = (toColor >> 8) & 0xFF;
+        uint8_t ea = (toColor) & 0xFF;
+
+        // 各チャンネルを線形補間
+        uint8_t r = static_cast<uint8_t>(sr * (1.0f - t) + er * t);
+        uint8_t g = static_cast<uint8_t>(sg * (1.0f - t) + eg * t);
+        uint8_t b = static_cast<uint8_t>(sb * (1.0f - t) + eb * t);
+        uint8_t a = static_cast<uint8_t>(sa * (1.0f - t) + ea * t);
+
+        // 補間された各チャンネルを1つのuint32_tに再パック
+        return (static_cast<uint32_t>(r) << 24) |
+            (static_cast<uint32_t>(g) << 16) |
+            (static_cast<uint32_t>(b) << 8) |
+            (static_cast<uint32_t>(a));
+    }
+
 }
 
 #pragma region 前方宣言
