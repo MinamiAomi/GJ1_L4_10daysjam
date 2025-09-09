@@ -54,7 +54,9 @@ void Player::Update() {
 		HipDrop();
 	}
 
-
+	if (Wall::GetInstance()->IsMove()) {
+		position_.x += Wall::GetInstance()->GetSpeed();
+	}
 	position_ += velocity_;
 
 	CheckCollisions();
@@ -179,7 +181,7 @@ void Player::CheckCollisions()
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
-		playerModel_.SetState(PlayerModel::kWallSliding);
+		
 	}
 
 }
