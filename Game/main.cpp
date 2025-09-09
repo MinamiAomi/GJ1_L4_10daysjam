@@ -159,6 +159,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
     Score score;
     score.Initialize();
+    Vector2 titleScorePos = { 0.0f,-6.0f };
+    score.SetPosition(titleScorePos);
     
     //変数名かぶり
     Title title_;
@@ -222,7 +224,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         case title:
         {
             title_.Update();
-
+            score.Update();
             //シャットダウン
             if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
                 isShutdown = true;
@@ -413,6 +415,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
                 gameScene = title;
 
+                score.SetPosition(titleScorePos);
+
                 //初期化
                 stageObjectManager->Initialize();
                 spawnManager->Initialize();
@@ -455,7 +459,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         case title:
         {
             title_.Draw();
-                    
+            score.Draw();
             if (isShutdown) {
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);

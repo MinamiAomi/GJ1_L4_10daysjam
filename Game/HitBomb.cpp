@@ -34,10 +34,12 @@ void HitBomb::Draw()
 
 void HitBomb::OnCollision(const Vector2& position, float radius)
 {
-	//自分が当たってるやつより左にいるときだけ押し戻し
-	if (position_.x > position.x) {
-		position_.x = position.x + radius;
-	}
+	position;
+	radius;
+	////自分が当たってるやつより左にいるときだけ押し戻し
+	//if (position_.x > position.x) {
+	//	position_.x = position.x + radius;
+	//}
 }
 
 void HitBomb::OnPlayerHitCollision(Player* player)

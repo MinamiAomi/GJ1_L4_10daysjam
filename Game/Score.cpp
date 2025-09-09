@@ -9,11 +9,11 @@
 void Score::Initialize()
 {
 	score_ = Border::GetInstance()->GetBorderSidePos();
-	preScore_ = score_;
 	position_ = { 20.0f,20.0f };
 	spacing_ = 4.5f;
 	scale_ = 0.3f;
-	color_ = 0x808080FF;
+	defaultColor_ = 0x808080FF;
+	color_ = defaultColor_;
 }
 
 void Score::Update()
@@ -30,7 +30,7 @@ void Score::Update()
 	ImGui::End();
 #endif // _DEBUG
 	drawVertex_.clear();
-	preScore_ = score_;
+
 	//大きいと更新
 	if (score_ < Border::GetInstance()->GetBorderSidePos()) {
 		score_ = Border::GetInstance()->GetBorderSidePos();
@@ -41,13 +41,12 @@ void Score::Update()
 void Score::Draw() {
 	static	const int verticesPerHexagon = 6;
 
+
+
 	if (!drawVertex_.empty()) {
-		if (score_ != preScore_) {
-			color_ = 0xDCDCDCFF;
-		}
-		else {
-			color_ = 0x808080FF;
-		}
+
+		color_ = 0x808080FF;
+
 		for (size_t i = 0; i < drawVertex_.size(); i += verticesPerHexagon) {
 			for (int j = 0; j < verticesPerHexagon; ++j) {
 				Vector2 start = drawVertex_.at(i + j);
