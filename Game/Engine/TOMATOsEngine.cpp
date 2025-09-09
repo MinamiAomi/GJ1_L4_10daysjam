@@ -535,18 +535,18 @@ namespace TOMATOsEngine {
         Vector3 e = end;
 
         if (applyLineShakeX) {
-            s.x += rng.NextFloatUnit() * lineShakeValue.x;
-            e.x += rng.NextFloatUnit() * lineShakeValue.x;
+            s.x += rng.NextFloatRange(-lineShakeValue.x, lineShakeValue.x);
+            e.x += rng.NextFloatRange(-lineShakeValue.x, lineShakeValue.x);
         }
 
         if (applyLineShakeY) {
-            s.y += rng.NextFloatUnit() * lineShakeValue.y;
-            e.y += rng.NextFloatUnit() * lineShakeValue.y;
+            s.y += rng.NextFloatRange(-lineShakeValue.y, lineShakeValue.y);
+            e.y += rng.NextFloatRange(-lineShakeValue.y, lineShakeValue.y);
         }
 
         if (applyLineShakeZ) {
-            s.z += rng.NextFloatUnit() * lineShakeValue.z;
-            e.z += rng.NextFloatUnit() * lineShakeValue.z;
+            s.z += rng.NextFloatRange(-lineShakeValue.z, lineShakeValue.z);
+            e.z += rng.NextFloatRange(-lineShakeValue.z, lineShakeValue.z);
         }
 
         lineRenderer->Draw(

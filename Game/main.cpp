@@ -25,6 +25,7 @@
 #include "Wall.h"
 #include "Title.h"
 #include "HexagonSevenSegmentDisplay.h"
+#include "OperationInstructions.h"
 
 #define INVALID_PLAY_HANDLE (size_t(-1))
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -474,8 +475,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         switch (gameScene) {
         case title:
         {
+
             title_.Draw();
             score.Draw();
+            OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
+
             if (isShutdown) {
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
                 TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);
