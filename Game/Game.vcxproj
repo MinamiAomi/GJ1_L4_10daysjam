@@ -92,6 +92,7 @@
     <ClInclude Include="Engine\Utility.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="HexagonSevenSegmentDisplay.h" />
+    <ClInclude Include="HitBomb.h" />
     <ClInclude Include="Particle\Circle.h" />
     <ClInclude Include="Particle\Follow.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="SpwanManager.h" />
     <ClInclude Include="ICollider.h" />
     <ClInclude Include="StageObjectManager.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +185,7 @@
     <ClCompile Include="Follow.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
+    <ClCompile Include="HitBomb.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle\Circle.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
@@ -195,6 +198,7 @@
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="SpwanManager.cpp" />
     <ClCompile Include="StageObjectManager.cpp" />
+    <ClCompile Include="Title.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
 
 class Player;
 
-class Bomb : public ICollider {
+class HitBomb : public ICollider {
 public:
 	void Initialize(const Vector2& position, float radius, int color);
 

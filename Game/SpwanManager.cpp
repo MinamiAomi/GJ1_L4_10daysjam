@@ -37,9 +37,10 @@ void SpawnManager::Update()
 
 void SpawnManager::Spawn()
 {
-	int createCount = 8;
+	int createCount = 6;
 
 	SpawnBomb(createCount);
+	SpawnHitBomb(createCount);
 }
 
 void SpawnManager::SpawnBomb(int createCount)
@@ -89,7 +90,60 @@ void SpawnManager::SpawnBomb(int createCount)
 
 		// 重ならない位置が見つかった場合生成
 		if (!isOverlapping) {
-			bombManager.Spawn(pos, bombRadius_, 0xff1919FF);
+			bombManager.SpawnBomb(pos, bombRadius_, 0xff1919FF);
+			spawnedBombs.push_back({ pos, bombRadius_ });
+		}
+	}
+}
+
+void SpawnManager::SpawnHitBomb(int createCount)
+{
+	auto& bombManager = StageObjectManager::GetInstance()->GetBombManager();
+
+	Random::RandomNumberGenerator rnd{};
+	//一時保管用
+	std::vector<std::pair<Vector2, float>> spawnedBombs;
+
+	// 1体あたりの位置決めの最大試行回数
+	const int maxAttempts = 10;
+
+	for (int i = 0; i < createCount; i++) {
+		Vector2 pos;
+		bool isOverlapping;
+		int attempts = 0;
+
+		// 重ならない位置が見つかるか、試行回数が上限に達するまでループ
+		do {
+			pos.x = rnd.NextFloatRange(position_ + bombRadius_, position_ + range_);
+			pos.y = rnd.NextFloatRange(offset_ + bombRadius_, Wall::GetInstance()->kWallHeight);
+
+			// 今まで生成したものと重なっているかどうか
+			isOverlapping = false;
+			for (const auto& spawned : spawnedBombs) {
+				const Vector2& spawnedPos = spawned.first;
+				const float spawnedRadius = spawned.second;
+
+				//円の当たり判定
+				float dx = pos.x - spawnedPos.x;
+				float dy = pos.y - spawnedPos.y;
+				float distance = (dx * dx) + (dy * dy);
+
+				float sumRadius = bombRadius_ + spawnedRadius;
+
+				//重なっているか
+				if (distance < (sumRadius * sumRadius)) {
+					isOverlapping = true;
+					break;
+				}
+			}
+
+			attempts++;
+
+		} while (isOverlapping && attempts < maxAttempts);
+
+		// 重ならない位置が見つかった場合生成
+		if (!isOverlapping) {
+			bombManager.SpawnBomb(pos, bombRadius_, 0x00E6E6FF);
 			spawnedBombs.push_back({ pos, bombRadius_ });
 		}
 	}
