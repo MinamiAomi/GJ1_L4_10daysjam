@@ -15,6 +15,8 @@ public:
     static constexpr float kCameraOffsetZ = -44.0f;
     static constexpr float kCameraRotateY = 33.0f;
     static constexpr float kInitializeSpeed = 0.05f;
+    static constexpr float kSpeedFactor = 0.0001f;
+    static constexpr float kSpeedLimit = 0.5f;
     static constexpr float kBurstDistance = 100.0f;
     static constexpr float kBurstEndDistance = 75.0f;
     static constexpr float kBurstSpeed = 100.0f;
