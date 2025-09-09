@@ -395,6 +395,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
             //まけ判定
             if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop()) {
+                stageObjectManager->Despawn();
                 gameScene = gameClear;
             }
 

@@ -17,6 +17,8 @@ public:
 	bool GetIsAlive() { return isAlive_; }
 
 	int GetColor() { return color_; }
+
+	void Despawn();
 private:
 	void OnCollision(const Vector2& position, float radius)override;
 	void OnPlayerHitCollision(Player* player)override;

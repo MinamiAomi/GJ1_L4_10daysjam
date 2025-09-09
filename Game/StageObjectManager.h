@@ -12,6 +12,8 @@ public:
 
 	void Draw();
 
+	void Despawn();
+
 	BombManager& GetBombManager(){ return bombManager_; }
 private:
 	BombManager bombManager_;

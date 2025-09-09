@@ -32,6 +32,11 @@ void Bomb::Draw()
 	TOMATOsEngine::DrawBoxLine3D(position_, { radius_,radius_ }, color_);
 }
 
+void Bomb::Despawn()
+{
+	ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
+}
+
 void Bomb::OnCollision(const Vector2& position, float radius)
 {
 	//自分が当たってるやつより左にいるときだけ押し戻し
