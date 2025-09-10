@@ -72,6 +72,9 @@ void Player::Update() {
 	else {
 		position_ = { Wall::GetInstance()->GetPosition() + wallToPosition_.x,wallToPosition_.y };
 	}
+
+	position_.x = std::clamp(position_.x, 0.0f, Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f);
+
 	playerModel_.Update();
 }
 

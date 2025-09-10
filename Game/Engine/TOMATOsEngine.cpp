@@ -4,6 +4,7 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <array>
 
 #include "GameWindow.h"
 #include "RenderManager.h"
@@ -591,7 +592,7 @@ namespace TOMATOsEngine {
 
 
 
-    void DrawBoxLine3D(const Vector2& center, const Vector2& size, float radian, uint32_t color)
+    void DrawBoxLine3D(const Vector2& center, const Vector2& size, float z, float radian, uint32_t color)
     {
         Vector2 halfSize = { size.x / 2.0f, size.y / 2.0f };
         Vector2 corners[4] = {
@@ -610,10 +611,30 @@ namespace TOMATOsEngine {
             rotatedCorners[i] = (corners[i] * rotateMatrix) + center;
         }
 
-        DrawLine3D(rotatedCorners[0], rotatedCorners[1], color); // 左上 -> 右上
-        DrawLine3D(rotatedCorners[1], rotatedCorners[2], color); // 右上 -> 右下
-        DrawLine3D(rotatedCorners[2], rotatedCorners[3], color); // 右下 -> 左下
-        DrawLine3D(rotatedCorners[3], rotatedCorners[0], color); // 左下 -> 左上
+        DrawLine3D(rotatedCorners[0], rotatedCorners[1],z, color); // 左上 -> 右上
+        DrawLine3D(rotatedCorners[1], rotatedCorners[2],z, color); // 右上 -> 右下
+        DrawLine3D(rotatedCorners[2], rotatedCorners[3],z, color); // 右下 -> 左下
+        DrawLine3D(rotatedCorners[3], rotatedCorners[0],z, color); // 左下 -> 左上
+    }
+
+    void DrawTriangle2D(const Vector2& center, float size, float z, float rotation, uint32_t color) {
+        // 三角形の3つの頂点を格納する配列
+        std::vector<Vector2> vertices(3);
+
+        // 3つの頂点の座標を計算
+        for (int i = 0; i < 3; ++i) {
+            // 各頂点の角度を計算 (120度 = 2π/3 ラジアンずつ)
+            // + (Math::Pi / 2.0f) で三角形の先端が真上を向くように調整
+            float angle = (2.0f * Math::Pi * i / 3.0f) + (Math::Pi / 2.0f) + rotation;
+
+            vertices[i].x = center.x + size * std::cos(angle);
+            vertices[i].y = center.y + size * std::sin(angle);
+        }
+
+        // 計算した頂点を線で結ぶ
+        DrawLine3D(vertices[0], vertices[1], z, color);
+        DrawLine3D(vertices[1], vertices[2], z, color);
+        DrawLine3D(vertices[2], vertices[0], z, color);
     }
 
     void DrawArrow2D(const Vector2& center, float length, float thickness, float rotation, uint32_t color) {
@@ -656,7 +677,37 @@ namespace TOMATOsEngine {
 
     void DrawBoxLine3D(const Square& square, uint32_t color)
     {
-        DrawBoxLine3D(square.center, square.size, square.radian, color);
+        DrawBoxLine3D(square.center, square.size, 0.0f,square.radian,color);
+    }
+
+
+
+    void DrawPlus2D(const Vector2& center, float size, float thickness, float z, float rotation, uint32_t color) {
+        // 1. プラス記号の12個の頂点をローカル座標で定義
+        const float s = size;
+        const float t = thickness;
+        std::vector<Vector2> localVertices = {
+            { t,  s}, { t,  t}, { s,  t},
+            { s, -t}, { t, -t}, { t, -s},
+            {-t, -s}, {-t, -t}, {-s, -t},
+            {-s,  t}, {-t,  t}, {-t,  s}
+        };
+
+        // 2. 回転・移動させた後の頂点を計算
+        std::vector<Vector2> worldVertices(12);
+        const float cosR = std::cos(rotation);
+        const float sinR = std::sin(rotation);
+
+        for (int i = 0; i < 12; ++i) {
+            float rotatedX = localVertices[i].x * cosR - localVertices[i].y * sinR;
+            float rotatedY = localVertices[i].x * sinR + localVertices[i].y * cosR;
+            worldVertices[i] = { center.x + rotatedX, center.y + rotatedY };
+        }
+
+        // 3. 計算した頂点を順番に線で結ぶ (12回のDrawLine3D呼び出し)
+        for (int i = 0; i < 12; ++i) {
+            DrawLine3D(worldVertices[i], worldVertices[(i + 1) % 12], z, color);
+        }
     }
 
     void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, float rotation, uint32_t color) {
