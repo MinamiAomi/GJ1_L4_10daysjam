@@ -1,162 +1,237 @@
 #include "SpwanManager.h"
 
-#include <vector>  
-#include <utility> 
+#include <numeric>   
+#include <string>    
 
-#include "Math/Random.h"
+#include "TOMATOsEngine.h"
 
-#include "Border.h"
 #include "Wall.h"
 #include "StageObjectManager.h"
+#include "Math/Random.h"
 
-SpawnManager* SpawnManager::GetInstance()
-{
+namespace {
+	constexpr float kDefaultSpawnAreaWidth = 50.0f;
+	constexpr float kDefaultSpawnOffsetY = 10.0f;
+	constexpr int kDefaultTotalCreateCount = 12;
+	constexpr int kMaxPlacementAttempts = 10;
+}
+
+SpawnManager* SpawnManager::GetInstance() {
 	static SpawnManager instance;
 	return &instance;
 }
 
-void SpawnManager::Initialize()
-{
-	position_ = range_;
-	range_ = 50.0f;
+void SpawnManager::Initialize() {
+	spawnAreaWidth_ = kDefaultSpawnAreaWidth;
+	currentSpawnAreaStartX_ = spawnAreaWidth_;
+	spawnOffsetY_ = kDefaultSpawnOffsetY;
+	totalCreateCount_ = kDefaultTotalCreateCount;
 
-	bombRadius_ = 2.0f;
-	offset_ = 10.0f;
+	//出てくるボムの設定
+	bombSpecs_ = {
+		{ BombsType::Normal, 2.0f, 0xff1919FF, 1.0f },
+		{ BombsType::Hit,    2.0f, 0x00E6E6FF, 1.0f },
+	};
+
+	// 重みの合計を計算
+	totalBombSpawnWeight_ = 0.0f;
+	for (const auto& spec : bombSpecs_) {
+		totalBombSpawnWeight_ += spec.spawnWeight;
+	}
+
+	//高さの分割
+	spawnHeightDivisions_ = 3;
+	// [低、中、高] 
+	spawnHeightWeights_ = { 0.3f, 0.6f, 0.2f };
+	// 重みの合計を計算
+	totalHeightSpawnWeight_ = std::accumulate(spawnHeightWeights_.begin(), spawnHeightWeights_.end(), 0.0f);
+	//最初の生成
+	FirstSpawn();
 }
 
-void SpawnManager::Update()
-{
-	//カメラ外にもスポーンさせるため
-	const auto& wallPos = Wall::GetInstance()->GetPosition();
-	if (position_ + range_ <= wallPos + range_ * 3.0f) {
-		Spawn();
-		//範囲を次に
-		position_ += range_;
+void SpawnManager::Update() {
+#ifdef _DEBUG
+	ImGui::Begin("InGame");
+	if (ImGui::BeginMenu("Spawn")) {
+		ImGui::DragInt("TotalCreateCount", &totalCreateCount_, 1, 0, 100);
+		ImGui::Separator();
+
+		ImGui::Text("BombSpawnWeights");
+		for (auto& spec : bombSpecs_) {
+			std::string label;
+			switch (spec.type) {
+			case BombsType::Normal:
+				label = "NormalBomb";
+				break;
+			case BombsType::Hit:
+				label = "HitBomb";
+				break;
+			default:
+				label = "UnknownBomb";
+				break;
+			}
+			std::string unique_label = label + " Weight##" + std::to_string(static_cast<int>(spec.type));
+			ImGui::DragFloat(unique_label.c_str(), &spec.spawnWeight, 0.05f, 0.0f, 10.0f);
+		}
+		// 重みの合計を再計算
+		totalBombSpawnWeight_ = 0.0f;
+		for (const auto& spec : bombSpecs_) { totalBombSpawnWeight_ += spec.spawnWeight; }
+
+		ImGui::Separator();
+		ImGui::Text("HeightSpawnWeights");
+		// 高さの重みの変更
+		for (size_t i = 0; i < spawnHeightWeights_.size(); ++i) {
+			std::string label = "HeightZone " + std::to_string(i) + " Weight##" + std::to_string(i);
+			ImGui::DragFloat(label.c_str(), &spawnHeightWeights_[i], 0.05f, 0.0f, 10.0f);
+		}
+		// 重みの合計を再計算
+		totalHeightSpawnWeight_ = std::accumulate(spawnHeightWeights_.begin(), spawnHeightWeights_.end(), 0.0f);
+
+		ImGui::EndMenu();
+	}
+	ImGui::End();
+#endif // _DEBUG
+
+	// スポーン領域を次に進めるかどうかの判定
+	const float wallPos = Wall::GetInstance()->GetPosition();
+	if (currentSpawnAreaStartX_ + spawnAreaWidth_ <= wallPos + spawnAreaWidth_ * 3.0f) {
+		ProcessSpawning();
+		currentSpawnAreaStartX_ += spawnAreaWidth_;
 	}
 }
 
-void SpawnManager::Spawn()
-{
-	int createCount = 6;
-
-	SpawnBomb(createCount);
-	SpawnHitBomb(createCount);
-}
-
-void SpawnManager::SpawnBomb(int createCount)
-{
-	auto& bombManager = StageObjectManager::GetInstance()->GetBombManager();
-
-	Random::RandomNumberGenerator rnd{};
-	//一時保管用
+void SpawnManager::ProcessSpawning() {
+	// このスポーン処理内で生成されたボムの情報を一時的に保持する
 	std::vector<std::pair<Vector2, float>> spawnedBombs;
 
-	// 1体あたりの位置決めの最大試行回数
-	const int maxAttempts = 10;
+	for (int i = 0; i < totalCreateCount_; ++i) {
+		// どのボムが出るか
+		const BombInfo& selectedSpec = SelectRandomBombType();
 
-	for (int i = 0; i < createCount; i++) {
-		Vector2 pos;
-		bool isOverlapping;
-		int attempts = 0;
-
-		// 重ならない位置が見つかるか、試行回数が上限に達するまでループ
-		do {
-			pos.x = rnd.NextFloatRange(position_ + bombRadius_, position_ + range_);
-			pos.y = rnd.NextFloatRange(offset_ + bombRadius_, Wall::GetInstance()->kWallHeight);
-
-			// 今まで生成したものと重なっているかどうか
-			isOverlapping = false;
-			for (const auto& spawned : spawnedBombs) {
-				const Vector2& spawnedPos = spawned.first;
-				const float spawnedRadius = spawned.second;
-
-				//円の当たり判定
-				float dx = pos.x - spawnedPos.x;
-				float dy = pos.y - spawnedPos.y;
-				float distance = (dx * dx) + (dy * dy);
-
-				float sumRadius = bombRadius_ + spawnedRadius;
-
-				//重なっているか
-				if (distance < (sumRadius * sumRadius)) {
-					isOverlapping = true;
-					break;
-				}
-			}
-
-			attempts++;
-
-		} while (isOverlapping && attempts < maxAttempts);
-
-		// 重ならない位置が見つかった場合生成
-		if (!isOverlapping) {
-			bombManager.SpawnBomb(pos, bombRadius_, 0xff1919FF);
-			spawnedBombs.push_back({ pos, bombRadius_ });
-		}
+		// ボム生成
+		TrySpawnSingleBomb(selectedSpec, spawnedBombs);
 	}
 }
 
-void SpawnManager::SpawnHitBomb(int createCount)
+void SpawnManager::FirstSpawn()
 {
-	auto& bombManager = StageObjectManager::GetInstance()->GetBombManager();
-
-	Random::RandomNumberGenerator rnd{};
-	//一時保管用
+	// このスポーン処理内で生成されたボムの情報を一時的に保持する
 	std::vector<std::pair<Vector2, float>> spawnedBombs;
 
-	// 1体あたりの位置決めの最大試行回数
-	const int maxAttempts = 10;
+	for (int i = 0; i < totalCreateCount_; ++i) {
+		// ボム生成
+		TrySpawnSingleBomb(bombSpecs_.at(0), spawnedBombs);
+	}
 
-	for (int i = 0; i < createCount; i++) {
-		Vector2 pos;
-		bool isOverlapping;
-		int attempts = 0;
+	currentSpawnAreaStartX_ += spawnAreaWidth_;
+}
 
-		// 重ならない位置が見つかるか、試行回数が上限に達するまでループ
-		do {
-			pos.x = rnd.NextFloatRange(position_ + bombRadius_, position_ + range_);
-			pos.y = rnd.NextFloatRange(offset_ + bombRadius_, Wall::GetInstance()->kWallHeight);
+const BombInfo& SpawnManager::SelectRandomBombType() const {
+	Random::RandomNumberGenerator rnd{};
+	// 重みの中でランダム数字
+	float randomValue = rnd.NextFloatRange(0.0f, totalBombSpawnWeight_);
 
-			// 今まで生成したものと重なっているかどうか
-			isOverlapping = false;
-			for (const auto& spawned : spawnedBombs) {
-				const Vector2& spawnedPos = spawned.first;
-				const float spawnedRadius = spawned.second;
-
-				//円の当たり判定
-				float dx = pos.x - spawnedPos.x;
-				float dy = pos.y - spawnedPos.y;
-				float distance = (dx * dx) + (dy * dy);
-
-				float sumRadius = bombRadius_ + spawnedRadius;
-
-				//重なっているか
-				if (distance < (sumRadius * sumRadius)) {
-					isOverlapping = true;
-					break;
-				}
-			}
-
-			attempts++;
-
-		} while (isOverlapping && attempts < maxAttempts);
-
-		// 重ならない位置が見つかった場合生成
-		if (!isOverlapping) {
-			bombManager.SpawnHitBomb(pos, bombRadius_, 0x00E6E6FF);
-			spawnedBombs.push_back({ pos, bombRadius_ });
+	// 抽選
+	float accumulatedWeight = 0.0f;
+	for (const auto& spec : bombSpecs_) {
+		accumulatedWeight += spec.spawnWeight;
+		if (randomValue <= accumulatedWeight) {
+			return spec;
 		}
+	}
+	// 最悪一番最初を返す
+	return bombSpecs_.front();
+}
+
+void SpawnManager::TrySpawnSingleBomb(const BombInfo& spec, std::vector<std::pair<Vector2, float>>& existingBombs) {
+	Vector2 spawnPos;
+	// 重複しない座標を探す
+	bool foundPosition = FindNonOverlappingPosition(spec.radius, existingBombs, spawnPos);
+
+	if (foundPosition) {
+		auto& bombManager = StageObjectManager::GetInstance()->GetBombManager();
+		//ボム生成
+		switch (spec.type) {
+		case BombsType::Normal:
+			bombManager.SpawnBomb(spawnPos, spec.radius, spec.color);
+			break;
+		case BombsType::Hit:
+			bombManager.SpawnHitBomb(spawnPos, spec.radius, spec.color);
+			break;
+		}
+		//リストに追加
+		existingBombs.push_back({ spawnPos, spec.radius });
 	}
 }
 
-int SpawnManager::CalculationCreateCount()
-{
-	const auto& wallPos = Wall::GetInstance()->GetPosition();
+float SpawnManager::SelectRandomSpawnY() const {
+	Random::RandomNumberGenerator rnd{};
 
-	//距離を100で割ってます
-	float createCount = (wallPos + 200.0f) / 100.0f;
+	// どの高さの区画に出るか
+	float randomValue = rnd.NextFloatRange(0.0f, totalHeightSpawnWeight_);
+	float accumulatedWeight = 0.0f;
+	int selectedDivision = 0;
+	for (int i = 0; i < spawnHeightDivisions_; ++i) {
+		accumulatedWeight += spawnHeightWeights_[i];
+		if (randomValue <= accumulatedWeight) {
+			selectedDivision = i;
+			break;
+		}
+	}
 
-	//敵個数Max10
-	createCount = std::clamp(createCount, 0.0f, 10.0f);
-	return int(createCount);
+	// 決定した区画内でランダムなY座標を計算
+	const float totalSpawnableHeight = Wall::GetInstance()->kWallHeight - spawnOffsetY_;
+	const float divisionHeight = totalSpawnableHeight / spawnHeightDivisions_;
+
+	float minY = spawnOffsetY_ + divisionHeight * selectedDivision;
+	float maxY = minY + divisionHeight;
+
+	return rnd.NextFloatRange(minY, maxY);
+}
+
+bool SpawnManager::FindNonOverlappingPosition(
+	float radius,
+	const std::vector<std::pair<Vector2, float>>& existingBombs,
+	Vector2& outPosition
+) const {
+	Random::RandomNumberGenerator rnd{};
+
+	// 最大試行回数まで、重ならない位置を探し続ける
+	for (int attempts = 0; attempts < kMaxPlacementAttempts; ++attempts) {
+		Vector2 pos;
+		// X座標はスポーン範囲内でランダム
+		pos.x = rnd.NextFloatRange(currentSpawnAreaStartX_ + radius, currentSpawnAreaStartX_ + spawnAreaWidth_ - radius);
+		// Y座標は確率に基づいて決定
+		pos.y = SelectRandomSpawnY();
+
+		// 他のボムと重なっているかチェック
+		bool isOverlapping = false;
+		for (const auto& spawned : existingBombs) {
+			const Vector2& spawnedPos = spawned.first;
+			const float spawnedRadius = spawned.second;
+
+			// 円同士の当たり判定
+			float dx = pos.x - spawnedPos.x;
+			float dy = pos.y - spawnedPos.y;
+			float distanceSquared = (dx * dx) + (dy * dy);
+
+			float sumRadius = radius + spawnedRadius;
+			float sumRadiusSquared = sumRadius * sumRadius;
+
+			//重なっていたらやめとく
+			if (distanceSquared < sumRadiusSquared) {
+				isOverlapping = true;
+				break; 
+			}
+		}
+
+		// 重なっていなければ、その位置を採用して成功を返す
+		if (!isOverlapping) {
+			outPosition = pos;
+			return true;
+		}
+	}
+
+	// 最大試行回数に達しても見つからなければ失敗を返す
+	return false;
 }

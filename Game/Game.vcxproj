@@ -93,6 +93,7 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="HexagonSevenSegmentDisplay.h" />
     <ClInclude Include="HitBomb.h" />
+    <ClInclude Include="HitStopManager.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="OperationInstructions.h" />
     <ClInclude Include="Particle\Circle.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="HexagonSevenSegmentDisplay.cpp" />
     <ClCompile Include="HitBomb.cpp" />
+    <ClCompile Include="HitStopManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="OperationInstructions.cpp" />

@@ -16,6 +16,7 @@
 #include "StageObjectManager.h"
 #include "SpwanManager.h"
 #include "CollisionManager.h"
+#include "HitStopManager.h"
 
 #include "BackGround.h"
 #include "Player.h"
@@ -35,386 +36,396 @@
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
-    TOMATOsEngine::Initialize();
+	TOMATOsEngine::Initialize();
 #ifdef _DEBUG
-    TOMATOsEngine::SetFullScreen(false);
+	TOMATOsEngine::SetFullScreen(false);
 #endif // _DEBUG
 
 
-    GameScene gameScene = title;
+	GameScene gameScene = title;
 
-    Transition* transition = Transition::GetInstance();
-   
+	Transition* transition = Transition::GetInstance();
 
-    Vector3 cameraPosition = { 0.0f, 3.0f, -50.0f };
-    Vector3 cameraRotate = {};
-    Camera camera;
-    camera.SetPosition({ 0.0f, 3.0f, -10.0f });
+
+	Vector3 cameraPosition = { 0.0f, 3.0f, -50.0f };
+	Vector3 cameraRotate = {};
+	Camera camera;
+	camera.SetPosition({ 0.0f, 3.0f, -10.0f });
 
 
 
 #pragma region テクスチャハンドル
-    //シャットダウン
-    TextureHandle shutdownTextureHandle = TOMATOsEngine::LoadTexture("Resources/shpere.png");
+	//シャットダウン
+	TextureHandle shutdownTextureHandle = TOMATOsEngine::LoadTexture("Resources/shpere.png");
 #pragma endregion
 
 #pragma region テクスチャサイズ/ポジション
-    //SpaceかBボタンを押してね画像のサイズポジション
-    Vector2 spaceorBPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 130.0f };
-    Vector2 spaceorBSize = { 150.0f * 1.5f,32.0 * 1.5f };
+	//SpaceかBボタンを押してね画像のサイズポジション
+	Vector2 spaceorBPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 130.0f };
+	Vector2 spaceorBSize = { 150.0f * 1.5f,32.0 * 1.5f };
 
 
-    //gameOver画像のサイズポジション
-    Vector2 gameOverPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 32.0f * 2.0f };
-    Vector2 gameOverSize = { 320.0f,240.0f };
+	//gameOver画像のサイズポジション
+	Vector2 gameOverPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 32.0f * 2.0f };
+	Vector2 gameOverSize = { 320.0f,240.0f };
 #pragma endregion
 
 #pragma region 矢印
-    Vector2 arrowTextSize = { 64.0f * 2.5f,32.0f * 2.5f };
-    //スタート・操作説明・終了のポジション
-    Vector2 startTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 180.0f };
-    Vector2 operationTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,startTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
-    Vector2 endTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,operationTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
+	Vector2 arrowTextSize = { 64.0f * 2.5f,32.0f * 2.5f };
+	//スタート・操作説明・終了のポジション
+	Vector2 startTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 180.0f };
+	Vector2 operationTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,startTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
+	Vector2 endTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,operationTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
 
 
 #pragma endregion
 
 #pragma region 音
-    //イワシロ音楽素材 使用の際は追記
-    auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
-    auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
-    auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-    auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
-    size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
-    auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+	//イワシロ音楽素材 使用の際は追記
+	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
+	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
+	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
+	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
+	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
 
-    // タイトルははじめから流す
-    size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-    TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
-    size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-    size_t clearPlayHandle = INVALID_PLAY_HANDLE;
-    // 音の溜め必要
-    bool ingameToClear = false;
-    bool clearToTitle = false;
+	// タイトルははじめから流す
+	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+	TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
+	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
+	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+	// 音の溜め必要
+	bool ingameToClear = false;
+	bool clearToTitle = false;
 #pragma endregion
 
 #pragma region シャットダウン
-    // シャットダウンアニメーション
-    float kMaxAnimationTime = 20.0f;
-    float animationTime = 0.0f;
-    bool isShutdown = false;
+	// シャットダウンアニメーション
+	float kMaxAnimationTime = 20.0f;
+	float animationTime = 0.0f;
+	bool isShutdown = false;
 
 
-    Vector2 shutdownSize{};
-    Vector2 shutdownSideSize{};
-    Animation::Vector2Node shutdownSizeAnimation({ { {1280.0f, 20.0f}, 0.0f}, {{20.0f, 20.0f}, 0.2f}, {{20.0f, 640.0f}, 0.4f}, {{2.0f, 10.0f}, 0.4f}, {{1280.0f, 1.0f}, 1.0f} });
-    Animation::Vector2Node shutdownSideSizeAnimation({ {{},0.0f}, { { 30.0f,100.0f }, 0.2f }, { {30.0f,200.0f} ,0.4f },{{},0.4f}, { {},1.0f } });;
+	Vector2 shutdownSize{};
+	Vector2 shutdownSideSize{};
+	Animation::Vector2Node shutdownSizeAnimation({ { {1280.0f, 20.0f}, 0.0f}, {{20.0f, 20.0f}, 0.2f}, {{20.0f, 640.0f}, 0.4f}, {{2.0f, 10.0f}, 0.4f}, {{1280.0f, 1.0f}, 1.0f} });
+	Animation::Vector2Node shutdownSideSizeAnimation({ {{},0.0f}, { { 30.0f,100.0f }, 0.2f }, { {30.0f,200.0f} ,0.4f },{{},0.4f}, { {},1.0f } });;
 #pragma endregion
 
 #pragma region クラス宣言/初期化関連
-    StageObjectManager* stageObjectManager = StageObjectManager::GetInstance();
-    stageObjectManager->Initialize();
+	StageObjectManager* stageObjectManager = StageObjectManager::GetInstance();
+	stageObjectManager->Initialize();
 
-    SpawnManager* spawnManager = SpawnManager::GetInstance();
-    spawnManager->Initialize();
+	SpawnManager* spawnManager = SpawnManager::GetInstance();
+	spawnManager->Initialize();
 
-    CollisionManager* collisionManager = CollisionManager::GetInstance();
-    collisionManager->Initialize();
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	collisionManager->Initialize();
 
-    Wall* wall = Wall::GetInstance();
-    wall->Initialize();
+	Wall* wall = Wall::GetInstance();
+	wall->Initialize();
 
-    Ground* ground = Ground::GetInstance();
+	HitStopManager* hitStopManager = HitStopManager::GetInstance();
+	hitStopManager->Initialize();
 
-    Player player;
-    //初期化にWall使用
-    Border* border = Border::GetInstance();
-    border->Initialize();
-    border->SetPlayer(&player);
+	Ground* ground = Ground::GetInstance();
 
-    ParticleManager* particleManager = ParticleManager::GetInstance();
-    particleManager->Initialize();
+	Player player;
+	//初期化にWall使用
+	Border* border = Border::GetInstance();
+	border->Initialize();
+	border->SetPlayer(&player);
 
-    player.Initialize();
-    collisionManager->SetPlayer(&player);
+	ParticleManager* particleManager = ParticleManager::GetInstance();
+	particleManager->Initialize();
 
-    BackGround backGround;
-    backGround.Initialize();
+	player.Initialize();
+	collisionManager->SetPlayer(&player);
+
+	BackGround backGround;
+	backGround.Initialize();
 
 
-    Score score;
-    score.Initialize();
-    Vector2 titleScorePos = { 0.0f,-6.0f };
-    score.SetPosition(titleScorePos);
+	Score score;
+	score.Initialize();
+	Vector2 titleScorePos = { 0.0f,-6.0f };
+	score.SetPosition(titleScorePos);
 
-    //変数名かぶり
-    Title title_;
-    title_.Initialize();
-    //Test
-    //HexagonSevenSegmentDisplay* hexagonSevenSegmentDisplay = HexagonSevenSegmentDisplay::GetInstance();
-    //int hexagonSevenSegmentDisplayNumber = 0;
+	//変数名かぶり
+	Title title_;
+	title_.Initialize();
+	//Test
+	//HexagonSevenSegmentDisplay* hexagonSevenSegmentDisplay = HexagonSevenSegmentDisplay::GetInstance();
+	//int hexagonSevenSegmentDisplayNumber = 0;
 #pragma endregion
 
 #pragma region まとめとく
 
-    auto initializeInGame = [&]() {
+	auto initializeInGame = [&]() {
 
-        collisionManager->Initialize();
-        stageObjectManager->Initialize();
-        spawnManager->Initialize();
+		collisionManager->Initialize();
+		stageObjectManager->Initialize();
+		spawnManager->Initialize();
+		hitStopManager->Initialize();
 
-        wall->Initialize();
-        border->Initialize();
-        particleManager->Initialize();
+		wall->Initialize();
+		border->Initialize();
+		particleManager->Initialize();
 
-        backGround.Initialize();
-        player.Initialize();
-        player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-        score.Initialize();
-        // 音
-        // タイトルBGM停止
-        TOMATOsEngine::StopAudio(titlePlayHandle);
-        // インゲームBGM
-        ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-        TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
-        };
+		backGround.Initialize();
+		player.Initialize();
+		player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
+		score.Initialize();
+		// 音
+		// タイトルBGM停止
+		TOMATOsEngine::StopAudio(titlePlayHandle);
+		// インゲームBGM
+		ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+		TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
+		};
 
 #pragma endregion
 
-    while (TOMATOsEngine::BeginFrame()) {
-        auto pad = TOMATOsEngine::GetGamePadState();
-        auto prepad = TOMATOsEngine::GetGamePadPreState();
-        const float commonShakeValue = 0.1f;
-        TOMATOsEngine::SetLineShakeX(true, commonShakeValue);
-        TOMATOsEngine::SetLineShakeY(true, commonShakeValue);
-        transition->GetInstance()->Update();
+	while (TOMATOsEngine::BeginFrame()) {
+		auto pad = TOMATOsEngine::GetGamePadState();
+		auto prepad = TOMATOsEngine::GetGamePadPreState();
+		const float commonShakeValue = 0.1f;
+		TOMATOsEngine::SetLineShakeX(true, commonShakeValue);
+		TOMATOsEngine::SetLineShakeY(true, commonShakeValue);
+		transition->GetInstance()->Update();
 #ifdef _DEBUG
-        auto& io = ImGui::GetIO();
-        ImGui::Begin("Menu");
-        if (ImGui::TreeNode("Main")) {
-            ImGui::Text("FPS : %f\n", io.Framerate);
-            ImGui::Text("Quit : ESCAPE\n");
-            ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
-            ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
-            ImGui::TreePop();
-        }
-        ImGui::End();
+		auto& io = ImGui::GetIO();
+		ImGui::Begin("Menu");
+		if (ImGui::TreeNode("Main")) {
+			ImGui::Text("FPS : %f\n", io.Framerate);
+			ImGui::Text("Quit : ESCAPE\n");
+			ImGui::Text("now:%d", pad.Gamepad.sThumbLY);
+			ImGui::Text("pre:%d", prepad.Gamepad.sThumbLY);
+			ImGui::TreePop();
+		}
+		ImGui::End();
 #endif // _DEBUG
 
-        camera.SetPosition(cameraPosition);
-        camera.SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
-        camera.UpdateMatrices();
-        TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
+	
 
-        ////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
 
-        float wallToBordarGap = border->GetBorderSidePos() - wall->GetPosition();
-        float shakeStartDistance = 24.0f;
-        float amplitude = 0.4f;
-        float shakeValue = (shakeStartDistance - wallToBordarGap) / shakeStartDistance;
+		float wallToBordarGap = border->GetBorderSidePos() - wall->GetPosition();
+		float shakeStartDistance = 24.0f;
+		float amplitude = 0.4f;
+		float shakeValue = (shakeStartDistance - wallToBordarGap) / shakeStartDistance;
 
-        switch (gameScene) {
-        case title:
-        {
-            title_.Update();
-            score.Update(true);
-            //シャットダウン
-            if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
-                isShutdown = true;
-                TOMATOsEngine::PlayAudio(shutdownSoundHandle);
-            }
+		switch (gameScene) {
+		case title:
+		{
+			title_.Update();
+			score.Update(true);
+			//シャットダウン
+			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
+				isShutdown = true;
+				TOMATOsEngine::PlayAudio(shutdownSoundHandle);
+			}
 
-            if (!isShutdown) {
+			if (!isShutdown) {
 
 #pragma region キー入力
 
-                if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
-                    ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
-                        !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
-                    TOMATOsEngine::PlayAudio(pickHandle);
+				if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
+					((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
+						!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
+					TOMATOsEngine::PlayAudio(pickHandle);
 
-                    transition->Start(title);
-                }
+					transition->Start(title);
+				}
 
-                if (transition->isNextSceneFrame && transition->pre == title) {
-                    gameScene = inGame;
-                    initializeInGame();
-                }
+				if (transition->isNextSceneFrame && transition->pre == title) {
+					gameScene = inGame;
+					initializeInGame();
+				}
 #pragma endregion
 
 
 
-            }
-            else {
-                //シャットダウンアップデート
-                animationTime += 1.0f;
-                float t = animationTime / kMaxAnimationTime;
-                shutdownSize = shutdownSizeAnimation.GetInterpolatedValue(t);
-                shutdownSideSize = shutdownSideSizeAnimation.GetInterpolatedValue(t);
+			}
+			else {
+				//シャットダウンアップデート
+				animationTime += 1.0f;
+				float t = animationTime / kMaxAnimationTime;
+				shutdownSize = shutdownSizeAnimation.GetInterpolatedValue(t);
+				shutdownSideSize = shutdownSideSizeAnimation.GetInterpolatedValue(t);
 
-                if (animationTime >= kMaxAnimationTime) {
-                    TOMATOsEngine::RequestQuit();
-                }
-            }
+				if (animationTime >= kMaxAnimationTime) {
+					TOMATOsEngine::RequestQuit();
+				}
+			}
 
-            break;
-        }
+			break;
+		}
 
-        case inGame:
-        {
+		case inGame:
+		{
+			hitStopManager->Update();
 
-            wall->Update();
-            stageObjectManager->Update();
-            spawnManager->Update();
+			//HitStop中止めたいところ入れ
+			if (!hitStopManager->GetIsHitStop()) {
+				player.Update();
+				border->Update();
+				stageObjectManager->Update();
+				collisionManager->Update();
+				wall->Update();
+			}
 
-            backGround.Update();
-            player.Update();
+			spawnManager->Update();
 
-            border->Update();
+			backGround.Update();
 
-            collisionManager->Update();
+			score.Update(false);
 
-            score.Update(false);
+			particleManager->Update();
 
-            particleManager->Update();
+			//近づくとシェイク
+			if (shakeValue >= 0.0f) {
+				TOMATOsEngine::SetLineShakeX(true, shakeValue * amplitude);
+				TOMATOsEngine::SetLineShakeY(true, shakeValue * amplitude);
+			}
 
-            //近づくとシェイク
-            if (shakeValue >= 0.0f) {
-                TOMATOsEngine::SetLineShakeX(true, shakeValue * amplitude);
-                TOMATOsEngine::SetLineShakeY(true, shakeValue * amplitude);
-            }
+			//まけ判定
+			if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop()) {
+				transition->Start(inGame);
+			}
 
-            //まけ判定
-            if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop()) {
-                transition->Start(inGame);
-            }
+			if (transition->isNextSceneFrame && transition->pre == inGame) {
+				gameScene = gameClear;
+				TOMATOsEngine::StopAudio(ingamePlayHandle);
+				ingamePlayHandle = INVALID_PLAY_HANDLE;
+			}
 
-            if (transition->isNextSceneFrame && transition->pre == inGame) {
-                gameScene = gameClear;
-                TOMATOsEngine::StopAudio(ingamePlayHandle);
-                ingamePlayHandle = INVALID_PLAY_HANDLE;
-            }
+			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
+				TOMATOsEngine::RequestQuit();
 
-            if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
-                TOMATOsEngine::RequestQuit();
+			}
 
-            }
+			break;
+		}
+		case gameClear:
+		{
+			player.Update();
 
-            break;
-        }
-        case gameClear:
-        {
-            player.Update();
+			if (!clearToTitle) {
+				// ゲームクリアBGM
+				clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
+				TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
+				clearToTitle = true;
+			}
 
-            if (!clearToTitle) {
-                // ゲームクリアBGM
-                clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
-                TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
-                clearToTitle = true;
-            }
+			//タイトルに移動
+			if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
+				((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
+					!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 
-            //タイトルに移動
-            if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
-                ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) &&
-                    !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
-
-                transition->Start(gameClear);
-            }
-
-
-            if (transition->isNextSceneFrame && transition->pre == gameClear) {
-                gameScene = title;
-
-                score.SetPosition(titleScorePos);
-
-                //初期化
-                stageObjectManager->Initialize();
-                spawnManager->Initialize();
-
-                border->Initialize();
-                wall->Initialize();
-                particleManager->Initialize();
-
-                backGround.Initialize();
-                player.Initialize();
-
-                title_.Initialize();
+				transition->Start(gameClear);
+			}
 
 
-                // 音
-                // クリアBGM停止
-                TOMATOsEngine::StopAudio(clearPlayHandle);
-                // タイトルBGM
-                titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-                TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
+			if (transition->isNextSceneFrame && transition->pre == gameClear) {
+				gameScene = title;
+
+				score.SetPosition(titleScorePos);
+
+				//初期化
+				stageObjectManager->Initialize();
+				spawnManager->Initialize();
+
+				border->Initialize();
+				wall->Initialize();
+				particleManager->Initialize();
+
+				backGround.Initialize();
+				player.Initialize();
+
+				title_.Initialize();
 
 
-                // スペースオン
-                auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
-                TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.1f);
-                clearToTitle = false;
-                ingameToClear = false;
-            }
+				// 音
+				// クリアBGM停止
+				TOMATOsEngine::StopAudio(clearPlayHandle);
+				// タイトルBGM
+				titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+				TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
 
-            break;
-        }
 
-        default:
-        {
-            break;
-        }
-        }
+				// スペースオン
+				auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
+				TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.1f);
+				clearToTitle = false;
+				ingameToClear = false;
+			}
 
-        ////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
-        switch (gameScene) {
-        case title:
-        {
+			break;
+		}
 
-            title_.Draw();
-            score.Draw();
-            OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
+		default:
+		{
+			break;
+		}
+		}
+		//カメラ処理がヒットストップで更新されないためここになりました皆さん気を付けてくださいな
+		if (hitStopManager->GetInstance()->GetIsHitStop()) {
+			camera.SetPosition(cameraPosition);
+			camera.SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
+			camera.UpdateMatrices();
+			TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
+		}
+		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
+		switch (gameScene) {
+		case title:
+		{
 
-            if (isShutdown) {
-                TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
-                TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);
-                TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSideSize, { 0.5f,0.5f }, 45.0f * Math::ToRadian, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFF05);
-                TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSideSize, { 0.5f,0.5f }, 135.0f * Math::ToRadian, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFF05);
-            }
+			title_.Draw();
+			score.Draw();
+			OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
 
-            break;
-        }
+			if (isShutdown) {
+				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
+				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSize, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFFFF);
+				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSideSize, { 0.5f,0.5f }, 45.0f * Math::ToRadian, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFF05);
+				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, shutdownSideSize, { 0.5f,0.5f }, 135.0f * Math::ToRadian, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0xFFFFFF05);
+			}
 
-        case inGame:
-        {
-            backGround.Draw();
-            score.Draw();
-            stageObjectManager->Draw();
+			break;
+		}
 
-            //backGround.Draw();
-            ground->Draw();
-            wall->Draw();
-            border->Draw();
-            player.Draw();
-            particleManager->Draw();
-            //TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
-            break;
-        }
-        case gameClear:
-        {
-            backGround.Draw();
-            player.Draw();
-            break;
-        }
-        default:
-        {
-            break;
-        }
-        }
-    }
+		case inGame:
+		{
+			backGround.Draw();
+			score.Draw();
+			stageObjectManager->Draw();
 
-        TOMATOsEngine::Shutdown();
+			//backGround.Draw();
+			ground->Draw();
+			wall->Draw();
+			border->Draw();
+			player.Draw();
+			particleManager->Draw();
+			//TOMATOsEngine::DrawSpriteRect({ 0.0f,0.0f }, { static_cast<float>(TOMATOsEngine::kMonitorWidth) ,static_cast<float>(TOMATOsEngine::kMonitorHeight) }, { 0.0f,0.0f }, { 640.0f,480.0f }, floorHandle, 0xFFFFFFFF);
+			break;
+		}
+		case gameClear:
+		{
+			backGround.Draw();
+			player.Draw();
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+	}
 
-    return 0;
- }
+	TOMATOsEngine::Shutdown();
+
+	return 0;
+}
 
 

@@ -1,6 +1,7 @@
 #include "HitBomb.h"
 
 #include "TOMATOsEngine.h"
+#include "HitStopManager.h"
 
 #include "Player.h"
 #include "CollisionManager.h"
@@ -67,4 +68,6 @@ void HitBomb::OnPlayerHitCollision(Player* player)
 	//死亡時飛び散りパーティクル
 	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
 
+	//ヒットストップ
+	HitStopManager::GetInstance()->SetIsHitStop();
 }

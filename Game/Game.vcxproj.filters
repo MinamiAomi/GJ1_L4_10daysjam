@@ -292,6 +292,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Transition.h" />
+    <ClInclude Include="HitStopManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Externals\ImGui\imgui.cpp">
@@ -504,6 +507,7 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Transition.cpp" />
+    <ClCompile Include="HitStopManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Externals\ImGui\LICENSE.txt">
