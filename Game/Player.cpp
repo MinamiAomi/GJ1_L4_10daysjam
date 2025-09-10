@@ -204,7 +204,7 @@ void Player::CheckCollisions()
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
-		
+		playerModel_.SetState(PlayerModel::kWallSliding);
 	}
 
 }
