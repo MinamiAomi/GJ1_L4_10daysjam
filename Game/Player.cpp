@@ -195,7 +195,7 @@ void Player::HipDrop()
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
-		invincibleFrame_ = 3;
+		invincibleFrame_ = 0;
 	}
 }
 
