@@ -623,14 +623,15 @@ namespace TOMATOsEngine {
         DrawBoxLine3D(square.center, square.size, square.radian, color);
     }
 
-    void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, uint32_t color) {
+    void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, float rotation, uint32_t color) {
         const int numVertices = 10;
         std::vector<Vector2> vertices(numVertices);
 
         for (int i = 0; i < numVertices; ++i) {
             float radius = (i % 2 == 0) ? outerRadius : innerRadius;
 
-            float angle = (2.0f * Math::Pi * i / numVertices) - (Math::Pi / 2.0f);
+            // 角度の計算式に回転(rotation)を加える
+            float angle = (2.0f * Math::Pi * i / numVertices) - (Math::Pi / 2.0f) + rotation;
 
             vertices[i].x = center.x + radius * std::cos(angle);
             vertices[i].y = center.y + radius * std::sin(angle);

@@ -113,7 +113,24 @@ void PlayerModel::Jump()
 
 void PlayerModel::WallSliding()
 {
-
+	changeT_ += 0.2f;
+	head_ = Square::Lerp(changeT_, head_, jumpHead_);
+	leftFoot_.size = Vector2::Lerp(changeT_, leftFoot_.size, initialLeftFoot_.size);
+	rightFoot_.size = Vector2::Lerp(changeT_, rightFoot_.size, initialRightFoot_.size);
+	if (player_->GetFacing()) {
+		//右
+		leftFoot_.center.y = initialLeftFoot_.center.y + walkAmplitude_;
+		leftFoot_.center.x = initialLeftFoot_.center.x;
+		rightFoot_.center.y = initialRightFoot_.center.y - walkAmplitude_;
+		rightFoot_.center.x = initialRightFoot_.center.x;
+	}
+	else {
+		//左
+		leftFoot_.center.y = initialLeftFoot_.center.y - walkAmplitude_;
+		leftFoot_.center.x = initialLeftFoot_.center.x;
+		rightFoot_.center.y = initialRightFoot_.center.y + walkAmplitude_;
+		rightFoot_.center.x = initialRightFoot_.center.x;
+	}
 }
 
 void PlayerModel::HipDrop()

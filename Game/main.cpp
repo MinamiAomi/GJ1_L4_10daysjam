@@ -364,22 +364,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
-		default:
-		{
-			break;
-		}
-		}
-		//カメラ処理がヒットストップで更新されないためここになりました皆さん気を付けてくださいな
-		if (hitStopManager->GetInstance()->GetIsHitStop()) {
-			camera.SetPosition(cameraPosition);
-			camera.SetRotate(Quaternion::MakeFromEulerAngle(cameraRotate * Math::ToRadian));
-			camera.UpdateMatrices();
-			TOMATOsEngine::SetCameraMatrix(camera.GetViewProjectionMatrix());
-		}
-		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
-		switch (gameScene) {
-		case title:
-		{
+        default:
+        {
+            break;
+        }
+        }
+        transition->TransitionShake();
+
+        ////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
+        switch (gameScene) {
+        case title:
+        {
 
 			title_.Draw();
 			score.Draw();

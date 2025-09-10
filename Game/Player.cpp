@@ -19,6 +19,7 @@ void Player::Initialize() {
 	isFacing = true;
 	rotate_ = 0.0f;
 	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
+	wallToPosition_ = { 0.0f,0.0f };
 }
 
 void Player::Update() {
@@ -55,15 +56,16 @@ void Player::Update() {
 			HipDrop();
 		}
 
-		if (Wall::GetInstance()->IsMove()) {
-			position_.x += Wall::GetInstance()->GetSpeed();
-		}
-		position_ += velocity_;
+		wallToPosition_ += velocity_;
 
+		position_ = { Wall::GetInstance()->GetPosition() + wallToPosition_.x,wallToPosition_.y };
 		CheckCollisions();
 
-		playerModel_.Update();
 	}
+	else {
+		position_ = { Wall::GetInstance()->GetPosition() + wallToPosition_.x,wallToPosition_.y };
+	}
+	playerModel_.Update();
 }
 
 void Player::Draw() {
@@ -138,7 +140,10 @@ void Player::Move() {
 		isJumping_ = false; // ジャンプキーを離したのでフラグを折る
 	}
 
-	velocity_.y += gravity_;
+	if (!isOnGround_) {
+		velocity_.y += gravity_;
+	}
+	
 
 	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
@@ -176,8 +181,9 @@ void Player::CheckCollisions()
 	//地面
 	if (position_.y <= size_.y / 2.0f) {
 		position_.y = size_.y / 2.0f;
+		wallToPosition_.y = size_.y / 2.0f;
 		if (velocity_.y < 0.0f) {
-			velocity_.y = 0;
+			velocity_.y = 0.0f;
 		}
 		isOnGround_ = true;
 	}
@@ -185,18 +191,20 @@ void Player::CheckCollisions()
 	//壁
 	if (position_.x <= Wall::GetInstance()->GetPosition() + size_.x / 2.0f) {
 		position_.x = Wall::GetInstance()->GetPosition() + size_.x / 2.0f;
+		wallToPosition_.x = size_.x / 2.0f;
 		wallDirection_ = -1;
 		isFacing = true;
 	}
 	else if (position_.x >= Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f) {
 		position_.x = Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f;
+		wallToPosition_.x = Border::GetInstance()->GetBorderSidePos() - Wall::GetInstance()->GetPosition() - size_.x / 2.0f;
 		wallDirection_ = 1;
 		isFacing = false;
 	}
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
-		
+		playerModel_.SetState(PlayerModel::kWallSliding);
 	}
 
 }

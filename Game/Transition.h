@@ -18,6 +18,8 @@ public:
 	}
 	void Update();
 
+	void TransitionShake();
+
 	bool isStart = false;
 
 	float t = 0.0f;
