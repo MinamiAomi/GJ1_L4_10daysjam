@@ -24,7 +24,7 @@ void Border::Initialize()
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = position_;
-	pushBackCoefficient_ = 5.0f;
+	pushBackCoefficient_ = 4.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
 
 	//comboCoefficient_ = 1.05f;

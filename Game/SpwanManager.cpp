@@ -12,7 +12,7 @@
 namespace {
 	constexpr float kDefaultSpawnAreaWidth = 50.0f;
 	constexpr float kDefaultSpawnOffsetY = 10.0f;
-	constexpr int kDefaultTotalCreateCount = 12;
+	constexpr int kDefaultTotalCreateCount = 15;
 	constexpr int kMaxPlacementAttempts = 10;
 }
 
