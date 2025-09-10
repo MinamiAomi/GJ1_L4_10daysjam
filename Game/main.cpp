@@ -66,10 +66,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
     size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
     auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+    const float bgmVolume = 0.2f;
 
     // タイトルははじめから流す
     size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-    TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
+    TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
     size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
     size_t clearPlayHandle = INVALID_PLAY_HANDLE;
     // 音の溜め必要
@@ -155,7 +156,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         TOMATOsEngine::StopAudio(titlePlayHandle);
         // インゲームBGM
         ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-        TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
+        TOMATOsEngine::SetVolume(ingamePlayHandle, bgmVolume);
         };
 
 #pragma endregion
@@ -288,7 +289,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             if (!clearToTitle) {
                 // ゲームクリアBGM
                 clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
-                TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
+                TOMATOsEngine::SetVolume(clearPlayHandle, bgmVolume);
                 clearToTitle = true;
             }
 
@@ -325,12 +326,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                 TOMATOsEngine::StopAudio(clearPlayHandle);
                 // タイトルBGM
                 titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-                TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
+                TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
 
 
                 // スペースオン
                 auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
-                TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.1f);
+                TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.05f);
                 clearToTitle = false;
                 ingameToClear = false;
             }
