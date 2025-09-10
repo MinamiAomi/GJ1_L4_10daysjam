@@ -382,8 +382,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
         case inGame:
         {
-            operationInstructions.Draw({50.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::BlueBomb);
-            operationInstructions.Draw({30.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::Burst);
+            operationInstructions.Draw({ 20.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::Move);
+            operationInstructions.Draw({ 40.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::Jump);
+            operationInstructions.Draw({ 60.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::RedBomb);
+            operationInstructions.Draw({ 80.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::WallKick);
+            operationInstructions.Draw({100.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::BlueBomb);
+            operationInstructions.Draw({120.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::HipDrop);
+            operationInstructions.Draw({150.0f, 7.0f, 0.0f}, { 1.5f, 1.5f, 0.0f }, OperationInstructions::Type::Burst);
             backGround.Draw();
             score->Draw();
             stageObjectManager->Draw();

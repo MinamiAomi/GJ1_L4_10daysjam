@@ -142,7 +142,7 @@ void DrawArrow(const Vector3& translate, const Vector2& size, float radian, cons
 
 void OperationInstructions::Draw(const Vector3& translate, const Vector3& scale, Type type) {
 
-    t += 1.0f / 60.0f;
+    t += 1.0f / 1000.0f;
     if (t >= 1.0f) {
         t -= 1.0f;
     }
