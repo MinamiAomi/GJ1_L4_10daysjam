@@ -36,19 +36,24 @@ void Score::Update(bool isTitle)
 #endif // _DEBUG
 	drawVertex_.clear();
 	if (!isTitle) {
+		if (Border::GetInstance()->GetPushBackPosition() - Border::GetInstance()->GetBorderSidePos() > 0.0f) {
+			color_ = burstColor_;
+		}
+		else {
+			color_ = defaultColor_;
+		}
+		////カラーイージング
+		//float wallPos = Wall::GetInstance()->GetPosition();
+		//float borderPos = Border::GetInstance()->GetBorderSidePos();
+		//float t = std::clamp((borderPos - wallPos) / Wall::kBurstDistance, 0.0f, 1.0f);
 
-		//カラーイージング
-		float wallPos = Wall::GetInstance()->GetPosition();
-		float borderPos = Border::GetInstance()->GetBorderSidePos();
-		float t = std::clamp((borderPos - wallPos) / Wall::kBurstDistance, 0.0f, 1.0f);
+		//float r = std::lerp(defaultColor_.GetR(), burstColor_.GetR(), t);
+		//float g = std::lerp(defaultColor_.GetG(), burstColor_.GetG(), t);
+		//float b = std::lerp(defaultColor_.GetB(), burstColor_.GetB(), t);
+		//float a = std::lerp(defaultColor_.GetA(), burstColor_.GetA(), t);
 
-		float r = std::lerp(defaultColor_.GetR(), burstColor_.GetR(), t);
-		float g = std::lerp(defaultColor_.GetG(), burstColor_.GetG(), t);
-		float b = std::lerp(defaultColor_.GetB(), burstColor_.GetB(), t);
-		float a = std::lerp(defaultColor_.GetA(), burstColor_.GetA(), t);
-
-		Color finalColor = Color::RGBA(r, g, b, a);
-		color_ = finalColor;
+		//Color finalColor = Color::RGBA(r, g, b, a);
+		//color_ = finalColor;
 
 		//大きいと更新
 		if (score_ < Border::GetInstance()->GetBorderSidePos()) {
