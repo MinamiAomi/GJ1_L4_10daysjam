@@ -36,6 +36,7 @@ private:
 	Vector2 size_;
 
 	bool isOnGround_ = false;
+	bool preIsOnGround_ = false;
 	bool isWallSliding_ = false;
 	bool isFacing = true; // 向いている方向(false 左,true 右 )
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
@@ -43,6 +44,8 @@ private:
 	bool isHipDrop_ = false;
 
 	Vector4 playerParticleColor_;
+
+	size_t hitSoundHandle_;
 
 	const float gravity_ = -0.015f;
 	const float moveAcceleration_ = 0.06f;

@@ -60,22 +60,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 音
-	//イワシロ音楽素材 使用の際は追記
-	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
-	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
-	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
-	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
-	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+    //イワシロ音楽素材 使用の際は追記
+    auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
+    auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
+    auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
+    auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+    size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
+    auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+    const float bgmVolume = 0.2f;
 
-	// タイトルははじめから流す
-	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-	TOMATOsEngine::SetVolume(titlePlayHandle, 0.8f);
-	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
-	// 音の溜め必要
-	bool ingameToClear = false;
-	bool clearToTitle = false;
+    // タイトルははじめから流す
+    size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+    TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
+    size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
+    size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+    // 音の溜め必要
+    bool ingameToClear = false;
+    bool clearToTitle = false;
 #pragma endregion
 
 #pragma region シャットダウン
@@ -151,17 +152,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		border->Initialize();
 		particleManager->Initialize();
 
-		backGround.Initialize();
-		player.Initialize();
-		player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-		score.Initialize();
-		// 音
-		// タイトルBGM停止
-		TOMATOsEngine::StopAudio(titlePlayHandle);
-		// インゲームBGM
-		ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-		TOMATOsEngine::SetVolume(ingamePlayHandle, 0.8f);
-		};
+        backGround.Initialize();
+        player.Initialize();
+        player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
+        score.Initialize();
+        // 音
+        // タイトルBGM停止
+        TOMATOsEngine::StopAudio(titlePlayHandle);
+        // インゲームBGM
+        ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+        TOMATOsEngine::SetVolume(ingamePlayHandle, bgmVolume);
+        };
 
 #pragma endregion
 
@@ -264,9 +265,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			backGround.Update();
 
+			particleManager->Update();
 			score.Update(false);
 
-			particleManager->Update();
 
 			//近づくとシェイク
 			if (shakeValue >= 0.0f) {
@@ -296,12 +297,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			player.Update();
 
-			if (!clearToTitle) {
-				// ゲームクリアBGM
-				clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
-				TOMATOsEngine::SetVolume(clearPlayHandle, 0.8f);
-				clearToTitle = true;
-			}
+            if (!clearToTitle) {
+                // ゲームクリアBGM
+                clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
+                TOMATOsEngine::SetVolume(clearPlayHandle, bgmVolume);
+                clearToTitle = true;
+            }
 
 			//タイトルに移動
 			if (TOMATOsEngine::IsKeyTrigger(DIK_SPACE) ||
@@ -309,7 +310,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 
 				transition->Start(gameClear);
-			}
+			} 
 
 
 			if (transition->isNextSceneFrame && transition->pre == gameClear) {
@@ -331,20 +332,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				title_.Initialize();
 
 
-				// 音
-				// クリアBGM停止
-				TOMATOsEngine::StopAudio(clearPlayHandle);
-				// タイトルBGM
-				titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-				TOMATOsEngine::SetVolume(titlePlayHandle, 0.2f);
+                // 音
+                // クリアBGM停止
+                TOMATOsEngine::StopAudio(clearPlayHandle);
+                // タイトルBGM
+                titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+                TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
 
 
-				// スペースオン
-				auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
-				TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.1f);
-				clearToTitle = false;
-				ingameToClear = false;
-			}
+                // スペースオン
+                auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
+                TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.05f);
+                clearToTitle = false;
+                ingameToClear = false;
+            }
 
 			break;
 		}

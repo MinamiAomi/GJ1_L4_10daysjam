@@ -28,6 +28,7 @@ private:
 	float stemHeight_;
 	float time_;
 	float addTime_;
+	float adOffset_;
 
 	Vector2 moonOffset_;
 	float moonThickness_;

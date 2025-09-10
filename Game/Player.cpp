@@ -20,6 +20,8 @@ void Player::Initialize() {
 	rotate_ = 0.0f;
 	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
 	wallToPosition_ = { 0.0f,0.0f };
+
+	hitSoundHandle_ = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
 }
 
 void Player::Update() {
@@ -84,7 +86,9 @@ void Player::Move() {
 		pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = 1.0f;
-		isFacing = true;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 
 	}
@@ -94,7 +98,9 @@ void Player::Move() {
 		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
-		isFacing = false;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 	}
 
@@ -120,6 +126,11 @@ void Player::Move() {
 			isOnGround_ = false;
 			isJumping_ = true; // ジャンプ状態にする
 			playerModel_.SetState(PlayerModel::kJump);
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+			preIsOnGround_ = false;
+			Vector2 particlePos = { position_.x,position_.y + (-size_.y / 2.0f + 0.1f) };
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { 0.0f,1.0f }, { 1.0f,1.0f,1.0,1.0f }, 8);
 		}
 		else if (isWallSliding_) {
 			// 壁キック
@@ -127,7 +138,9 @@ void Player::Move() {
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
 			isJumping_ = true; // ジャンプ状態にする
 			Vector2 particlePos = { position_.x + (isFacing ? (size_.x / 2.0f) : (-size_.x / 2.0f)) ,position_.y };
-			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? 1.0f : -1.0f ,0.0f }, playerParticleColor_, 8);
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? -1.0f : 1.0f ,0.0f }, playerParticleColor_, 8);
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
 		}
 	}
 
@@ -184,6 +197,11 @@ void Player::CheckCollisions()
 		wallToPosition_.y = size_.y / 2.0f;
 		if (velocity_.y < 0.0f) {
 			velocity_.y = 0.0f;
+		}
+		if (!preIsOnGround_) {
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+			preIsOnGround_ = true;
 		}
 		isOnGround_ = true;
 	}
