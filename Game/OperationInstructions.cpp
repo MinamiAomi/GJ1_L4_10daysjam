@@ -57,8 +57,8 @@ namespace PlayerConstants {
 }
 
 namespace BombConstants {
-    const uint32_t redColor = 0x880E0EFF;
-    const uint32_t blueColor = 0x007373FF;
+    const uint32_t redColor = 0x550404FF;
+    const uint32_t blueColor = 0x004747FF;
     const float bombSize = 2.0f;
 
     const Vector3 bombOffset = { -5.0f, 1.0f, 0.0f };
