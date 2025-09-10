@@ -1,6 +1,7 @@
 #include "Bomb.h"
 
 #include "TOMATOsEngine.h"
+#include "HitStopManager.h"
 
 #include "Player.h"
 #include "CollisionManager.h"
@@ -16,6 +17,8 @@ void Bomb::Initialize(const Vector2& position, float radius, int color)
 	radius_ = radius;
 	color_ = color;
 	isAlive_ = true;
+	soundHandle_ = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
+
 }
 
 void Bomb::Update()
@@ -59,9 +62,13 @@ void Bomb::OnPlayerHitCollision(Player* player)
 	if (player->GetIsHipDrop()) {
 		//スコア表示パーティクル
 		particle->GetNumber()->Create(position_, Color(Color::white), int(border->GetPushBackScore()));
+		//ヒットストップ
+		HitStopManager::GetInstance()->SetIsHitStop();
 	}
 	else {
 		particle->GetNumber()->Create(position_, Color(color_), int(border->GetPushBackScore()));
 	}
 	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
+	auto hitPlayHandle = TOMATOsEngine::PlayAudio(soundHandle_);
+	TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
 }

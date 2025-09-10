@@ -4,6 +4,8 @@
 
 void BombManager::Initialize()
 {
+	bombs_.clear();
+	hitBombs_.clear();
 }
 
 void BombManager::Update()
