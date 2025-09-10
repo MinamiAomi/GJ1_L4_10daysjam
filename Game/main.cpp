@@ -125,6 +125,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	BackGround backGround;
 	backGround.Initialize();
 
+    OperationInstructions operationInstructions;
 
 	Score* score = Score::GetInstance()->GetInstance();;
 	score->Initialize();
@@ -373,7 +374,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			title_.Draw();
 			score->Draw();
-			OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
 
 			if (isShutdown) {
 				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
@@ -385,11 +385,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
-		case inGame:
-		{
-			backGround.Draw();
-			score->Draw();
-			stageObjectManager->Draw();
+        case inGame:
+        {
+            operationInstructions.Draw({50.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::BlueBomb);
+            operationInstructions.Draw({30.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::Burst);
+            backGround.Draw();
+            score->Draw();
+            stageObjectManager->Draw();
 
 			//backGround.Draw();
 			ground->Draw();
