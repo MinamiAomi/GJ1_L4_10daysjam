@@ -26,7 +26,12 @@ void Bomb::Update()
 	const auto& wall = Wall::GetInstance();
 	//wallに触れたら
 	if (position_.x - radius_ < wall->GetPosition()) {
-		position_.x = wall->GetPosition() + radius_;
+		if (Wall::GetInstance()->IsBurst()) {
+
+		}
+		else {
+			position_.x = wall->GetPosition() + radius_;
+		}
 	}
 }
 
