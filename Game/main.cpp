@@ -206,7 +206,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case title:
 		{
 			title_.Update();
-			score->Update(true);
+			//score->Update(true);
 			//シャットダウン
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
 				isShutdown = true;
@@ -376,7 +376,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 
 			title_.Draw();
-			score->Draw();
+			//score->Draw();
 
 			if (isShutdown) {
 				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
