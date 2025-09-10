@@ -52,31 +52,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Camera camera;
 	camera.SetPosition({ 0.0f, 3.0f, -10.0f });
 
-
-
 #pragma region テクスチャハンドル
 	//シャットダウン
 	TextureHandle shutdownTextureHandle = TOMATOsEngine::LoadTexture("Resources/shpere.png");
 #pragma endregion
-
-#pragma region テクスチャサイズ/ポジション
-	//SpaceかBボタンを押してね画像のサイズポジション
-	Vector2 spaceorBPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 130.0f };
-	Vector2 spaceorBSize = { 150.0f * 1.5f,32.0 * 1.5f };
-
-
-	//gameOver画像のサイズポジション
-	Vector2 gameOverPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 32.0f * 2.0f };
-	Vector2 gameOverSize = { 320.0f,240.0f };
-#pragma endregion
-
-#pragma region 矢印
-	Vector2 arrowTextSize = { 64.0f * 2.5f,32.0f * 2.5f };
-	//スタート・操作説明・終了のポジション
-	Vector2 startTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f - 180.0f };
-	Vector2 operationTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,startTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
-	Vector2 endTextPosition = { static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,operationTextPosition.y - arrowTextSize.y * 0.5f - 10.0f };
-
 
 #pragma endregion
 
