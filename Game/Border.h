@@ -40,6 +40,7 @@ public:
 
 	//プッシュバックの大きさを返す
 	float GetPushBackScore();
+	float GetPushBackScore(int num);
 private:
 	//ボムの計算
 	void CalcBomb();

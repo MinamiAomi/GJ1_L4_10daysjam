@@ -20,14 +20,14 @@ Border* Border::GetInstance()
 
 void Border::Initialize()
 {
-	position_ = { Wall::GetInstance()->GetPosition() + 100.0f };
+	position_ = { Wall::GetInstance()->GetPosition() + Wall::kBurstDistance };
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
 	pushBackPosition_ = position_;
 	pushBackCoefficient_ = 5.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
-	//comboCoefficient_ = 1.05f;
 
+	//comboCoefficient_ = 1.05f;
 	//comboDuration_ = 2.0f;
 	//comboTime_ = 0.0f;
 
@@ -116,6 +116,17 @@ float Border::GetPushBackScore()
 	}
 	else {
 		return (hitBombNum_ * pushBackCoefficient_);
+	}
+}
+
+float Border::GetPushBackScore(int num)
+{
+	if (player_->GetIsHipDrop()) {
+
+		return (num * pushBackCoefficient_) * pushBackHipDropCoefficient_;
+	}
+	else {
+		return (num * pushBackCoefficient_);
 	}
 }
 

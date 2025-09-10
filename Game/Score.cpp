@@ -6,6 +6,12 @@
 #include "Border.h"
 #include "HexagonSevenSegmentDisplay.h"
 
+Score* Score::GetInstance()
+{
+	static Score score;
+	return &score;
+}
+
 void Score::Initialize()
 {
 	score_ = Border::GetInstance()->GetBorderSidePos();
@@ -61,8 +67,8 @@ void Score::Update(bool isTitle)
 		}
 	}
 	else {
-		orbitAngle_ += orbitSpeed_ * (1.0f / 60.0f);
-		orbitAngle_ = std::fmodf(orbitAngle_, 2.0f * Math::Pi);
+		/*orbitAngle_ += orbitSpeed_ * (1.0f / 60.0f);
+		orbitAngle_ = std::fmodf(orbitAngle_, 2.0f * Math::Pi);*/
 
 		color_ = Color::white;
 	}

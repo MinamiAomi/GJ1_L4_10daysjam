@@ -8,6 +8,7 @@
 #include "Particle/ParticleManager.h"
 #include "Wall.h"
 #include "Border.h"
+#include "Score.h"
 
 #include "Math/Color.h"
 
@@ -24,15 +25,28 @@ void Bomb::Initialize(const Vector2& position, float radius, int color)
 void Bomb::Update()
 {
 	const auto& wall = Wall::GetInstance();
-	//wallに触れたら
-	if (position_.x - radius_ < wall->GetPosition()) {
-		if (Wall::GetInstance()->IsBurst()) {
 
-		}
-		else {
-			position_.x = wall->GetPosition() + radius_;
-		}
+	////wallに触れたら
+	if (position_.x - radius_ < wall->GetPosition()) {
+		position_.x = wall->GetPosition() + radius_;
 	}
+	//if (position_.x - radius_ < wall->GetPosition()) {
+	//	if (Wall::GetInstance()->IsBurst()) {
+	//		isAlive_ = false;
+	//		
+
+	//		Score::GetInstance()->AddScore(Border::GetInstance()->GetPushBackScore(10));
+	//		ParticleManager::GetInstance()->GetNumber()->Create(position_, Color(Color::white), int(Border::GetInstance()->GetPushBackScore()));
+
+	//		ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
+	//		auto hitPlayHandle = TOMATOsEngine::PlayAudio(soundHandle_);
+	//		TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+
+	//	}
+	//	else {
+	//		position_.x = wall->GetPosition() + radius_;
+	//	}
+	//}
 }
 
 void Bomb::Draw()
