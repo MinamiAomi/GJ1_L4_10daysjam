@@ -126,10 +126,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	backGround.Initialize();
 
 
-	Score score;
-	score.Initialize();
+	Score* score = Score::GetInstance()->GetInstance();;
+	score->Initialize();
 	Vector2 titleScorePos = { 0.0f,-6.0f };
-	score.SetPosition(titleScorePos);
+	score->SetPosition(titleScorePos);
 
 	//変数名かぶり
 	Title title_;
@@ -155,7 +155,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         backGround.Initialize();
         player.Initialize();
         player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-        score.Initialize();
+        score->Initialize();
         // 音
         // タイトルBGM停止
         TOMATOsEngine::StopAudio(titlePlayHandle);
@@ -205,7 +205,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case title:
 		{
 			title_.Update();
-			score.Update(true);
+			score->Update(true);
 			//シャットダウン
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
 				isShutdown = true;
@@ -266,7 +266,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			backGround.Update();
 
 			particleManager->Update();
-			score.Update(false);
+			score->Update(false);
 
 
 			//近づくとシェイク
@@ -319,7 +319,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			if (transition->isNextSceneFrame && transition->pre == gameClear) {
 				gameScene = title;
 
-				score.SetPosition(titleScorePos);
+				score->SetPosition(titleScorePos);
 
 				//初期化
 				stageObjectManager->Initialize();
@@ -367,7 +367,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {
 
 			title_.Draw();
-			score.Draw();
+			score->Draw();
 			OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
 
 			if (isShutdown) {
@@ -383,7 +383,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case inGame:
 		{
 			backGround.Draw();
-			score.Draw();
+			score->Draw();
 			stageObjectManager->Draw();
 
 			//backGround.Draw();

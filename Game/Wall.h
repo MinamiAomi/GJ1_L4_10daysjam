@@ -24,9 +24,9 @@ public:
     static constexpr float kSpeedFactor = 0.0001f;
     static constexpr float kSpeedLimit = 0.5f;
 
-    static constexpr float kBurstDistance = 100.0f;
+    static constexpr float kBurstDistance = 95.0f;
     static constexpr float kBurstEndDistance = 60.0f;
-    static constexpr float kBurstSpeed = 100.0f;
+    static constexpr float kBurstSpeed = 60.0f;
 
     static Wall* GetInstance();
 
@@ -51,5 +51,4 @@ private:
     Camera* camera_;
     Random::RandomNumberGenerator rng_;
     Border* border_;
-
 };

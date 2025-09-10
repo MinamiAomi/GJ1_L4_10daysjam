@@ -20,14 +20,14 @@ Border* Border::GetInstance()
 
 void Border::Initialize()
 {
-	position_ = { Wall::GetInstance()->GetPosition() + 100.0f };
+	position_ = { Wall::GetInstance()->GetPosition() + Wall::kBurstDistance };
 	firstPosition_ = position_;
 	easingSpeed_ = 0.08f;
-	pushBackPosition_ = 0.0f;
+	pushBackPosition_ = position_;
 	pushBackCoefficient_ = 5.0f;
 	pushBackHipDropCoefficient_ = 1.3f;
-	//comboCoefficient_ = 1.05f;
 
+	//comboCoefficient_ = 1.05f;
 	//comboDuration_ = 2.0f;
 	//comboTime_ = 0.0f;
 
@@ -60,21 +60,17 @@ void Border::Update()
 
 	CalcBomb();
 
-	//押し戻しがなければ
-	if (pushBackPosition_ != 0.0f) {
-		position_ = Easing::easing(easingSpeed_, position_, pushBackPosition_);
-		//近くなったら
-		if (std::abs(position_ - pushBackPosition_) < SNAP_THRESHOLD) {
-			position_ = pushBackPosition_;
-			pushBackPosition_ = 0.0f;
-		}
+	position_ = Easing::easing(easingSpeed_, position_, pushBackPosition_);
+
+
+	//近くなったら
+	if (std::abs(position_ - pushBackPosition_) < SNAP_THRESHOLD) {
+		pushBackPosition_ = position_;
 	}
 }
 
 void Border::Draw()
 {
-	//const auto& wall = Wall::GetInstance();
-
 	float top = kWallHeight;
 	float bottom = 0.0f;
 	float right = position_ + kWallWidth;
@@ -123,18 +119,30 @@ float Border::GetPushBackScore()
 	}
 }
 
+float Border::GetPushBackScore(int num)
+{
+	if (player_->GetIsHipDrop()) {
+
+		return (num * pushBackCoefficient_) * pushBackHipDropCoefficient_;
+	}
+	else {
+		return (num * pushBackCoefficient_);
+	}
+}
+
 void Border::CalcBomb()
 {
 	if (hitBombNum_ != 0) {
 		//ヒップドロップし終わりならここ
-		if ((!player_->GetIsHipDrop() && prePlayerHipDrop_)) {
-			pushBackPosition_ = position_ + ((hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_);
+		if ((!player_->GetIsHipDrop() && prePlayerHipDrop_))
+		{
+			pushBackPosition_ += (hitBombNum_ * pushBackCoefficient_) * pushBackHipDropCoefficient_;
 			hitBombNum_ = 0;
 		}
 		//ヒップドロップしていなかったら
 		else if (!player_->GetIsHipDrop())
 		{
-			pushBackPosition_ = position_ + (hitBombNum_ * pushBackCoefficient_);
+			pushBackPosition_ += (hitBombNum_ * pushBackCoefficient_);
 			hitBombNum_ = 0;
 		}
 	}
