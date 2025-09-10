@@ -265,9 +265,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			backGround.Update();
 
+			particleManager->Update();
 			score.Update(false);
 
-			particleManager->Update();
 
 			//近づくとシェイク
 			if (shakeValue >= 0.0f) {
@@ -310,7 +310,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 
 				transition->Start(gameClear);
-			}
+			} 
 
 
 			if (transition->isNextSceneFrame && transition->pre == gameClear) {

@@ -86,7 +86,9 @@ void Player::Move() {
 		pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = 1.0f;
-		isFacing = true;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 
 	}
@@ -96,7 +98,9 @@ void Player::Move() {
 		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
-		isFacing = false;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 	}
 
@@ -134,7 +138,7 @@ void Player::Move() {
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
 			isJumping_ = true; // ジャンプ状態にする
 			Vector2 particlePos = { position_.x + (isFacing ? (size_.x / 2.0f) : (-size_.x / 2.0f)) ,position_.y };
-			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? 1.0f : -1.0f ,0.0f }, playerParticleColor_, 8);
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? -1.0f : 1.0f ,0.0f }, playerParticleColor_, 8);
 			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
 			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
 		}
