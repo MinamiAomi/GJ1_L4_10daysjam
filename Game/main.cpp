@@ -276,14 +276,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			}
 
 			//まけ判定
-			if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop() && (player.GetInvincibleFrame() == 0)) {
+			if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop() && (player.GetInvincibleFrame() == 0) && !transition->isStart) {
 				transition->Start(inGame);
+				auto hitSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
+				auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle);
+
+				TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+
+				TOMATOsEngine::StopAudio(ingamePlayHandle);
+				ingamePlayHandle = INVALID_PLAY_HANDLE;
 			}
 
 			if (transition->isNextSceneFrame && transition->pre == inGame) {
 				gameScene = gameClear;
-				TOMATOsEngine::StopAudio(ingamePlayHandle);
-				ingamePlayHandle = INVALID_PLAY_HANDLE;
 			}
 
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {

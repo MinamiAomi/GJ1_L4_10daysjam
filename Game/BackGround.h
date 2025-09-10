@@ -9,9 +9,17 @@
 
 class BackGround {
 private:
-	static const int kStarNum_ = 50;
+	static const int kParticleNum = 50;
 
 public:
+
+	enum ParticleType {
+		kStar,
+		kSquare,
+		kTriangle,
+		kPlus
+	};
+
 	BackGround();
 	~BackGround();
 	void Initialize();
@@ -36,8 +44,14 @@ private:
 	float moonRotation_;
 	float moonOuterRadius_;
 
-	Vector2 starPosOffsets_[kStarNum_];
-	Square starSquare_;
+	int emitFrame_;
+	int spaceEmitFrame_;
+	Vector2 particlePos_[kParticleNum];
+	bool isActiveParticle_[kParticleNum];
+	ParticleType particleType_[kParticleNum];
+	float particleRadian_[kParticleNum];
+	float particleSpeed_ = 0.1f;
+	float particleRotateSpeed_ = 1 * Math::ToRadian;
 	Random::RandomNumberGenerator random_;
 };
 
