@@ -19,7 +19,7 @@ void Score::Initialize()
 	spacing_ = 4.5f;
 	scale_ = 0.3f;
 	defaultColor_ = Color(0x808080FF);
-	burstColor_ = Color(0xFFd700FF);
+	burstColor_ = Color(0xdcdcdcFF);
 	color_ = defaultColor_;
 
 	orbitAngle_ = 0.0f;
@@ -65,6 +65,7 @@ void Score::Update(bool isTitle)
 		if (score_ < Border::GetInstance()->GetBorderSidePos()) {
 			score_ = Border::GetInstance()->GetBorderSidePos();
 		}
+		titleScore_ = score_;
 	}
 	else {
 		/*orbitAngle_ += orbitSpeed_ * (1.0f / 60.0f);
@@ -73,6 +74,7 @@ void Score::Update(bool isTitle)
 		color_ = Color::white;
 	}
 	UpdateDrawVertex(isTitle);
+
 }
 
 void Score::Draw() {
@@ -92,7 +94,13 @@ void Score::Draw() {
 void Score::UpdateDrawVertex(bool isTitle)
 {
 	isTitle;
-	float score = score_ - Border::GetInstance()->GetBorderFirstPos();
+	float score = 0.0f;
+	if (!isTitle) {
+		score = score_ - Border::GetInstance()->GetBorderFirstPos();
+	}
+	else {
+		score = titleScore_;
+	}
 	// スコアを "0000.00" 形式に
 	char buffer[10];
 	snprintf(buffer, sizeof(buffer), "%07.2f", score);
@@ -106,7 +114,13 @@ void Score::UpdateDrawVertex(bool isTitle)
 	const float totalWidth = (scoreStr.length() - 1) * spacing_;
 
 	//wallが親
-	Vector2 worldPos = position_ + Vector2(Wall::GetInstance()->GetPosition(), 0.0f);
+	Vector2 worldPos;
+	if (!isTitle) {
+		worldPos = position_ + Vector2(Wall::GetInstance()->GetPosition(), 0.0f);
+	}
+	else {
+		worldPos = position_;
+	}
 	//描画開始位置を総幅の半分だけ左にずらす
 	Vector2 drawingStartPosition = worldPos;
 	drawingStartPosition.x -= totalWidth * 0.5f;

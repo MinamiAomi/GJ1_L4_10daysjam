@@ -127,9 +127,9 @@ void Wall::Draw() {
 	}
 	TOMATOsEngine::DrawLine3D({ position_ - kWallWidth, 0.0f }, { position_ - kWallWidth, kWallHeight }, 0xFFFFFFFF);
 
-	Vector2 start = { position_ + 115.0f,0.0f };
-	Vector2 end = { position_,0.0f };
+	Vector2 start = { position_,0.0f };
+	Vector2 end = { position_ + 115.0f,0.0f };
 	float t = (border_->GetBorderSidePos() - position_) / kBurstDistance;
 	end = Vector2::Lerp(std::clamp(t,0.0f,1.0f), start, end);
-	TOMATOsEngine::DrawLine3D(start, end, 0xFFd700FF);
+	TOMATOsEngine::DrawLine3D(start, end, 0xFFFFFFFF);
 }

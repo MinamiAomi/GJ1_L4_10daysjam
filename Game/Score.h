@@ -36,6 +36,8 @@ private:
 	void UpdateDrawVertex(bool isTitle);
 
 	float score_;
+	
+	float titleScore_;
 
 	Vector2 position_;
 	
