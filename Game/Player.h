@@ -30,6 +30,7 @@ private:
 	PlayerModel playerModel_;
 
 	Vector2 position_;
+	Vector2 wallToPosition_;
 	float rotate_;
 	Vector2 velocity_;
 	Vector2 size_;
