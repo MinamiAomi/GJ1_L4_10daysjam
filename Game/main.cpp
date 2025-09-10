@@ -297,7 +297,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			player.Update();
 			backGround.Update();
-			score.Update(true);
+			score->Update(true);
 
 
             if (!clearToTitle) {
@@ -399,7 +399,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			backGround.ResultDraw();
 			player.ResultDraw();
-			score.Draw();
+			score->Draw();
 			break;
 		}
 		default:
