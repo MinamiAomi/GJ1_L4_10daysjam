@@ -64,7 +64,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
 	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
 	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+	//auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
 	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
 	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
 	const float bgmVolume = 0.2f;
@@ -73,7 +73,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
 	TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
 	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+	//size_t clearPlayHandle = INVALID_PLAY_HANDLE;
 	// 音の溜め必要
 	bool ingameToClear = false;
 	bool clearToTitle = false;
