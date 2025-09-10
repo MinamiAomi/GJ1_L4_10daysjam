@@ -25,4 +25,5 @@ private:
 
 	bool isAlive_;
 	int color_;
+	size_t soundHandle_;
 };
