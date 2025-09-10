@@ -307,10 +307,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			score->SetPosition({ -120.0f, -5.0f});
 
             if (!clearToTitle) {
-                // ゲームクリアBGM
-                clearPlayHandle = TOMATOsEngine::PlayAudio(clearSoundHandle, true);
-                TOMATOsEngine::SetVolume(clearPlayHandle, bgmVolume);
-                clearToTitle = true;
+               
             }
 
 			//タイトルに移動
@@ -340,10 +337,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 				title_.Initialize();
 
-
-                // 音
-                // クリアBGM停止
-                TOMATOsEngine::StopAudio(clearPlayHandle);
                 // タイトルBGM
                 titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
                 TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
