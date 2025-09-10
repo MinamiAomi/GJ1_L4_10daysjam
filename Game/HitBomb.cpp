@@ -58,7 +58,8 @@ void HitBomb::OnPlayerHitCollision(Player* player)
 		border->PushBack(1);
 		//スコア表示パーティクル
 		particle->GetNumber()->Create(position_, Color(Color::white), int(border->GetPushBackScore()));
-
+		//ヒットストップ
+		HitStopManager::GetInstance()->SetIsHitStop();
 	}
 	else {
 		border->PushBack(-1);
@@ -68,6 +69,4 @@ void HitBomb::OnPlayerHitCollision(Player* player)
 	//死亡時飛び散りパーティクル
 	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
 
-	//ヒットストップ
-	HitStopManager::GetInstance()->SetIsHitStop();
 }

@@ -60,12 +60,11 @@ void Bomb::OnPlayerHitCollision(Player* player)
 	if (player->GetIsHipDrop()) {
 		//スコア表示パーティクル
 		particle->GetNumber()->Create(position_, Color(Color::white), int(border->GetPushBackScore()));
+		//ヒットストップ
+		HitStopManager::GetInstance()->SetIsHitStop();
 	}
 	else {
 		particle->GetNumber()->Create(position_, Color(color_), int(border->GetPushBackScore()));
 	}
 	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
-
-	//ヒットストップ
-	HitStopManager::GetInstance()->SetIsHitStop();
 }
