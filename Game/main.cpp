@@ -125,6 +125,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	BackGround backGround;
 	backGround.Initialize();
 
+    OperationInstructions operationInstructions;
 
 	Score* score = Score::GetInstance()->GetInstance();;
 	score->Initialize();
@@ -276,8 +277,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			}
 
 			//まけ判定
-			if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop() && (player.GetInvincibleFrame() == 0)) {
+			if ((player.GetSize().x / 2.0f >= wallToBordarGap) && !player.GetIsHipDrop() && (player.GetInvincibleFrame() == 0) && !transition->isStart) {
 				transition->Start(inGame);
+				auto hitSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
+				auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle);
+
+				TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+
+				TOMATOsEngine::StopAudio(ingamePlayHandle);
+				ingamePlayHandle = INVALID_PLAY_HANDLE;
 			}
 
 			if (transition->isNextSceneFrame && transition->pre == inGame) {
@@ -369,7 +377,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			title_.Draw();
 			score->Draw();
-			OperationInstructions::Draw({}, { 3.0f, 3.0f, 0.0f });
 
 			if (isShutdown) {
 				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
@@ -381,11 +388,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
-		case inGame:
-		{
-			backGround.Draw();
-			score->Draw();
-			stageObjectManager->Draw();
+        case inGame:
+        {
+            operationInstructions.Draw({50.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::BlueBomb);
+            operationInstructions.Draw({30.0f, 5.0f, 0.0f}, { 1.0f, 1.0f, 0.0f }, OperationInstructions::Type::Burst);
+            backGround.Draw();
+            score->Draw();
+            stageObjectManager->Draw();
 
 			//backGround.Draw();
 			ground->Draw();
