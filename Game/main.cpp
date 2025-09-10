@@ -60,23 +60,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 音
-    //イワシロ音楽素材 使用の際は追記
-    auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
-    auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
-    auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
-    auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
-    size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
-    auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
-    const float bgmVolume = 0.2f;
+	//イワシロ音楽素材 使用の際は追記
+	auto pushSpaceSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pushSpace.wav");
+	auto titleSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/titleBGM.wav");
+	auto ingameSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/ingameBGM.wav");
+	auto clearSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/clearBGM.wav");
+	size_t pickHandle = TOMATOsEngine::LoadAudio("Resources/Audio/pick.wav");
+	auto shutdownSoundHandle = TOMATOsEngine::LoadAudio("Resources/Audio/shutdown.wav");
+	const float bgmVolume = 0.2f;
 
-    // タイトルははじめから流す
-    size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
-    TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
-    size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
-    size_t clearPlayHandle = INVALID_PLAY_HANDLE;
-    // 音の溜め必要
-    bool ingameToClear = false;
-    bool clearToTitle = false;
+	// タイトルははじめから流す
+	size_t titlePlayHandle = TOMATOsEngine::PlayAudio(titleSoundHandle, true);
+	TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
+	size_t ingamePlayHandle = INVALID_PLAY_HANDLE;
+	size_t clearPlayHandle = INVALID_PLAY_HANDLE;
+	// 音の溜め必要
+	bool ingameToClear = false;
+	bool clearToTitle = false;
 #pragma endregion
 
 #pragma region シャットダウン
@@ -153,17 +153,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		border->Initialize();
 		particleManager->Initialize();
 
-        backGround.Initialize();
-        player.Initialize();
-        player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
-        score->Initialize();
-        // 音
-        // タイトルBGM停止
-        TOMATOsEngine::StopAudio(titlePlayHandle);
-        // インゲームBGM
-        ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
-        TOMATOsEngine::SetVolume(ingamePlayHandle, bgmVolume);
-        };
+		backGround.Initialize();
+		player.Initialize();
+		player.SetPosition({ 100.0f * 0.5f, 300.0f - 100.0f });
+		score->Initialize();
+		// 音
+		// タイトルBGM停止
+		TOMATOsEngine::StopAudio(titlePlayHandle);
+		// インゲームBGM
+		ingamePlayHandle = TOMATOsEngine::PlayAudio(ingameSoundHandle, true);
+		TOMATOsEngine::SetVolume(ingamePlayHandle, bgmVolume);
+		};
 
 #pragma endregion
 
@@ -187,7 +187,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::End();
 #endif // _DEBUG
 
-	
+
 		//カメラ処理がヒットストップで更新されないためここになりました皆さん気を付けてくださいな
 		if (!hitStopManager->GetInstance()->GetIsHitStop()) {
 			camera.SetPosition(cameraPosition);
@@ -206,7 +206,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		case title:
 		{
 			title_.Update();
-			score->Update(true);
+			//score->Update(true);
 			//シャットダウン
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
 				isShutdown = true;
@@ -290,6 +290,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			if (transition->isNextSceneFrame && transition->pre == inGame) {
 				gameScene = gameClear;
+				TOMATOsEngine::StopAudio(ingamePlayHandle);
+				ingamePlayHandle = INVALID_PLAY_HANDLE;
+				score->SetPosition({ 0.0f, -5.0f });
 			}
 
 			if (TOMATOsEngine::IsKeyTrigger(DIK_ESCAPE)) {
@@ -304,7 +307,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			player.Update();
 			backGround.Update();
 			score->Update(true);
-			score->SetPosition({ -120.0f, -5.0f});
+
 
             if (!clearToTitle) {
                
@@ -316,7 +319,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					!(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B))) {
 
 				transition->Start(gameClear);
-			} 
+			}
 
 
 			if (transition->isNextSceneFrame && transition->pre == gameClear) {
@@ -342,31 +345,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
                 TOMATOsEngine::SetVolume(titlePlayHandle, bgmVolume);
 
 
-                // スペースオン
-                auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
-                TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.05f);
-                clearToTitle = false;
-                ingameToClear = false;
-            }
+				// スペースオン
+				auto pushSpacePlayHandle = TOMATOsEngine::PlayAudio(pushSpaceSoundHandle);
+				TOMATOsEngine::SetVolume(pushSpacePlayHandle, 0.05f);
+				clearToTitle = false;
+				ingameToClear = false;
+			}
 
 			break;
 		}
 
-        default:
-        {
-            break;
-        }
-        }
-        transition->TransitionShake();
-		
+		default:
+		{
+			break;
+		}
+		}
+		transition->TransitionShake();
 
-        ////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
-        switch (gameScene) {
-        case title:
-        {
+
+		////////////////////////////////////////////////////更新////////////////////////////////////////////////////////
+		switch (gameScene) {
+		case title:
+		{
 
 			title_.Draw();
-			score->Draw();
+			//score->Draw();
 
 			if (isShutdown) {
 				TOMATOsEngine::DrawSpriteRectAngle({ static_cast<float>(TOMATOsEngine::kMonitorWidth) * 0.5f ,static_cast<float>(TOMATOsEngine::kMonitorHeight) * 0.5f }, { 1280.0f,1280.0f }, { 0.5f,0.5f }, 0.0f, {}, { 32.0f,32.0f }, shutdownTextureHandle, 0x000000FF);
