@@ -25,6 +25,13 @@ float Easing::easing(float t, float start, float end) {
 	return((1.0f - t) * start + t * end);
 }
 
+float Easing::easing(float t, float start, float end, EasingMode easingMode)
+{
+	t = std::clamp(t, 0.0f, 1.0f);
+	float easeT = easingFunction[easingMode](t);
+	return((1.0f - easeT) * start + easeT * end);
+}
+
 Vector2 Easing::easing(float& t, Vector2 start, Vector2 end, float speed, EasingMode easingMode, bool isAdd) {
 	if (isAdd == true) {
 		t += speed;

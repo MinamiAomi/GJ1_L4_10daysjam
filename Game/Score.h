@@ -7,6 +7,8 @@
 
 class Score {
 public:
+	static Score* GetInstance();
+
 	void Initialize();
 
 	/// <summary>
@@ -23,7 +25,14 @@ public:
 	void Draw();
 
 	void SetPosition(const Vector2& pos) { position_ = pos; }
+
+	void AddScore(float addScore) { score_ += addScore; }
 private:
+	Score() = default;
+	~Score() = default;
+	Score(const Score&) = delete;
+	Score& operator=(const Score&) = delete;
+
 	void UpdateDrawVertex(bool isTitle);
 
 	float score_;

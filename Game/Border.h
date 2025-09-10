@@ -24,7 +24,7 @@ public:
 	/// <param name="add"></param>
 	void PushBack(int add);
 
-	bool IsMove() { return pushBackPosition_ != 0.0f; }
+	bool IsMove() { return pushBackPosition_ == position_ ? true : false; }
 	//現在の横BorderLinePos
 	float GetBorderSidePos();
 	/// <summary>
@@ -40,6 +40,7 @@ public:
 
 	//プッシュバックの大きさを返す
 	float GetPushBackScore();
+	float GetPushBackScore(int num);
 private:
 	//ボムの計算
 	void CalcBomb();
@@ -48,6 +49,7 @@ private:
 	float position_;
 	//押し戻しのポジション
 	float pushBackPosition_;
+
 	//イージングの速度
 	float easingSpeed_;
 	//押し戻し係数

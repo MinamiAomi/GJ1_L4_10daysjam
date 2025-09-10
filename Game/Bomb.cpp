@@ -1,12 +1,14 @@
 #include "Bomb.h"
 
 #include "TOMATOsEngine.h"
+#include "HitStopManager.h"
 
 #include "Player.h"
 #include "CollisionManager.h"
 #include "Particle/ParticleManager.h"
 #include "Wall.h"
 #include "Border.h"
+#include "Score.h"
 
 #include "Math/Color.h"
 
@@ -16,15 +18,35 @@ void Bomb::Initialize(const Vector2& position, float radius, int color)
 	radius_ = radius;
 	color_ = color;
 	isAlive_ = true;
+	soundHandle_ = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
+
 }
 
 void Bomb::Update()
 {
 	const auto& wall = Wall::GetInstance();
-	//wallに触れたら
+
+	////wallに触れたら
 	if (position_.x - radius_ < wall->GetPosition()) {
 		position_.x = wall->GetPosition() + radius_;
 	}
+	//if (position_.x - radius_ < wall->GetPosition()) {
+	//	if (Wall::GetInstance()->IsBurst()) {
+	//		isAlive_ = false;
+	//		
+
+	//		Score::GetInstance()->AddScore(Border::GetInstance()->GetPushBackScore(10));
+	//		ParticleManager::GetInstance()->GetNumber()->Create(position_, Color(Color::white), int(Border::GetInstance()->GetPushBackScore()));
+
+	//		ParticleManager::GetInstance()->GetPop()->Create(position_, Color::Convert(color_), 10);
+	//		auto hitPlayHandle = TOMATOsEngine::PlayAudio(soundHandle_);
+	//		TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+
+	//	}
+	//	else {
+	//		position_.x = wall->GetPosition() + radius_;
+	//	}
+	//}
 }
 
 void Bomb::Draw()
@@ -59,9 +81,13 @@ void Bomb::OnPlayerHitCollision(Player* player)
 	if (player->GetIsHipDrop()) {
 		//スコア表示パーティクル
 		particle->GetNumber()->Create(position_, Color(Color::white), int(border->GetPushBackScore()));
+		//ヒットストップ
+		HitStopManager::GetInstance()->SetIsHitStop();
 	}
 	else {
 		particle->GetNumber()->Create(position_, Color(color_), int(border->GetPushBackScore()));
 	}
 	particle->GetPop()->Create(position_, Color::Convert(color_), 10);
+	auto hitPlayHandle = TOMATOsEngine::PlayAudio(soundHandle_);
+	TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
 }

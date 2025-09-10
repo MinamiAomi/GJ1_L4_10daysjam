@@ -8,6 +8,7 @@
 
 #include "Easing.h"
 #include "Player.h"
+#include "Wall.h"
 
 void PlayerModel::Initialize(const Player* player) {
 	player_ = player;
@@ -64,6 +65,19 @@ void PlayerModel::Draw() {
 	TOMATOsEngine::DrawBoxLine3D(head_ + player_->GetPosition(), 0xFFFFFFFF);
 	TOMATOsEngine::DrawBoxLine3D(leftFoot_ + player_->GetPosition(), 0xFFFFFFFF);
 	TOMATOsEngine::DrawBoxLine3D(rightFoot_ + player_->GetPosition(), 0xFFFFFFFF);
+	offsetY = Easing::easing(player_->GetWallToPosition().x / 90.0f, 0.1f, 0.2f,Easing::easeOutCubic);
+	if (player_->GetPosition().y - player_->GetSize().y >= Wall::GetInstance()->kWallHeight + player_->GetWallToPosition().x * offsetY) {
+		float y = player_->GetWallToPosition().x * offsetY;
+		TOMATOsEngine::DrawArrow2D({ player_->GetPosition().x,Wall::GetInstance()->kWallHeight - 1.0f + y },3.0f,2.0f, 90.0f * Math::ToRadian,0xFFFFFFFF );
+	}
+}
+
+void PlayerModel::ResultDraw() {
+	state_ = kIdle;
+	Vector2 offset = { 4.0f,2.0f };
+	TOMATOsEngine::DrawBoxLine3D(head_  + offset, 0xFFFFFFFF);
+	TOMATOsEngine::DrawBoxLine3D(leftFoot_  + offset, 0xFFFFFFFF);
+	TOMATOsEngine::DrawBoxLine3D(rightFoot_  + offset, 0xFFFFFFFF);
 }
 
 void PlayerModel::Idle()
@@ -113,7 +127,24 @@ void PlayerModel::Jump()
 
 void PlayerModel::WallSliding()
 {
-
+	changeT_ += 0.2f;
+	head_ = Square::Lerp(changeT_, head_, jumpHead_);
+	leftFoot_.size = Vector2::Lerp(changeT_, leftFoot_.size, initialLeftFoot_.size);
+	rightFoot_.size = Vector2::Lerp(changeT_, rightFoot_.size, initialRightFoot_.size);
+	if (player_->GetFacing()) {
+		//右
+		leftFoot_.center.y = initialLeftFoot_.center.y + walkAmplitude_;
+		leftFoot_.center.x = initialLeftFoot_.center.x;
+		rightFoot_.center.y = initialRightFoot_.center.y - walkAmplitude_;
+		rightFoot_.center.x = initialRightFoot_.center.x;
+	}
+	else {
+		//左
+		leftFoot_.center.y = initialLeftFoot_.center.y - walkAmplitude_;
+		leftFoot_.center.x = initialLeftFoot_.center.x;
+		rightFoot_.center.y = initialRightFoot_.center.y + walkAmplitude_;
+		rightFoot_.center.x = initialRightFoot_.center.x;
+	}
 }
 
 void PlayerModel::HipDrop()

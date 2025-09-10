@@ -14,5 +14,5 @@ void Ground::Draw() {
     auto wallPosition = wall->GetPosition();
 
     // いったん10000まで
-    TOMATOsEngine::DrawLine3D({ wallPosition - 100.0f, 0.0f }, { wallPosition + 1000.0f, 0.0f }, 0xFFFFFFFF);
+    TOMATOsEngine::DrawLine3D({ wallPosition - 100.0f, 0.0f }, { wallPosition + 1000.0f, 0.0f }, 0x888888FF);
 }

@@ -24,6 +24,7 @@ public:
 	void Initialize(const Player* player);
 	void Update();
 	void Draw();
+	void ResultDraw();
 
 	void SetState(State state) { state_ = state; };
 	
@@ -42,7 +43,7 @@ private:
 	float walkAmplitude_ = 0.0f;
 
 	float idleCycle_ = 0.0f;
-	float idleSpeed_ = 0.2f;
+	float idleSpeed_ = 0.1f;
 	float idleAmplitude_ = 0.0f;
 
 	Square initialLeftFoot_;
@@ -51,6 +52,8 @@ private:
 
 	Square jumpHead_;
 	Square endHipDropSquare_;
+
+	float offsetY = 0.3f;
 
 	void Idle();
 	void Move();

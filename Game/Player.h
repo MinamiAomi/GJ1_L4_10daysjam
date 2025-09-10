@@ -13,14 +13,19 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void ResultDraw();
 
 	void SetPosition(const Vector2& position) { position_ = position; }
 	bool GetFacing() const { return isFacing; }
 	Vector2 GetSize()const { return size_; }
 	Vector2 GetPosition()const { return position_; }
+	Vector2 GetWallToPosition()const { return wallToPosition_; }
 	Vector2 GetVelocity() const { return velocity_; }
 	float GetRotate()const { return rotate_; }
 	bool GetIsHipDrop() const { return isHipDrop_; }
+	int GetInvincibleFrame() const {
+		return invincibleFrame_;
+	}
 private:
 
 	void Move();
@@ -30,18 +35,23 @@ private:
 	PlayerModel playerModel_;
 
 	Vector2 position_;
+	Vector2 wallToPosition_;
 	float rotate_;
 	Vector2 velocity_;
 	Vector2 size_;
 
 	bool isOnGround_ = false;
+	bool preIsOnGround_ = false;
 	bool isWallSliding_ = false;
 	bool isFacing = true; // 向いている方向(false 左,true 右 )
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
 	bool isJumping_ = false;
 	bool isHipDrop_ = false;
+	int invincibleFrame_ = 0;
 
 	Vector4 playerParticleColor_;
+
+	size_t hitSoundHandle_;
 
 	const float gravity_ = -0.015f;
 	const float moveAcceleration_ = 0.06f;

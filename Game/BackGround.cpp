@@ -39,7 +39,7 @@ BackGround::~BackGround() {}
 
 void BackGround::Initialize() {
 	space_ = 33.0f;
-	z_ = 4.4f;
+	z_ = 5.4f;
 	y_ = 27.0f;
 	innerRadius_ = 2.0f;
 	outerRadius_ = 5.0f;
@@ -55,6 +55,8 @@ void BackGround::Initialize() {
 	}
 	starSquare_.radian = 0.0f;
 	starSquare_.size = { 0.1f,0.1f };
+
+	adOffset_ = 0.0f;
 }
 
 void BackGround::Update() {
@@ -81,10 +83,16 @@ void BackGround::Update() {
 }
 
 void BackGround::Draw() {
+	int offsetNum = int(Wall::GetInstance()->GetPosition() / space_);
 	for (int i = 0; i < 10; i++) {
-		TOMATOsEngine::DrawStar2D({0.0f + space_ * i,y_}, innerRadius_,outerRadius_,z_,0x666666FF);
-		TOMATOsEngine::DrawWavingFlower({ 0.0f + space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
+		TOMATOsEngine::DrawWavingFlower({ offsetNum * space_ +  space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
 	}
 	
 	TOMATOsEngine::DrawCrescentMoon({ moonOffset_.x + Wall::GetInstance()->GetPosition() , moonOffset_.y},z_, moonOuterRadius_, moonThickness_,moonRotation_,0x666666FF);
+}
+
+void BackGround::ResultDraw() {
+	for (int i = 0; i < 20; i++) {
+		TOMATOsEngine::DrawWavingFlower({ -4.0f ,0.0f },0.0f, stemHeight_, time_, 0xFFFFFFFF);	
+	}
 }

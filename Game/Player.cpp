@@ -22,6 +22,10 @@ void Player::Initialize() {
 	isFacing = true;
 	rotate_ = 0.0f;
 	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
+	wallToPosition_ = { 0.0f,0.0f };
+	invincibleFrame_ = 0;
+
+	hitSoundHandle_ = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
 }
 
 void Player::Update() {
@@ -33,7 +37,8 @@ void Player::Update() {
 	}
 	ImGui::End();
 #endif // _DEBUG
-
+	invincibleFrame_--;
+	invincibleFrame_ = std::clamp(invincibleFrame_, 0, 3);
 	if (!Wall::GetInstance()->IsBurst()) {
 		const auto& pad = TOMATOsEngine::GetGamePadState();
 		const auto prepad = TOMATOsEngine::GetGamePadPreState();
@@ -58,19 +63,25 @@ void Player::Update() {
 			HipDrop();
 		}
 
-		if (Wall::GetInstance()->IsMove()) {
-			position_.x += Wall::GetInstance()->GetSpeed();
-		}
-		position_ += velocity_;
+		wallToPosition_ += velocity_;
 
+		position_ = { Wall::GetInstance()->GetPosition() + wallToPosition_.x,wallToPosition_.y };
 		CheckCollisions();
 
-		playerModel_.Update();
 	}
+	else {
+		position_ = { Wall::GetInstance()->GetPosition() + wallToPosition_.x,wallToPosition_.y };
+	}
+	playerModel_.Update();
 }
 
 void Player::Draw() {
 	playerModel_.Draw();
+}
+
+void Player::ResultDraw() {
+	playerModel_.Update();
+	playerModel_.ResultDraw();
 }
 
 void Player::Move() {
@@ -85,7 +96,9 @@ void Player::Move() {
 		pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = 1.0f;
-		isFacing = true;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 
 	}
@@ -95,7 +108,9 @@ void Player::Move() {
 		-pad.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) {
 
 		move.x = -1.0f;
-		isFacing = false;
+		if (!isWallSliding_) {
+			isFacing = true;
+		}
 		playerModel_.SetState(PlayerModel::kMove);
 	}
 
@@ -121,6 +136,11 @@ void Player::Move() {
 			isOnGround_ = false;
 			isJumping_ = true; // ジャンプ状態にする
 			playerModel_.SetState(PlayerModel::kJump);
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+			preIsOnGround_ = false;
+			Vector2 particlePos = { position_.x,position_.y + (-size_.y / 2.0f + 0.1f) };
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { 0.0f,1.0f }, { 1.0f,1.0f,1.0,1.0f }, 8);
 		}
 		else if (isWallSliding_) {
 			// 壁キック
@@ -128,7 +148,9 @@ void Player::Move() {
 			velocity_.x = wallJumpPower_.x * -wallDirection_;
 			isJumping_ = true; // ジャンプ状態にする
 			Vector2 particlePos = { position_.x + (isFacing ? (size_.x / 2.0f) : (-size_.x / 2.0f)) ,position_.y };
-			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? 1.0f : -1.0f ,0.0f }, playerParticleColor_, 8);
+			ParticleManager::GetInstance()->GetSplash()->Create(particlePos, { isFacing ? -1.0f : 1.0f ,0.0f }, playerParticleColor_, 8);
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
 		}
 	}
 
@@ -141,7 +163,10 @@ void Player::Move() {
 		isJumping_ = false; // ジャンプキーを離したのでフラグを折る
 	}
 
-	velocity_.y += gravity_;
+	if (!isOnGround_) {
+		velocity_.y += gravity_;
+	}
+	
 
 	if (isWallSliding_ && velocity_.y < wallSlideSpeed_) {
 		velocity_.y = wallSlideSpeed_;
@@ -167,6 +192,7 @@ void Player::HipDrop()
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
+		invincibleFrame_ = 3;
 	}
 }
 
@@ -179,8 +205,14 @@ void Player::CheckCollisions()
 	//地面
 	if (position_.y <= size_.y / 2.0f) {
 		position_.y = size_.y / 2.0f;
+		wallToPosition_.y = size_.y / 2.0f;
 		if (velocity_.y < 0.0f) {
-			velocity_.y = 0;
+			velocity_.y = 0.0f;
+		}
+		if (!preIsOnGround_) {
+			auto hitPlayHandle = TOMATOsEngine::PlayAudio(hitSoundHandle_);
+			TOMATOsEngine::SetVolume(hitPlayHandle, 1.0f);
+			preIsOnGround_ = true;
 		}
 		isOnGround_ = true;
 	}
@@ -188,17 +220,20 @@ void Player::CheckCollisions()
 	//壁
 	if (position_.x <= Wall::GetInstance()->GetPosition() + size_.x / 2.0f) {
 		position_.x = Wall::GetInstance()->GetPosition() + size_.x / 2.0f;
+		wallToPosition_.x = size_.x / 2.0f;
 		wallDirection_ = -1;
 		isFacing = true;
 	}
 	else if (position_.x >= Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f) {
 		position_.x = Border::GetInstance()->GetBorderSidePos() - size_.x / 2.0f;
+		wallToPosition_.x = Border::GetInstance()->GetBorderSidePos() - Wall::GetInstance()->GetPosition() - size_.x / 2.0f;
 		wallDirection_ = 1;
 		isFacing = false;
 	}
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
+		playerModel_.SetState(PlayerModel::kWallSliding);
 	}
 }
 

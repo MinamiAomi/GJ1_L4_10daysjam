@@ -16,8 +16,6 @@ void Transition::Update()
 		if (t < 1.0f) {
 			t += speed;
 			t = std::clamp(t, 0.0f, 1.0f);
-			TOMATOsEngine::SetLineShakeX(true, t * maxShakeValue);
-			TOMATOsEngine::SetLineShakeY(true, t * maxShakeValue);
 			isPreScene = true;
 		}
 		if (t >= 1.0f && t2 <= 0.0f) {
@@ -27,8 +25,6 @@ void Transition::Update()
 		if (t >= 1.0f) {
 			t2 += speed;
 			t2 = std::clamp(t2, 0.0f, 1.0f);
-			TOMATOsEngine::SetLineShakeX(true, (1.0f - t2) * maxShakeValue);
-			TOMATOsEngine::SetLineShakeY(true, (1.0f - t2) * maxShakeValue);
 			isNextScene = true;
 		}
 		if (t2 >= 1.0f) {
@@ -37,6 +33,20 @@ void Transition::Update()
 			isNextScene = false;
 			t = 0.0f;
 			t2 = 0.0f;
+		}
+	}
+}
+
+void Transition::TransitionShake()
+{
+	if (isStart) {
+		if (t < 1.0f) {
+			TOMATOsEngine::SetLineShakeX(true, t * maxShakeValue);
+			TOMATOsEngine::SetLineShakeY(true, t * maxShakeValue);
+		}
+		if (t >= 1.0f) {
+			TOMATOsEngine::SetLineShakeX(true, (1.0f - t2) * maxShakeValue);
+			TOMATOsEngine::SetLineShakeY(true, (1.0f - t2) * maxShakeValue);
 		}
 	}
 }
