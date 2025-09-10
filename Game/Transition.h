@@ -24,7 +24,7 @@ public:
 
 	float t = 0.0f;
 	float t2 = 0.0f;
-	float maxShakeValue = 30.0f;
+	float maxShakeValue = 90.0f;
 	float speed = 0.02f;
 	bool isNextSceneFrame = false;
 	bool endPreScene = false;

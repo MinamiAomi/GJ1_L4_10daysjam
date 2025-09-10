@@ -13,14 +13,19 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void ResultDraw();
 
 	void SetPosition(const Vector2& position) { position_ = position; }
 	bool GetFacing() const { return isFacing; }
 	Vector2 GetSize()const { return size_; }
 	Vector2 GetPosition()const { return position_; }
+	Vector2 GetWallToPosition()const { return wallToPosition_; }
 	Vector2 GetVelocity() const { return velocity_; }
 	float GetRotate()const { return rotate_; }
 	bool GetIsHipDrop() const { return isHipDrop_; }
+	int GetInvincibleFrame() const {
+		return invincibleFrame_;
+	}
 private:
 
 	void Move();
@@ -42,6 +47,7 @@ private:
 	int wallDirection_ = 0; // 壁の方向 (-1 左, 1 右, 0 なし)
 	bool isJumping_ = false;
 	bool isHipDrop_ = false;
+	int invincibleFrame_ = 0;
 
 	Vector4 playerParticleColor_;
 

@@ -616,7 +616,43 @@ namespace TOMATOsEngine {
         DrawLine3D(rotatedCorners[3], rotatedCorners[0], color); // 左下 -> 左上
     }
 
+    void DrawArrow2D(const Vector2& center, float length, float thickness, float rotation, uint32_t color) {
+        // 矢印の各部のサイズを定義
+        const float headWidth = thickness;
+        const float headLength = thickness * 1.2f;
+        const float shaftWidth = thickness / 2.5f;
 
+        // 矢印が右を向いている状態（回転前）の7つの頂点を定義
+        std::vector<Vector2> localVertices(7);
+        localVertices[0] = { length / 2.0f, 0.0f };                                       // P0: 矢の先端
+        localVertices[1] = { length / 2.0f - headLength, headWidth / 2.0f };               // P1: 矢じりの上角
+        localVertices[2] = { length / 2.0f - headLength, shaftWidth / 2.0f };              // P2: 胴体の上部前
+        localVertices[3] = { -length / 2.0f, shaftWidth / 2.0f };                         // P3: 胴体の上部後
+        localVertices[4] = { -length / 2.0f, -shaftWidth / 2.0f };                        // P4: 胴体の下部後
+        localVertices[5] = { length / 2.0f - headLength, -shaftWidth / 2.0f };             // P5: 胴体の上部前
+        localVertices[6] = { length / 2.0f - headLength, -headWidth / 2.0f };              // P6: 矢じりの下角
+
+        // 回転・移動させた後の頂点を格納するリスト
+        std::vector<Vector2> worldVertices(7);
+        const float cosR = std::cos(rotation);
+        const float sinR = std::sin(rotation);
+
+        // 全ての頂点を回転させ、中心位置に移動させる
+        for (int i = 0; i < 7; ++i) {
+            float rotatedX = localVertices[i].x * cosR - localVertices[i].y * sinR;
+            float rotatedY = localVertices[i].x * sinR + localVertices[i].y * cosR;
+
+            worldVertices[i].x = center.x + rotatedX;
+            worldVertices[i].y = center.y + rotatedY;
+        }
+
+        // 計算した頂点を順番に線で結ぶ
+        for (int i = 0; i < 7; ++i) {
+            const Vector2& startPoint = worldVertices[i];
+            const Vector2& endPoint = worldVertices[(i + 1) % 7]; // %7で最後の点から最初の点へ繋ぐ
+            DrawLine3D(startPoint, endPoint, 0.0f, color);
+        }
+    }
 
     void DrawBoxLine3D(const Square& square, uint32_t color)
     {
@@ -646,8 +682,6 @@ namespace TOMATOsEngine {
     }
 
     void DrawWavingFlower(const Vector2& basePos, float z, float stemHeight, float time, uint32_t color) {
-        // === 揺れの計算 ===
-        float flowerTilt = std::sin(time * 1.0f) * 0.1f;
 
         // === 花の描画 ===
 
@@ -660,8 +694,12 @@ namespace TOMATOsEngine {
         flowerCenter.y;
 
 
+        // 回転速度を定義（この値を調整して速さを変えられます）
+        const float rotationSpeed = 0.5f;
+
         for (int i = 0; i < 5; ++i) {
-            float angle = (2.0f * Math::Pi * i / 5.0f) + flowerTilt;
+            // 角度の計算に 'flowerTilt' の代わりに 'time' を使って回転させる
+            float angle = (2.0f * Math::Pi * i / 5.0f) + time * rotationSpeed;
             Vector2 p2 = { flowerCenter.x + std::cos(angle) * petalRadius, flowerCenter.y + std::sin(angle) * petalRadius };
             Vector2 p3 = { flowerCenter.x + std::cos(angle) * petalLength, flowerCenter.y + std::sin(angle) * petalLength };
             DrawLine3D(p2, p3, z, color);

@@ -17,6 +17,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void ResultDraw();
 
 	
 private:

@@ -20,6 +20,7 @@ void Player::Initialize() {
 	rotate_ = 0.0f;
 	playerParticleColor_ = {1.0f,1.0f,1.0f,1.0f};
 	wallToPosition_ = { 0.0f,0.0f };
+	invincibleFrame_ = 0;
 
 	hitSoundHandle_ = TOMATOsEngine::LoadAudio("Resources/Audio/hitHurt.wav");
 }
@@ -33,7 +34,8 @@ void Player::Update() {
 	}
 	ImGui::End();
 #endif // _DEBUG
-
+	invincibleFrame_--;
+	invincibleFrame_ = std::clamp(invincibleFrame_, 0, 3);
 	if (!Wall::GetInstance()->IsBurst()) {
 		const auto& pad = TOMATOsEngine::GetGamePadState();
 		const auto prepad = TOMATOsEngine::GetGamePadPreState();
@@ -72,6 +74,11 @@ void Player::Update() {
 
 void Player::Draw() {
 	playerModel_.Draw();
+}
+
+void Player::ResultDraw() {
+	playerModel_.Update();
+	playerModel_.ResultDraw();
 }
 
 void Player::Move() {
@@ -182,6 +189,7 @@ void Player::HipDrop()
 		playerModel_.SetState(PlayerModel::kEndHipDrop);
 		isHipDrop_ = false;
 		rotate_ = 0.0f;
+		invincibleFrame_ = 3;
 	}
 }
 

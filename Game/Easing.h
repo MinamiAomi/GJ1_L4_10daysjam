@@ -93,6 +93,18 @@ public:
 	/// <returns></returns>
 	static float easing(float t, float start, float end);
 
+	// <summary>
+	/// イージング
+	/// </summary>
+	/// <param name="t">t</param>
+	/// <param name="start">スタート</param>
+	/// <param name="end">終わり</param>
+	/// <param name="speed">tのスピード</param>
+	/// <param name="mode">イージングモード</param>
+	/// <param name="isAdd">tを加算するか</param>
+	/// <returns></returns>
+	static float easing(float t, float start, float end, EasingMode easingMode);
+
 	/// <summary>
 	/// イージング
 	/// </summary>

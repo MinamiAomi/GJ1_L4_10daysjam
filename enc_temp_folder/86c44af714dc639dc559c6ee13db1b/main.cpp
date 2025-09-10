@@ -297,6 +297,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		{
 			player.Update();
 			backGround.Update();
+			score.SetPosition({-100.0f,-5.0f});
 			score.Update(true);
 
 

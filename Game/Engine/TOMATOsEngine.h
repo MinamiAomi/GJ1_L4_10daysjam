@@ -53,6 +53,8 @@ namespace TOMATOsEngine {
     void DrawLine3D(const Vector3& start, const Vector3& end, uint32_t color);
     void DrawBoxLine3D(const Vector2& center, const Vector2& size, uint32_t color);
     void DrawBoxLine3D(const Vector2& center, const Vector2& size,float radian, uint32_t color);
+    void DrawArrow2D(const Vector2& center, float length, float thickness, float rotation, uint32_t color);
+
     void DrawBoxLine3D(const Square& square, uint32_t color);
     void DrawStar2D(const Vector2& center, float outerRadius, float innerRadius, float z, float rotation, uint32_t color);
     void DrawWavingFlower(const Vector2& basePos, float z, float stemHeight, float time,uint32_t color);
