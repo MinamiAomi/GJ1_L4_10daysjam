@@ -34,8 +34,6 @@ private:
 	Square head_;
 	Square leftFoot_;
 	Square rightFoot_;
-	Square leftEye_;
-	Square rightEye_;
 
 	float changeT_ = 0.0f;
 

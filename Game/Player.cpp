@@ -9,6 +9,9 @@
 
 #include "Easing.h"
 
+const WORD kJumpGamepadButton = XINPUT_GAMEPAD_A;
+const WORD kHipDropGamepadButton = XINPUT_GAMEPAD_B;
+
 void Player::Initialize() {
 	position_ = Vector2::zero;
 	velocity_ = Vector2::zero;
@@ -40,7 +43,7 @@ void Player::Update() {
 
 		//HipDrop
 		if (!isHipDrop_ && (TOMATOsEngine::IsKeyTrigger(DIK_LSHIFT) || TOMATOsEngine::IsKeyTrigger(DIK_S) ||
-			((pad.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_A)) && !isOnGround_)) {
+			((pad.Gamepad.wButtons & kHipDropGamepadButton) && !(prepad.Gamepad.wButtons & kHipDropGamepadButton)) && !isOnGround_)) {
 			isHipDrop_ = true;
 		}
 
@@ -107,8 +110,8 @@ void Player::Move() {
 	velocity_.x = std::clamp(velocity_.x, -maxMoveSpeed_, maxMoveSpeed_);
 
 	// ジャンプボタンの入力状態を取得
-	bool isJumpTriggered = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & XINPUT_GAMEPAD_B) && !(prepad.Gamepad.wButtons & XINPUT_GAMEPAD_B));
-	bool isJumpPressed = TOMATOsEngine::IsKeyPressed(DIK_SPACE) || (pad.Gamepad.wButtons & XINPUT_GAMEPAD_B);
+	bool isJumpTriggered = TOMATOsEngine::IsKeyTrigger(DIK_SPACE) || ((pad.Gamepad.wButtons & kJumpGamepadButton) && !(prepad.Gamepad.wButtons & kJumpGamepadButton));
+	bool isJumpPressed = TOMATOsEngine::IsKeyPressed(DIK_SPACE) || (pad.Gamepad.wButtons & kJumpGamepadButton);
 
 	// 1. ジャンプ開始処理 (キーが押された瞬間)
 	if (isJumpTriggered) {
@@ -196,9 +199,7 @@ void Player::CheckCollisions()
 
 	if (wallDirection_ != 0 && !isOnGround_) {
 		isWallSliding_ = true;
-		
 	}
-
 }
 
 
