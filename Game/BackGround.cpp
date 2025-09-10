@@ -92,7 +92,7 @@ void BackGround::Draw() {
 }
 
 void BackGround::ResultDraw() {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 20; i++) {
 		TOMATOsEngine::DrawWavingFlower({ -4.0f ,0.0f },0.0f, stemHeight_, time_, 0xFFFFFFFF);	
 	}
 }

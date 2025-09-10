@@ -298,7 +298,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			player.Update();
 			backGround.Update();
 			score->Update(true);
-
+			score->SetPosition({ -120.0f, -5.0f});
 
             if (!clearToTitle) {
                 // ゲームクリアBGM
