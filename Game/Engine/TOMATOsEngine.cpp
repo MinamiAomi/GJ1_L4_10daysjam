@@ -24,7 +24,7 @@
 #pragma comment(lib, "winmm.lib")
 
 namespace {
-    const wchar_t kWindowTitle[] = L"BB";
+    const wchar_t kWindowTitle[] = L"4009_チルキック";
 
     GameWindow* gameWindow = nullptr;
     RenderManager* renderManager = nullptr;
