@@ -115,8 +115,12 @@ void BackGround::Update() {
 
 void BackGround::Draw() {
 	int offsetNum = int(Wall::GetInstance()->GetPosition() / space_);
+	
 	for (int i = 0; i < 10; i++) {
-		TOMATOsEngine::DrawWavingFlower({ offsetNum * space_ +  space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
+		if (space_ + space_ * 4 < offsetNum * space_ + space_ * i) {
+			TOMATOsEngine::DrawWavingFlower({ offsetNum * space_ +  space_ * i,0.0f }, z_, stemHeight_, time_, 0x666666FF);
+		}
+		
 	}
 
 	for (int i = 0; i < kParticleNum; i++) {

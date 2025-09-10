@@ -53,5 +53,6 @@ private:
 	float particleSpeed_ = 0.1f;
 	float particleRotateSpeed_ = 1 * Math::ToRadian;
 	Random::RandomNumberGenerator random_;
+
 };
 
